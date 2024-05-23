@@ -23,18 +23,19 @@ service = Service('driver/geckodriver')
 options = webdriver.FirefoxOptions()
 
 # Opzioni driver (su browser con about:support)
-#options.add_argument('--user-data-dir=/Users/francesco/Library/Application Support/Firefox/Profiles/i5qodkh1.default-release-1716024453688')# Questo utilizza il tuo profilo Firefox
-#options.add_argument("javascript.enabled")
+options.add_argument('--user-data-dir=/Users/francesco/Library/Application Support/Firefox/Profiles/i5qodkh1.default-release-1716024453688')# Questo utilizza il tuo profilo Firefox
+options.add_argument("javascript.enabled")
 
-#driver = webdriver.Firefox(service=service, options=options)
-driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+driver = webdriver.Firefox(service=service, options=options)
+#driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
 
 # Loggarsi manualmente su Twitter
 driver.get('https://www.twitter.com/login')
 input("Premi Enter dopo aver effettuato il login...")
 
 # Mando richiesta get con query nei parametri
-search_url = 'https://x.com/search?q=python&src=typed_query'
+#search_url = 'https://x.com/search?q=killnet&src=typed_query'
+search_url = "https://x.com/search?f=top&q=Killnet%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
 driver.get(search_url)
 
 # Attendo caricamento pagina
@@ -44,25 +45,8 @@ time.sleep(5)
 html_content = driver.page_source
 soup = BeautifulSoup(html_content, 'html.parser')
 
-print(soup.prettify())
-
-
-# Scorri la pagina per caricare più tweet
-for _ in range(5):
-    driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.END)
-    time.sleep(2)
-
-# Estraggo tweet dall'html ricevuto in risposta
-tweets = driver.find_elements(By.XPATH, '//div[@data-testid="tweet"]')
-
-# Estrai il testo dei tweet
-tweet_texts = [tweet.text for tweet in tweets]
-
-# Stampa i tweet
-for i, tweet_text in enumerate(tweet_texts):
-    print(f"Tweet {i+1}: {tweet_text}\n")
-
-with open('tweets.json', 'w') as f:
-    json.dump(tweet_texts, f)
+# Salvo la risposta in un file HTML
+with open('data_results/response.html', 'w') as f:
+    f.write(soup.prettify())
 
 driver.quit()

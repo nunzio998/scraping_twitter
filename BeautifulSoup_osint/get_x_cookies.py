@@ -1,9 +1,9 @@
-from BeautifulSoup_osint.chrome.selenium_beautifulsoup import webdriver
 import json
+from selenium import webdriver
 
 driver = webdriver.Chrome()
 driver.maximize_window()
-driver.get("https://twitter.com/")
+driver.get("https://www.twitter.com/login")
 input("Premi Enter dopo aver effettuato il login...")
 
 # Estrai i cookie
