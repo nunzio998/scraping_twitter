@@ -28,28 +28,17 @@ headers = {
 }
 
 # Effettua una richiesta HTTP alla pagina di ricerca di Twitter
-url = 'https://x.com/search?q=python&src=typed_query'
+url = 'https://x.com/search?f=top&q=Killnet%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query'
 response = requests.get(url, headers=headers, cookies=cookies)
 
 if response.status_code == 200:
     soup = BeautifulSoup(response.content, 'html.parser')
     # Esegui lo scraping come desiderato
-    print("200")
+    with open('response.html', 'w') as f:
+        f.write(soup.prettify())
+        print(soup.prettify())
+        print("HTML salvato in response.html")
 
-    tweets = soup.find_all('span', {'data-testid': 'tweet'})
-    print(tweets)
 else:
     print(f"Errore: {response.status_code}, {response.reason} \n\n {response.text}")
 
-
-
-
-# Analizza il contenuto HTML
-# soup = BeautifulSoup(response.content, 'html.parser')
-
-# Estrai i tweet (esempio: usando la classe "tweet-text")
-# tweet_elements = soup.find_all(class_='tweet-text')
-
-# Stampa i testi dei tweet
-# for tweet in tweet_elements:
-#    print(tweet.text)
