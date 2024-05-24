@@ -9,7 +9,7 @@ def read_json(path):
         return json.load(f)
 
 
-all_cookies = read_json("twitter_cookies.json")
+all_cookies = read_json("../twitter_cookies.json")
 
 
 # I cookie di sessione estratti dal browser

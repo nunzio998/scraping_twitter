@@ -13,7 +13,7 @@ cookies = driver.get_cookies()
 cookies_dict = {cookie['name']: cookie['value'] for cookie in cookies}
 
 # Salva i cookie in un file JSON (facoltativo)
-with open('twitter_cookies.json', 'w') as file:
+with open('../twitter_cookies.json', 'w') as file:
     json.dump(cookies_dict, file)
 
 print("Cookies acquisiti e salvati in twitter_cookies.json..")
