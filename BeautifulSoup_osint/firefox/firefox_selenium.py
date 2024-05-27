@@ -34,12 +34,17 @@ with open('data_results/response.html', 'w') as f:
 # Mi sposto sul body lasciando stare il resto dell'html
 soup = soup.body
 
-# results = soup.find_all("div", class_="css-175oi2r")
-#results = soup.find_all("div", string="killnet")
-results = soup.find_all("span", class_="css-1jxf684")
-# salvo i risultati in un file
-with open('data_results/results.html', 'w') as f:
+# Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)
+results = soup.find_all("div", class_="css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu")
+
+
+# salvo i risultati in un file html
+with open('data_results/risultati_filtrati.html', 'w') as f:
     f.write(str(results))
-    print("dati salvati")
+
+# estraggo il testo dai div ottenuti e lo salvo in un file
+for result in results:
+    with open('data_results/testo_estratto.txt', 'a') as f:
+        f.write(result.text)
 
 driver.quit()
