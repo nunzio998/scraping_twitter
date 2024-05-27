@@ -27,7 +27,7 @@ html_content = driver.page_source
 soup = BeautifulSoup(html_content, 'html.parser')
 
 # Salvo la risposta in un file HTML
-with open('dat_res/response.html', 'w') as f:
+with open('data_results/response.html', 'w') as f:
     f.write(soup.prettify())
 
 driver.quit()
