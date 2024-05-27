@@ -1,5 +1,0 @@
-{
-  "api_key" : "4460be13ab76970f9ff31ea8297ef5d3",
-  "connection_string" : "mongodb+srv://francescopinsone:b40RttG4Q1I8WwnS@cluster0.fzowqrz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-  "database" : "Twitter_Osint"
-}
