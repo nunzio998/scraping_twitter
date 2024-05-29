@@ -16,20 +16,13 @@ for result in results:
     with open('data_results/results.txt', 'w') as f:
         f.write(result.text)
 
-#lines_prova = []
-#for result in results:
-#    lines_prova.append(result.text)
-
 # Leggi il contenuto dal file di testo
 with open("data_results/results.txt", "r") as file:
     lines = file.readlines()
 
-
-
 # Filtra le righe vuote
 filtered_lines = [line.strip() for line in lines if line.strip()]
 print(filtered_lines)
-#filtered_lines = [line.strip() for line in lines_prova if line.strip()]
 
 # Scrivi il contenuto filtrato in un nuovo file
 with open("data_results/filtered_results.txt", "w") as new_file:
