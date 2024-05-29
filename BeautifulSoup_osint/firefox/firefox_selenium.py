@@ -16,7 +16,7 @@ input("Premi Enter dopo aver effettuato il login...")
 
 # Mando richiesta get con query nei parametri
 # search_url = 'https://x.com/search?q=killnet&src=typed_query'
-search_url = "https://x.com/search?f=top&q=lockbit%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
+search_url = "https://x.com/search?f=top&q=killnet%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
 driver.get(search_url)
 
 # Attendo caricamento pagina
