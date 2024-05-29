@@ -49,12 +49,15 @@ def parse_post(lines):
     contenuto_lines = lines[4:]
     contenuto = ' '.join(line.strip() for line in contenuto_lines if not re.match(r'^\d+(\.\d+)?$', line.strip()))
 
+    url = lines[-1].strip()
+
     # Ritorno il post in formato json
     return {
         'username': username,
         'username_tag': username_tag,
         'data_pubblicazione': data_pubblicazione,
-        'contenuto': contenuto
+        'contenuto': contenuto,
+        'url': url
     }
 
 
