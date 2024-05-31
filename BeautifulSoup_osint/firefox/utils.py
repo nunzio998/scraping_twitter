@@ -47,8 +47,38 @@ def parse_post(lines):
     # So che il contenuto del post si trova dalla quarta riga in poi. Utilizzando un'espressione regolare, posso ignorare le righe che contengono solo numeri.
     # Ovvero quelle righe che contengono solo il numero di like, commenti, condivisioni, ecc.
     contenuto_lines = lines[4:]
-    contenuto = ' '.join(line.strip() for line in contenuto_lines if not re.match(r'^\d+(\.\d+)?$', line.strip()))
+    contenuto = ' '.join(line.strip() for line in contenuto_lines if not re.match(r'^\d+(\.\d+)?$', line.strip()) and not re.match(r'^https://', line.strip()))
 
+    # Considerando tutti gli elementi di lines prendo solo quelli che contengono solo numeri e li inserisco in una lista
+    numeri = [line.strip() for line in lines if re.match(r'^\d+(\.\d+)?$', line.strip())]
+    if len(numeri) == 4:
+        commenti = numeri[0]
+        repost = numeri[1]
+        like = numeri[2]
+        visualizzazioni = numeri[3]
+    elif len(numeri) == 3:
+        commenti = None
+        repost = numeri[0]
+        like = numeri[1]
+        visualizzazioni = numeri[2]
+    elif len(numeri) == 2:
+        commenti = None
+        repost = None
+        like = numeri[0]
+        visualizzazioni = numeri[1]
+    elif len(numeri) == 1:
+        commenti = None
+        repost = None
+        like = None
+        visualizzazioni = numeri[0]
+    else:
+        commenti = None
+        repost = None
+        like = None
+        visualizzazioni = None
+
+
+    # L'ultimo elemento sarà l'url del post
     url = lines[-1].strip()
 
     # Ritorno il post in formato json
@@ -57,6 +87,10 @@ def parse_post(lines):
         'username_tag': username_tag,
         'data_pubblicazione': data_pubblicazione,
         'contenuto': contenuto,
+        'commenti': commenti,
+        'repost': repost,
+        'like': like,
+        'visualizzazioni': visualizzazioni,
         'url': url
     }
 
