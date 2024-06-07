@@ -2,10 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 import time
 from bs4 import BeautifulSoup
-
-interest_groups = ["Killnet", "NoName057(16)", "Lazarus", "DarkHalo", "MustangPanda", "BlackEnergy", "BadMagic",
-                   "DarkSide", "LockBit", "DopplePaymer", "RagnarLocker",
-                   "REvil", "DragonFly"]
+from utils import interest_groups
 
 # Geckodriver
 service = Service('driver/geckodriver')
