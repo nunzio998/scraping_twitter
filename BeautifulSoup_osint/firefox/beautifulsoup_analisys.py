@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from utils import read_parse_save
 
 # Apro l'html con BeautifulSoup
-with open('data_results/response.html', 'r') as f:
+with open('data_results/Killnet.html', 'r') as f:
     soup = BeautifulSoup(f, 'html.parser')
 
 # Mi sposto sul body lasciando stare il resto dell'html
@@ -18,23 +18,19 @@ urls = soup.find_all("a", class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5
 
 # estraggo il testo dai div ottenuti e lo salvo in un file
 i = 0
+lines = []
 for result in results:
-    with open('data_results/results.txt', 'a') as f:
-        f.write(result.text)
-        f.write("\n" + f"https://x.com{urls[i]['href']}" + "\n")
-        i += 1
+    tmp_list = result.text.split("\n") #lista temporanea per salvare il testo del tweet
+    #aggiungo la lista temporanea alla lista delle righe
+    for line in tmp_list:
+        lines.append(line)
+    lines.append(f"https://x.com{urls[i]['href']}")
+    i += 1
 
-# Leggi il contenuto dal file di testo
-with open("data_results/results.txt", "r") as file:
-    lines = file.readlines()
 
 # Filtra le righe vuote
 filtered_lines = [line.strip() for line in lines if line.strip()]
 print(filtered_lines)
 
-# Scrivi il contenuto filtrato in un nuovo file
-with open("data_results/filtered_results.txt", "w") as new_file:
-    new_file.write("\n".join(filtered_lines))
-
 # Divido le info nel file in post
-read_parse_save("data_results/filtered_results.txt", "data_results/output.json")
+read_parse_save(filtered_lines, "data_results/output.json")

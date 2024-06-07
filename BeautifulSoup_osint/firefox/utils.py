@@ -4,27 +4,23 @@ from datetime import datetime
 
 
 # Leggo il file e divido i post
-def read_posts_from_file(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        # creo una lista che contiene tutte le righe del file
-        lines = file.readlines()
-        print(lines)
+def read_posts(filtered_lines):
 
     posts = []  # lista che conterrà tutti i post
     post = []  # lista di appoggio temporanea per salvare le righe di un post
 
-    for i in range(0, len(lines)):
+    for i in range(0, len(filtered_lines)):
         # controllo se lines[i] è l'ultimo elemento della lista
-        stripped_line = lines[i].strip()
+        stripped_line = filtered_lines[i].strip()
 
-        if i == len(lines) - 1:
+        if i == len(filtered_lines) - 1:
             post.append(stripped_line)
             posts.append(post)
             break  # esco dal ciclo for
 
         # controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.
         # se cosi fosse il carattere successivo sarà un tag_username e quindi inizierà con '@'. In tal caso non aggiungo a post e vado avanti
-        if (not lines[i + 1].strip()[0] == '@') or i == 0:
+        if (not filtered_lines[i + 1].strip()[0] == '@') or i == 0:
             post.append(stripped_line)
         else:  # ho letto un intero post
             posts.append(post)
@@ -95,8 +91,8 @@ def parse_post(lines):
     }
 
 
-def read_parse_save(file_path_in, file_path_out):
-    posts_lines = read_posts_from_file(file_path_in)
+def read_parse_save(filtered_lines, file_path_out):
+    posts_lines = read_posts(filtered_lines)
 
     parsed_posts = []  # lista che conterrà tutti i post parsati in formato json
 
