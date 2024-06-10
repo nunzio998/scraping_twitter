@@ -4,6 +4,9 @@ import time
 from bs4 import BeautifulSoup
 from utils import interest_groups
 
+l = 3 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+
+
 # Geckodriver
 service = Service('driver/geckodriver')
 
@@ -15,9 +18,20 @@ driver = webdriver.Firefox(service=service)
 driver.get('https://www.twitter.com/login')
 input("Premi Enter dopo aver effettuato il login...")
 
+keyword1 = ""
+keyword2 = ""
+
 for group in interest_groups:
     # Mando richiesta get con query nei parametri
-    search_url = f"https://x.com/search?f=top&q={group}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
+    if l == 0:
+        search_url = f"https://x.com/search?f=top&q={group}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
+    elif l == 1:
+        search_url = f"https://x.com/search?q={group}%20{keyword1}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
+    elif l == 2:
+        search_url = f"https://x.com/search?q={group}%20{keyword1}%20{keyword2}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
+    else:
+        break
+
     driver.get(search_url)
 
     # Attendo caricamento pagina
