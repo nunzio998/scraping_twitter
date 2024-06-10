@@ -5,8 +5,9 @@ from selenium.webdriver.firefox.service import Service
 import time
 from bs4 import BeautifulSoup
 from utils import interest_groups, primary_keywords, secondary_keywords
+from beautifulsoup_analisys import analisys_with_beautifulsoup
 
-l = 0 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+l = 1 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
 
 
 # Geckodriver
@@ -49,4 +50,5 @@ for group in interest_groups:
     with open(f'data_results/{group}.html', 'w') as f:
         f.write(soup.prettify())
 
+    analisys_with_beautifulsoup(soup.prettify(), group)
 driver.quit()

@@ -1,13 +1,11 @@
 from bs4 import BeautifulSoup
 from utils import read_parse_save, interest_groups, connect_to_mongo, disconnect_to_mongo
 
-# Connessione al database
-client = connect_to_mongo()
 
-for group in interest_groups:
-    # Apro l'html con BeautifulSoup
-    with open(f'data_results/{group}.html', 'r') as f:
-        soup = BeautifulSoup(f, 'html.parser')
+def analisys_with_beautifulsoup(response_html, group):
+    client = connect_to_mongo()
+
+    soup = BeautifulSoup(response_html, 'html.parser')
 
     # Mi sposto sul body lasciando stare il resto dell'html
     soup = soup.body
@@ -28,7 +26,7 @@ for group in interest_groups:
         # aggiungo la lista temporanea alla lista delle righe
         for line in tmp_list:
             lines.append(line)
-        lines.append(f"https://x.com{urls[i]['href']}") # aggiungo l'url del tweet
+        lines.append(f"https://x.com{urls[i]['href']}")  # aggiungo l'url del tweet
         i += 1
 
     # Filtra le righe vuote
@@ -37,5 +35,7 @@ for group in interest_groups:
     # Divido le info in post e le salvo nel database
     read_parse_save(filtered_lines, group, client)
 
+    disconnect_to_mongo(client)
 
-disconnect_to_mongo(client)
+
+
