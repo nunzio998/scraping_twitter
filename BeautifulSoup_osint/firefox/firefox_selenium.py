@@ -1,8 +1,10 @@
+import random
+
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 import time
 from bs4 import BeautifulSoup
-from utils import interest_groups
+from utils import interest_groups, primary_keywords, secondary_keywords
 
 l = 3 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
 
@@ -18,10 +20,11 @@ driver = webdriver.Firefox(service=service)
 driver.get('https://www.twitter.com/login')
 input("Premi Enter dopo aver effettuato il login...")
 
-keyword1 = ""
-keyword2 = ""
-
 for group in interest_groups:
+
+    keyword1 = random.choice(primary_keywords)
+    keyword2 = random.choice(secondary_keywords)
+
     # Mando richiesta get con query nei parametri
     if l == 0:
         search_url = f"https://x.com/search?f=top&q={group}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"

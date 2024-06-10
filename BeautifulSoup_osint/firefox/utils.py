@@ -7,6 +7,9 @@ interest_groups = ["Killnet", "NoName057(16)", "Lazarus", "DarkHalo", "MustangPa
                    "DarkSide", "LockBit", "DopplePaymer", "RagnarLocker",
                    "REvil", "DragonFly"]
 
+primary_keywords = ["hacker", "cyberwar", "cyber", "energy"]
+
+secondary_keywords = ["italy", "europe", "group", "attack", "threat"]
 
 def read_json(path):
     with open(path, 'r') as file:
