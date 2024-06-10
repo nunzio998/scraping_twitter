@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from utils import read_parse_save, interest_groups, connect_to_mongo
+from utils import read_parse_save, interest_groups, connect_to_mongo, disconnect_to_mongo
 
 # Connessione al database
 client = connect_to_mongo()
@@ -37,3 +37,5 @@ for group in interest_groups:
     # Divido le info in post e le salvo nel database
     read_parse_save(filtered_lines, group, client)
 
+
+disconnect_to_mongo(client)

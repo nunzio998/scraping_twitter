@@ -30,6 +30,11 @@ def connect_to_mongo():
     return client
 
 
+def disconnect_to_mongo(client):
+    print("Disconnesso dal database: ", client.server_info()["version"])
+    client.close()
+
+
 def connect_to_mongo_collection(client, collection_name):
     db = client.get_database(config_data['database'])
 
@@ -154,6 +159,3 @@ def read_parse_save(posts_to_save, group_name, client):
         # Salvo il post parsato nel database
         if parsed_post:
             save_to_mongo(parsed_post, collection)
-
-
-
