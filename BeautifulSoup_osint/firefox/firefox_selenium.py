@@ -6,7 +6,7 @@ import time
 from bs4 import BeautifulSoup
 from utils import interest_groups, primary_keywords, secondary_keywords
 
-l = 3 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+l = 0 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
 
 
 # Geckodriver
@@ -21,6 +21,7 @@ driver.get('https://www.twitter.com/login')
 input("Premi Enter dopo aver effettuato il login...")
 
 for group in interest_groups:
+    print(f"{group} in lavorazione..")
 
     keyword1 = random.choice(primary_keywords)
     keyword2 = random.choice(secondary_keywords)
