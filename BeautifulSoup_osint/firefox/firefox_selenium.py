@@ -1,13 +1,20 @@
 import random
 
+import selenium as selenium
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service
 import time
 from bs4 import BeautifulSoup
-from utils import interest_groups, primary_keywords, secondary_keywords
+from utils import interest_groups, primary_keywords, secondary_keywords, read_json
 from beautifulsoup_analisys import analisys_with_beautifulsoup
+from selenium.common.exceptions import NoSuchElementException
 
-l = 1 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+# Leggo file con credenziali
+credentials = read_json("utils/credentials.json")
+
+l = 0 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
 
 
 # Geckodriver
@@ -19,7 +26,34 @@ driver = webdriver.Firefox(service=service)
 
 # Loggarsi manualmente su Twitter
 driver.get('https://www.twitter.com/login')
-input("Premi Enter dopo aver effettuato il login...")
+time.sleep(5)
+
+# Cerco i campi nei quali far inserire automaticamente le credenziali
+try:
+    email_field = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')
+    email_field.send_keys(credentials["email"])
+    email_field.send_keys(Keys.RETURN)
+    time.sleep(2)
+except NoSuchElementException:
+    print("Campo email non trovato..")
+
+# Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza
+try:
+    username_field = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
+    username_field.send_keys(credentials["username"])
+    username_field.send_keys(Keys.RETURN)
+    time.sleep(2)
+except NoSuchElementException:
+    print("Campo username non trovato..")
+
+try:
+    password_field = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')
+    password_field.send_keys(credentials["password"])
+    password_field.send_keys(Keys.RETURN)
+    time.sleep(2)
+except NoSuchElementException:
+    print("Campo password non trovato..")
+
 
 for group in interest_groups:
     print(f"{group} in lavorazione..")
