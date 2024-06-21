@@ -14,7 +14,7 @@ from selenium.common.exceptions import NoSuchElementException
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")
 
-l = 0 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+l = 9 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
 
 
 # Geckodriver
@@ -26,7 +26,7 @@ driver = webdriver.Firefox(service=service)
 
 # Loggarsi manualmente su Twitter
 driver.get('https://www.twitter.com/login')
-time.sleep(5)
+time.sleep(3)
 
 # Cerco i campi nei quali far inserire automaticamente le credenziali
 try:
@@ -69,12 +69,22 @@ for group in interest_groups:
     elif l == 2:
         search_url = f"https://x.com/search?q={group}%20{keyword1}%20{keyword2}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
     else:
-        break
+        search_url = f"https://x.com/search?q={group}&src=typed_query"
 
     driver.get(search_url)
 
     # Attendo caricamento pagina
     time.sleep(5)
+
+    # Scorri la pagina verso il basso per caricare più tweet
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)  # Attendi il caricamento della pagina
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
 
     # Estraggo HTML pagina con BeautifulSoup e lo stampo
     html_content = driver.page_source
