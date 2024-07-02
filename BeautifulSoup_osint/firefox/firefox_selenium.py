@@ -7,14 +7,20 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service
 import time
 from bs4 import BeautifulSoup
-from utils import interest_groups, primary_keywords, secondary_keywords, read_json
+from utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
 from beautifulsoup_analisys import analisys_with_beautifulsoup
 from selenium.common.exceptions import NoSuchElementException
 
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")
 
-l = 9 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+l = 0 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+
+# Connessione al DB per estrapolare la lista dei target sui quali far partire la ricerca
+client = connect_to_mongo()
+targets_collection = connect_to_mongo_collection(client, "target_groups")
+documents = targets_collection.find()
+target_list = [doc['name'] for doc in documents]
 
 
 # Geckodriver
@@ -55,7 +61,7 @@ except NoSuchElementException:
     print("Campo password non trovato..")
 
 
-for group in interest_groups:
+for group in target_list:
     print(f"{group} in lavorazione..")
 
     keyword1 = random.choice(primary_keywords)
