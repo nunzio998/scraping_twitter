@@ -13,21 +13,21 @@ api_hash = credentials["api_hash"]
 phone = credentials["phone"]
 
 # Nome del canale da cui fare scraping
-channels_username = ['VoodooHardware', 'Ministero della Salute']
+channels_username = ['MinisteroSalute', 'VoodooHardware']
 
 # Creare il client
 client = TelegramClient('session_name', api_id, api_hash)
 
 
-async def main(m_client, channel):
+async def main(m_client, channel_group):
     # Avviare il client
     await client.start()
     print("Client avviato")
 
-    collection = connect_to_mongo_collection(m_client, channel)
+    collection = connect_to_mongo_collection(m_client, channel_group)
 
     # Ottenere l'entità del canale
-    channel = await client.get_entity(channel)
+    channel = await client.get_entity(channel_group)
 
     # Richiedere la cronologia dei messaggi
     offset_id = 0
