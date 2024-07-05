@@ -1,10 +1,12 @@
 import random
 
 import selenium as selenium
+from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
 import time
 from bs4 import BeautifulSoup
 from utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
@@ -32,7 +34,14 @@ driver = webdriver.Firefox(service=service)
 
 # Loggarsi manualmente su Twitter
 driver.get('https://www.twitter.com/login')
-time.sleep(3)
+
+# Imposto un'attesa esplicita di massimo 60 secondi
+wait_login = WebDriverWait(driver, 60)
+
+# Aspetto che un campo di ricerca con ID 'search-input' sia visibile
+search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
+
+time.sleep(1)
 
 # Cerco i campi nei quali far inserire automaticamente le credenziali
 try:
@@ -80,7 +89,10 @@ for group in target_list:
     driver.get(search_url)
 
     # Attendo caricamento pagina
-    time.sleep(5)
+    wait_tweets = WebDriverWait(driver, 120)
+
+    # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
+    search_tweets = wait_tweets.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
 
     # Scorri la pagina verso il basso per caricare più tweet
     last_height = driver.execute_script("return document.body.scrollHeight")
