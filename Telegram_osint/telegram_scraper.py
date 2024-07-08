@@ -13,10 +13,13 @@ api_hash = credentials["api_hash"]
 phone = credentials["phone"]
 
 # Nome del canale da cui fare scraping
-channels_username = ['MinisteroSalute', 'VoodooHardware']
+channels_username = ['MinisteroSalute', 'VoodoHardware']
+
+# Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
+keywords = ['salute', 'sanità', 'hardware']
 
 # Creare il client
-client = TelegramClient('session_name', api_id, api_hash)
+client = TelegramClient('telegram_scraper', api_id, api_hash)
 
 
 async def main(m_client, channel_group):
@@ -24,7 +27,7 @@ async def main(m_client, channel_group):
     await client.start()
     print("Client avviato")
 
-    collection = connect_to_mongo_collection(m_client, channel_group)
+    collection = connect_to_mongo_collection(m_client, 'prova_keywords_telegram')
 
     # Ottenere l'entità del canale
     channel = await client.get_entity(channel_group)
@@ -50,7 +53,10 @@ async def main(m_client, channel_group):
             break
 
         messages = history.messages
-        all_messages.extend(messages)
+
+        # Filtro i messaggi in modo che vengano selezionati solo quelli che contengono una delle parole chiave specificate
+        filtered_messages = [msg for msg in messages if msg.message and any(keyword.lower() in msg.message.lower() for keyword in keywords)]
+        all_messages.extend(filtered_messages)
         offset_id = messages[-1].id
 
     # Stampo i messaggi
@@ -64,4 +70,4 @@ with client:
     for channel in channels_username:
         client.loop.run_until_complete(main(mongo_client, channel))
 
-disconnect_to_mongo()
+disconnect_to_mongo(mongo_client)
