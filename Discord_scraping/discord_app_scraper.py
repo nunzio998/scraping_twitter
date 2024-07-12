@@ -2,7 +2,7 @@ import discord
 import asyncio
 
 # Le tue credenziali del bot di Discord
-TOKEN = 'MTI2MDE2NjMwMTA2NjcyNzQ5NA.GLM3kQ.m3tXCmqJEqnlpP6qowinK6ZCSDSy_QxcBUa0C8'
+TOKEN = ''
 GUILD_ID = '1260220890160042004'
 CHANNEL_ID = '1260220890160042007'
 
