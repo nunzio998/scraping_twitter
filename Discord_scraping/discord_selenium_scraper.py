@@ -7,15 +7,16 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 import time
 from selenium.common.exceptions import NoSuchElementException
-from utils import read_json, beautifulsoup_analisys, scroll_up
+from utils import read_json, beautifulsoup_analisys, connect_to_mongo, save_to_mongo, connect_to_mongo_collection, \
+    disconnect_to_mongo
 
 credentials = read_json("utils/credentials.json")
 
+# Inizializzo il service selenium
 service = Service('driver/geckodriver')
 
 # Inizializzo driver  Firefox
 driver = webdriver.Firefox(service=service)
-# driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
 
 # Loggarsi manualmente su Twitter
 driver.get('https://discord.com/login')
@@ -24,8 +25,6 @@ driver.get('https://discord.com/login')
 wait_login = WebDriverWait(driver, 60)
 
 search_input_login = wait_login.until(EC.visibility_of_element_located((By.ID, 'uid_7')))
-
-time.sleep(1)
 
 # Cerco i campi nei quali far inserire automaticamente le credenziali
 try:
@@ -43,6 +42,10 @@ try:
 except NoSuchElementException:
     print("Campo password non trovato..")
 
+# Mi connetto al database
+client = connect_to_mongo()
+
+# Ottengo le credenziali per il server e il canale
 server_id = credentials['server_id']  # Guild_id
 channel_id = credentials['channel_id']  # Channel_id
 
@@ -59,13 +62,20 @@ search_messages = wait_messages.until(EC.visibility_of_element_located((By.CLASS
 # Numero di volte che vuoi scorrere verso l'alto
 scroll_times = 10
 
-# Lista per salvare tutti i messaggi
-all_messages = beautifulsoup_analisys(driver, scroll_times)
+# Lista per salvare tutti i messaggi, nome del server e nome del canale
+all_messages, server_name, channel_name = beautifulsoup_analisys(driver, scroll_times)
 
+# Mi connetto alla collezione relativa al server da cui voglio estrarre i dati, se non esiste la creo
+collection = connect_to_mongo_collection(client, server_name)
 
-# Salva i messaggi in un file
-with open(f'data_results/messages.txt', 'w') as f:
-    for msg in all_messages:
-        f.write(f"{msg['author']}-{msg['date']}: {msg['content']}\n")
+for message in all_messages:
+    message_to_save = {
+        'author': message['author'],
+        'date': message['date'],
+        'content': message['content'],
+        'channel_name': channel_name
+    }
+    save_to_mongo(message_to_save, collection)
 
+disconnect_to_mongo(client)
 driver.quit()
