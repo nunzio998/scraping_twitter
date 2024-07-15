@@ -1,8 +1,9 @@
 #!/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi Vigimare/python_workspace/.venv/bin/python
 # -*- coding: utf-8 -*-
 import argparse
-import sys
+
 from googletrans import Translator
+
 
 def main():
     parser = argparse.ArgumentParser(

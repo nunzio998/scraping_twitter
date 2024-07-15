@@ -1,7 +1,6 @@
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
-from telethon.tl.types import PeerChannel
-import asyncio
+
 from utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
 
 # Le tue credenziali API

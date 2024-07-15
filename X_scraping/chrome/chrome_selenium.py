@@ -1,19 +1,19 @@
 import random
-from selenium.webdriver.support import expected_conditions as EC
+import time
 
-import selenium as selenium
+from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import time
-from bs4 import BeautifulSoup
-from utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
+from webdriver_manager.chrome import ChromeDriverManager
+
 from beautifulsoup_analisys import analisys_with_beautifulsoup
-from selenium.common.exceptions import NoSuchElementException
+from utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
 
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")

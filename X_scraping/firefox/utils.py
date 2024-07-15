@@ -1,6 +1,7 @@
 import json
 import re
 from datetime import datetime
+
 import pymongo
 
 interest_groups = ["Killnet", "NoName057(16)", "Lazarus", "DarkHalo", "MustangPanda", "BlackEnergy", "BadMagic",

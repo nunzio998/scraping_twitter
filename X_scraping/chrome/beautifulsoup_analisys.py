@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
-from utils import read_parse_save, interest_groups, connect_to_mongo, disconnect_to_mongo
+
+from utils import read_parse_save, connect_to_mongo, disconnect_to_mongo
 
 
 def analisys_with_beautifulsoup(response_html, group):

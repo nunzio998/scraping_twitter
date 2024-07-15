@@ -1,4 +1,5 @@
 import json
+
 from selenium import webdriver
 
 driver = webdriver.Chrome()

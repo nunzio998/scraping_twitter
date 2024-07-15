@@ -1,10 +1,11 @@
 import json
+import re
+import time
+
 import pymongo
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-import time
-import re
 
 
 def read_json(path):

@@ -1,5 +1,4 @@
 import discord
-import asyncio
 
 # Le tue credenziali del bot di Discord
 TOKEN = ''

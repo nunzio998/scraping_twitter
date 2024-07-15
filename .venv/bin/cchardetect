@@ -1,9 +1,10 @@
 #!/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi Vigimare/python_workspace/.venv/bin/python
 from __future__ import print_function, unicode_literals
+
 import argparse
 import sys
-import cchardet
 
+import cchardet
 
 PY2 = sys.version_info.major == 2
 
