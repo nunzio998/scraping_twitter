@@ -12,7 +12,7 @@ api_hash = credentials["api_hash"]
 phone = credentials["phone"]
 
 # Nome del canale da cui fare scraping
-channels_username = ['MinisteroSalute', 'VoodoHardware']
+channels_username = ['MinisteroSalute', 'VoodooHardware']
 
 # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
 keywords = ['salute', 'sanità', 'hardware']
@@ -26,7 +26,7 @@ async def main(m_client, channel_group):
     await client.start()
     print("Client avviato")
 
-    collection = connect_to_mongo_collection(m_client, 'prova_keywords_telegram')
+    collection = connect_to_mongo_collection(m_client, channel_group)
 
     # Ottenere l'entità del canale
     channel = await client.get_entity(channel_group)
