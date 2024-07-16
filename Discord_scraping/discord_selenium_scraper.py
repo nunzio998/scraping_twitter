@@ -1,9 +1,11 @@
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
+from selenium import webdriver
+import time
 
 from utils import read_json, beautifulsoup_analisys, connect_to_mongo, save_to_mongo, connect_to_mongo_collection, \
     disconnect_to_mongo
@@ -43,37 +45,39 @@ except NoSuchElementException:
 # Mi connetto al database
 client = connect_to_mongo()
 
-# Ottengo le credenziali per il server e il canale
-server_id = credentials['server_id']  # Guild_id
-channel_id = credentials['channel_id']  # Channel_id
+# Ottengo la lista dei target presenti nel database
+targets_collection = connect_to_mongo_collection(client, "discord_target")
+documents = targets_collection.find()
+target_list = [(doc['server_id'], doc['channel_id']) for doc in documents]
 
-# carico la pagina del server su cui voglio fare scraping
-search_url = f'https://discord.com/channels/{server_id}/{channel_id}'
-driver.get(search_url)
+for server_id, channel_id in target_list:
+    # carico la pagina del server su cui voglio fare scraping
+    search_url = f'https://discord.com/channels/{server_id}/{channel_id}'
+    driver.get(search_url)
 
-# Attendo caricamento pagina
-wait_messages = WebDriverWait(driver, 120)
+    # Attendo caricamento pagina
+    wait_messages = WebDriverWait(driver, 120)
 
-# Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
-search_messages = wait_messages.until(EC.visibility_of_element_located((By.CLASS_NAME, 'panels_a4d4d9')))
+    # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
+    search_messages = wait_messages.until(EC.visibility_of_element_located((By.CLASS_NAME, 'panels_a4d4d9')))
 
-# Numero di volte che vuoi scorrere verso l'alto
-scroll_times = 10
+    # Numero di volte che vuoi scorrere verso l'alto
+    scroll_times = 10
 
-# Lista per salvare tutti i messaggi, nome del server e nome del canale
-all_messages, server_name, channel_name = beautifulsoup_analisys(driver, scroll_times)
+    # Lista per salvare tutti i messaggi, nome del server e nome del canale
+    all_messages, server_name, channel_name = beautifulsoup_analisys(driver, scroll_times)
 
-# Mi connetto alla collezione relativa al server da cui voglio estrarre i dati, se non esiste la creo
-collection = connect_to_mongo_collection(client, server_name)
+    # Mi connetto alla collezione relativa al server da cui voglio estrarre i dati, se non esiste la creo
+    collection = connect_to_mongo_collection(client, server_name)
 
-for message in all_messages:
-    message_to_save = {
-        'author': message['author'],
-        'date': message['date'],
-        'content': message['content'],
-        'channel_name': channel_name
-    }
-    save_to_mongo(message_to_save, collection)
+    for message in all_messages:
+        message_to_save = {
+            'author': message['author'],
+            'date': message['date'],
+            'content': message['content'],
+            'channel_name': channel_name
+        }
+        save_to_mongo(message_to_save, collection)
 
 disconnect_to_mongo(client)
 driver.quit()
