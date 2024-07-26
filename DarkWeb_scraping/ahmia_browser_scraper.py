@@ -1,6 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
-from utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
+from DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
 
 proxies = {
     'http': 'socks5h://127.0.0.1:9050',
