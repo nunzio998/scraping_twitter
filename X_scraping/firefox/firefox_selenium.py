@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from beautifulsoup_analisys import analisys_with_beautifulsoup
-from utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
+from X_scraping.firefox.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
 
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")

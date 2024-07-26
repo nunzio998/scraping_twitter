@@ -12,12 +12,13 @@ primary_keywords = ["hacker", "cyberwar", "cyber", "energy"]
 
 secondary_keywords = ["italy", "europe", "group", "attack", "threat"]
 
+
 def read_json(path):
     with open(path, 'r') as file:
         return json.load(file)
 
 
-config_data = read_json('mongo_utils.json')
+config_data = read_json('utils/mongo_utils.json')
 
 
 # Funzioni MongoDB:

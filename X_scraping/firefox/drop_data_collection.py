@@ -1,4 +1,4 @@
-from utils import *
+from X_scraping.firefox.utils.utils import *
 
 
 # Mi connetto al database

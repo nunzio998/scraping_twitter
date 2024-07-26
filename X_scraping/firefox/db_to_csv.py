@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utils import *
+from X_scraping.firefox.utils.utils import *
 
 # Mi connetto al database
 client = connect_to_mongo()

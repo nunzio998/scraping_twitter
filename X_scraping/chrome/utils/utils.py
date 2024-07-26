@@ -17,7 +17,7 @@ def read_json(path):
         return json.load(file)
 
 
-config_data = read_json('mongo_utils.json')
+config_data = read_json('utils/mongo_utils.json')
 
 
 # Funzioni MongoDB:
