@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 import time
 
-from utils import read_json, beautifulsoup_analisys, connect_to_mongo, save_to_mongo, connect_to_mongo_collection, \
+from Discord_scraping.utils.utils import read_json, beautifulsoup_analisys, connect_to_mongo, save_to_mongo, connect_to_mongo_collection, \
     disconnect_to_mongo
 
 credentials = read_json("utils/credentials.json")

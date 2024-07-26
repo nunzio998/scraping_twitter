@@ -1,4 +1,4 @@
-from utils import *
+from Discord_scraping.utils.utils import *
 
 
 # Mi connetto al database
