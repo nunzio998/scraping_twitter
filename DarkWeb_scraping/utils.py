@@ -18,6 +18,10 @@ config_data = read_json('utils/credentials.json')
 
 # Funzioni MongoDB:
 def connect_to_mongo():
+    """
+    Funzione che consente di connettersi al database MongoDB.
+    :return:
+    """
     connection_string = config_data['connection_string']
     client = pymongo.MongoClient(connection_string)
     # Provo a connettermi al database
@@ -31,11 +35,22 @@ def connect_to_mongo():
 
 
 def disconnect_to_mongo(client):
+    """
+    Funzione che consente di disconnettersi dal database MongoDB.
+    :param client:
+    :return:
+    """
     print("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
 
 
 def connect_to_mongo_collection(client, collection_name):
+    """
+    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.
+    :param client:
+    :param collection_name:
+    :return:
+    """
     db = client.get_database(config_data['database'])
 
     # Verifica se la collezione esiste già
@@ -50,10 +65,22 @@ def connect_to_mongo_collection(client, collection_name):
 
 
 def save_to_mongo(data, collection):
+    """
+    Funzione per il salvataggio di dati nel database MongoDB.
+    :param data:
+    :param collection:
+    :return:
+    """
     collection.insert_one(data)
 
 
 def beautifulsoup_analisys(response, query):
+    """
+    Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.
+    :param response:
+    :param query:
+    :return:
+    """
     soup = BeautifulSoup(response.text, 'html.parser')
 
     soup = soup.body
