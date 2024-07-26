@@ -1,7 +1,7 @@
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 
-from utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
+from Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
 
 # Le tue credenziali API
 

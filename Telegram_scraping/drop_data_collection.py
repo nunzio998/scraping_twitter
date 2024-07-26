@@ -1,4 +1,4 @@
-from utils import *
+from Telegram_scraping.utils.utils import *
 
 
 # Mi connetto al database
