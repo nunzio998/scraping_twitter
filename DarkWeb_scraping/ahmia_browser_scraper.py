@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo
+from utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
 
 proxies = {
     'http': 'socks5h://127.0.0.1:9050',
@@ -30,19 +30,9 @@ def search_ahmia(query):
         print(f"Errore di connessione: {e}")
         return []
 
-    soup = BeautifulSoup(response.text, 'html.parser')
+    res = beautifulsoup_analisys(response, query)
 
-    soup = soup.body
-
-    results = []
-    for result in soup.find_all('li', class_='result'):  # scorre la lista degli elementi che risultano dalla ricerca.
-        title = result.find('a').text
-        link = result.find('a')['href']
-        snippet = result.find('p').text
-        search_keywords = query.split(' ')
-        results.append({'title': title, 'link': link, 'snippet': snippet, 'search_keywords': search_keywords})
-
-    return results
+    return res
 
 
 # Esempio di ricerca

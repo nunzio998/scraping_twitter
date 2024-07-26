@@ -51,3 +51,19 @@ def connect_to_mongo_collection(client, collection_name):
 
 def save_to_mongo(data, collection):
     collection.insert_one(data)
+
+
+def beautifulsoup_analisys(response, query):
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    soup = soup.body
+
+    results = []
+    for result in soup.find_all('li', class_='result'):  # scorre la lista degli elementi che risultano dalla ricerca.
+        title = result.find('a').text
+        link = result.find('a')['href']
+        snippet = result.find('p').text
+        search_keywords = query.split(' ')
+        results.append({'title': title, 'link': link, 'snippet': snippet, 'search_keywords': search_keywords})
+
+    return results
