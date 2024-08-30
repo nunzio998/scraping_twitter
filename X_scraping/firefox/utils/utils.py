@@ -59,6 +59,11 @@ def save_to_mongo(data, collection):
     print("Salvato nel database: ", data['url'])
 
 
+def save_user_info_to_mongo(data, collection):
+    collection.insert_one(data)
+    print("Salvato nel database: ", data['username'])
+
+
 # config_data = read_json('mongo_utils.json')
 
 # Leggo il file e divido i post
