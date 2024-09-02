@@ -38,6 +38,9 @@ def disconnect_to_mongo(client):
     print("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
 
+def get_db(client):
+    return client.get_database(config_data['database'])
+
 
 def connect_to_mongo_collection(client, collection_name):
     db = client.get_database(config_data['database'])
@@ -56,6 +59,10 @@ def connect_to_mongo_collection(client, collection_name):
 def save_to_mongo(data, collection):
     collection.insert_one(data)
     print("Salvato nel database: ", data['url'])
+
+def save_user_info_to_mongo(data, collection):
+    collection.insert_one(data)
+    print("Salvato nel database: ", data['username_tag'])
 
 
 # config_data = read_json('mongo_utils.json')
