@@ -116,8 +116,6 @@ for user in target_list:
         print('Utente non trovato:', user)
         continue
 
-    # TODO prima di salvare le info dell user nel db controllare se esiste già una record relativo a quell user
-
     # Controllo se l'utente è già presente nel database
     doc = collection.find_one({'username_tag': res['username_tag']})
     if doc:
