@@ -118,6 +118,12 @@ for user in target_list:
 
     # TODO prima di salvare le info dell user nel db controllare se esiste già una record relativo a quell user
 
+    # Controllo se l'utente è già presente nel database
+    doc = collection.find_one({'username_tag': res['username_tag']})
+    if doc:
+        print('Utente già presente:', res['username_tag'])
+        continue
+
     # 3) Salvo i risultati nel database
     save_user_info_to_mongo(res, collection)
 
