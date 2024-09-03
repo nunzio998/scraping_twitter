@@ -13,6 +13,11 @@ primary_keywords = ["hacker", "cyberwar", "cyber", "energy"]
 secondary_keywords = ["italy", "europe", "group", "attack", "threat"]
 
 def read_json(path):
+    """
+    Funzione che si occupa di leggere un file JSON.
+    :param path:
+    :return:
+    """
     with open(path, 'r') as file:
         return json.load(file)
 
@@ -22,6 +27,10 @@ config_data = read_json('utils/mongo_utils.json')
 
 # Funzioni MongoDB:
 def connect_to_mongo():
+    """
+    Funzione che si occupa di connettersi al database MongoDB.
+    :return:
+    """
     connection_string = config_data['connection_string']
     client = pymongo.MongoClient(connection_string)
     # Provo a connettermi al database
@@ -35,14 +44,30 @@ def connect_to_mongo():
 
 
 def disconnect_to_mongo(client):
+    """
+    Funzione che si occupa di disconnettersi dal database MongoDB.
+    :param client:
+    :return:
+    """
     print("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
 
 def get_db(client):
+    """
+    Funzione che ritorna il database MongoDB.
+    :param client:
+    :return:
+    """
     return client.get_database(config_data['database'])
 
 
 def connect_to_mongo_collection(client, collection_name):
+    """
+    Funzione che si occupa di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.
+    :param client:
+    :param collection_name:
+    :return:
+    """
     db = client.get_database(config_data['database'])
 
     # Verifica se la collezione esiste già
@@ -57,10 +82,22 @@ def connect_to_mongo_collection(client, collection_name):
 
 
 def save_to_mongo(data, collection):
+    """
+    Funzione che si occupa di il salvataggio di dati nel database MongoDB.
+    :param data:
+    :param collection:
+    :return:
+    """
     collection.insert_one(data)
     print("Salvato nel database: ", data['url'])
 
 def save_user_info_to_mongo(data, collection):
+    """
+    Funzione che si occupa di il salvataggio di dati, relativi alle info utente, nel database MongoDB.
+    :param data:
+    :param collection:
+    :return:
+    """
     collection.insert_one(data)
     print("Salvato nel database: ", data['username_tag'])
 
@@ -69,6 +106,11 @@ def save_user_info_to_mongo(data, collection):
 
 # Leggo il file e divido i post
 def read_posts(filtered_lines):
+    """
+    Funzione che si occupa di leggere i post e dividerli in base al numero di righe.
+    :param filtered_lines:
+    :return:
+    """
     posts = []  # lista che conterrà tutti i post
     post = []  # lista di appoggio temporanea per salvare le righe di un post
 
@@ -94,6 +136,11 @@ def read_posts(filtered_lines):
 
 # Prende la lista contenente i post e estrare da questi solo le info utili in formato json
 def parse_post(lines):
+    """
+    Funzione che si occupa di parsare un post e restituirlo in formato json.
+    :param lines:
+    :return:
+    """
     if len(lines) < 4:
         return None  # Skip invalid posts
 
@@ -158,6 +205,13 @@ def parse_post(lines):
 
 
 def read_parse_save(posts_to_save, group_name, client):
+    """
+    Funzione che si occupa di leggere, parsare e salvare i post nel database.
+    :param posts_to_save:
+    :param group_name:
+    :param client:
+    :return:
+    """
     posts_lines = read_posts(posts_to_save)
 
     # Connessione alla collezione dati
