@@ -23,7 +23,7 @@ db = get_db(client)
 target_list = ['dodfpdopofd', 'gghfghtgrg6ghj', 'lololghmèùop987oh']
 # Prendo tutti i target dai documenti presenti in tutte le collezioni del db
 for collection_name in db.list_collection_names():
-    if collection_name != 'users_info':
+    if collection_name != 'users_info'and collection_name != 'target_groups':
         collection = connect_to_mongo_collection(client, collection_name)
         for document in collection.find():
             username_tag = document.get('username_tag')
