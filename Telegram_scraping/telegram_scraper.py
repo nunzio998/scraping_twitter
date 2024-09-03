@@ -22,6 +22,12 @@ client = TelegramClient('telegram_scraper', api_id, api_hash)
 
 
 async def main(m_client, channel_group):
+    """
+    Funzione principale per il recupero dei messaggi da un canale Telegram.
+    :param m_client:
+    :param channel_group:
+    :return:
+    """
     # Avviare il client
     await client.start()
     print("Client avviato")

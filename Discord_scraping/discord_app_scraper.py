@@ -15,6 +15,10 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
+    """
+    Funzione per connettersi al bot di Discord.
+    :return:
+    """
     print(f'Bot connesso come {client.user}')
     guild = discord.utils.get(client.guilds, id=int(GUILD_ID))
     if guild is None:
