@@ -94,7 +94,6 @@ for user in target_list:
     driver.get(f"https://www.X.com/{user}")
 
     # Verifico che l'utente esista, se non esiste passo alla prssima iterazione
-
     try:
         # Attendo caricamento pagina
         wait_user = WebDriverWait(driver, 120)

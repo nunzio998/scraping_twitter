@@ -172,3 +172,32 @@ def beautifulsoup_user_analisys(html_content):
         "birth": birth,
         "website": website
     }
+
+def find_related_user(html_content):
+    related_users = []
+
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    try:
+        # Mi sposto nel tag main dove sono le info che mi interessano
+        soup = soup.main
+
+        soup = soup.find('aside', class_='css-175oi2r')
+
+        user_ul = soup.find('ul', class_='css-175oi2r')
+
+        # Dal tag <ul> trovo tutti i tag <span> che si trovano nei tag <li> che compongono la lista
+        user_list = user_ul.find_all('li',
+                                     class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
+
+        for user in user_list:
+            user_div = user.find('div',
+                                 class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+            related_users.append(user_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text)
+    except AttributeError:
+        print("Utenti correlati non presenti...")
+        return None
+
+    return related_users
+
+
