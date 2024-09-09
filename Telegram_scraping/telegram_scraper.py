@@ -67,7 +67,14 @@ async def main(m_client, channel_group):
     # Stampo i messaggi
     for message in all_messages:
         print(message.to_dict())
-        save_to_mongo(message.to_dict(), collection)
+        message_data = message.to_dict()
+        # Rimuovi i campi indesiderati
+        fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned', 'noforwards', 'invert_media', 'offline', 'from_id', 'from_boosts_applied', 'saved_peer_id', 'fwd_from', 'via_bot_id', 'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period', 'quick_reply_shortcut_id', 'effect', 'factcheck']
+        # TODO: Studio di significatività dei campi da rimuovere più approfondito
+        for field in fields_to_remove:
+            message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
+        print(message_data)
+        save_to_mongo(message_data, collection)
 
 mongo_client = connect_to_mongo()
 
