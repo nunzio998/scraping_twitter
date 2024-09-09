@@ -193,13 +193,13 @@ def parse_post(lines):
     # Ritorno il post in formato json
     return {
         'username': username,
-        'username_tag': username_tag,
-        'data_pubblicazione': data_pubblicazione,
-        'contenuto': contenuto,
-        'commenti': commenti,
-        'repost': repost,
-        'like': like,
-        'visualizzazioni': visualizzazioni,
+        'tag_username': username_tag,
+        'date': data_pubblicazione,
+        'content': contenuto,
+        'comments': commenti,
+        'reposts': repost,
+        'likes': like,
+        'views': visualizzazioni,
         'url': url
     }
 
