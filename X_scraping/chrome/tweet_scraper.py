@@ -106,4 +106,5 @@ for group in target_list:
         f.write(soup.prettify())
 
     analisys_with_beautifulsoup(soup.prettify(), group)
+    #TODO: ristrutturare codice a partire dalla funzione analisys_with_beautifulsoup
 driver.quit()
