@@ -13,7 +13,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 from beautifulsoup_analisys import analisys_with_beautifulsoup
-from X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
+from X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, read_parse_save
 
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")
@@ -25,6 +25,10 @@ client = connect_to_mongo()
 targets_collection = connect_to_mongo_collection(client, "target_groups")
 documents = targets_collection.find()
 target_list = [doc['name'] for doc in documents]
+disconnect_to_mongo(client)
+
+#TODO valutare modifica all'url di ricerca dei tweet e alla modalità di ricerca tramite gruppi target
+
 
 chrome_options = Options()
 
@@ -73,6 +77,7 @@ except NoSuchElementException:
     print("Campo password non trovato..")
 
 for group in target_list:
+    client = connect_to_mongo()
     print(f"{group} in lavorazione..")
 
     keyword1 = random.choice(primary_keywords)
@@ -105,6 +110,11 @@ for group in target_list:
     with open(f'data_results/{group}.html', 'w') as f:
         f.write(soup.prettify())
 
-    analisys_with_beautifulsoup(soup.prettify(), group)
-    #TODO: ristrutturare codice a partire dalla funzione analisys_with_beautifulsoup
+    res = analisys_with_beautifulsoup(soup.prettify(), group)
+
+    # Divido le info in post e le salvo nel database
+    read_parse_save(res, group, client)
+
+    disconnect_to_mongo(client)
+
 driver.quit()
