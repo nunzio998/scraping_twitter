@@ -3,7 +3,7 @@ import time
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.service import Service
@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from beautifulsoup_analisys import analisys_with_beautifulsoup
-from X_scraping.firefox.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection
+from X_scraping.firefox.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, read_parse_save
 
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")
@@ -23,7 +23,9 @@ client = connect_to_mongo()
 targets_collection = connect_to_mongo_collection(client, "target_groups")
 documents = targets_collection.find()
 target_list = [doc['name'] for doc in documents]
+disconnect_to_mongo(client)
 
+#TODO valutare modifica all'url di ricerca dei tweet e alla modalità di ricerca tramite gruppi target
 
 # Geckodriver
 service = Service('driver/geckodriver')
@@ -71,6 +73,8 @@ except NoSuchElementException:
 
 
 for group in target_list:
+    client = connect_to_mongo()
+
     print(f"{group} in lavorazione..")
 
     keyword1 = random.choice(primary_keywords)
@@ -86,13 +90,18 @@ for group in target_list:
     else:
         search_url = f"https://x.com/search?q={group}&src=typed_query"
 
-    driver.get(search_url)
+    try:
+        driver.get(search_url)
 
-    # Attendo caricamento pagina
-    wait_tweets = WebDriverWait(driver, 120)
+        # Attendo caricamento pagina
+        wait_tweets = WebDriverWait(driver, 120)
 
-    # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
-    search_tweets = wait_tweets.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
+        # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
+        search_tweets = wait_tweets.until(EC.visibility_of_element_located(
+            (By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
+    except TimeoutException:
+        print(f"Nessun risultato per {group}..")
+        continue
 
     # Scorri la pagina verso il basso per caricare più tweet
     last_height = driver.execute_script("return document.body.scrollHeight")
@@ -112,7 +121,12 @@ for group in target_list:
     with open(f'data_results/{group}.html', 'w') as f:
         f.write(soup.prettify())
 
-    analisys_with_beautifulsoup(soup.prettify(), group)
+    res = analisys_with_beautifulsoup(soup.prettify(), group)
+
+    # Divido le info in post e le salvo nel database
+    read_parse_save(res, group, client)
+
+    disconnect_to_mongo(client)
     #TODO: ristrutturare codice a partire dalla funzione analisys_with_beautifulsoup
 
 driver.quit()

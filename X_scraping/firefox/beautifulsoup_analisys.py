@@ -5,7 +5,6 @@ from selenium.common.exceptions import NoSuchElementException
 
 
 def analisys_with_beautifulsoup(response_html, group):
-    client = connect_to_mongo()
 
     soup = BeautifulSoup(response_html, 'html.parser')
 
@@ -34,10 +33,7 @@ def analisys_with_beautifulsoup(response_html, group):
     # Filtra le righe vuote
     filtered_lines = [line.strip() for line in lines if line.strip()]
 
-    # Divido le info in post e le salvo nel database
-    read_parse_save(filtered_lines, group, client)
-
-    disconnect_to_mongo(client)
+    return filtered_lines
 
 
 def beautifulsoup_user_analisys(html_content):
