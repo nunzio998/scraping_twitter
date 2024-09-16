@@ -9,6 +9,11 @@ import time
 
 from Discord_scraping.utils.utils import read_json, beautifulsoup_analisys, connect_to_mongo, save_to_mongo, connect_to_mongo_collection, \
     disconnect_to_mongo
+import logging
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 credentials = read_json("utils/credentials.json")
 
@@ -32,7 +37,7 @@ try:
     email_field.send_keys(credentials["email"])
     time.sleep(1)
 except NoSuchElementException:
-    print("Campo email non trovato..")
+    logging.exception("Campo email non trovato..")
 
 try:
     password_field = driver.find_element(By.ID, 'uid_9')
@@ -40,7 +45,7 @@ try:
     password_field.send_keys(Keys.RETURN)
     time.sleep(1)
 except NoSuchElementException:
-    print("Campo password non trovato..")
+    logging.exception("Campo password non trovato..")
 
 # Mi connetto al database
 client = connect_to_mongo()

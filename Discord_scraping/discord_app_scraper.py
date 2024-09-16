@@ -1,4 +1,9 @@
 import discord
+import logging
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 # Le tue credenziali del bot di Discord
 TOKEN = ''
@@ -22,12 +27,12 @@ async def on_ready():
     print(f'Bot connesso come {client.user}')
     guild = discord.utils.get(client.guilds, id=int(GUILD_ID))
     if guild is None:
-        print(f"Non riesco a trovare il server con ID {GUILD_ID}. Assicurati che il bot sia aggiunto al server e abbia i permessi corretti.")
+        logging.warning(f"Non riesco a trovare il server con ID {GUILD_ID}. Assicurati che il bot sia aggiunto al server e abbia i permessi corretti.")
         exit(0)
 
     channel = discord.utils.get(guild.channels, id=int(CHANNEL_ID))
     if channel is None:
-        print(f"Non riesco a trovare il canale con ID {CHANNEL_ID}. Assicurati che il bot abbia i permessi corretti.")
+        logging.warning(f"Non riesco a trovare il canale con ID {CHANNEL_ID}. Assicurati che il bot abbia i permessi corretti.")
         exit(0)
 
     messages = []
@@ -37,6 +42,6 @@ async def on_ready():
     filtered_messages = [message for message in messages if any(keyword.lower() in message.content.lower() for keyword in keywords)]
 
     for message in filtered_messages:
-        print(f'{message.author}: {message.content}')
+        logging.info(f'{message.author}: {message.content}')
 
 client.run(TOKEN)
