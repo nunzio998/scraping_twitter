@@ -1,5 +1,10 @@
 import requests
 from DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
+import logging
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 proxies = {
     'http': 'socks5h://127.0.0.1:9050',
@@ -42,10 +47,8 @@ collection = connect_to_mongo_collection(client, "ahmia_results")
 
 # Stampa dei risultati
 for result in results:
-    # print(f"Title: {result['title']}")
-    print(f"Link: {result['link']}")
-    # print(f"Snippet: {result['snippet']}\n")
-    # print(f"Keywords: {result['search_keywords']}\n")
+    logging.info(f"Link: {result['link']}")
+
     json_result = {
         'title': result['title'],
         'link': result['link'],

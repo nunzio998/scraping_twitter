@@ -1,4 +1,9 @@
 import requests
+import logging
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 # Configurazione della sessione per utilizzare Tor
 session = requests.Session()
@@ -10,6 +15,6 @@ session.proxies = {
 # Test di Connessione
 try:
     response = session.get('http://check.torproject.org')
-    print(response.text)
+    logging.info(response.text)
 except requests.exceptions.RequestException as e:
-    print(f"Errore di connessione: {e}")
+    logging.exception(f"Errore di connessione: {e}")

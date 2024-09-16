@@ -1,6 +1,11 @@
 import json
 import pymongo
 from bs4 import BeautifulSoup
+import logging
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 
 def read_json(path):
@@ -22,9 +27,9 @@ def connect_to_mongo():
     # Provo a connettermi al database
     try:
         client.admin.command('ping')
-        print("Connesso al database: ", client.server_info()["version"])
+        logging.info("Connesso al database: ", client.server_info()["version"])
     except Exception as e:
-        print(e)
+        logging.exception(e)
 
     return client
 
@@ -35,7 +40,7 @@ def disconnect_to_mongo(client):
     :param client:
     :return:
     """
-    print("Disconnesso dal database: ", client.server_info()["version"])
+    logging.info("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
 
 
@@ -52,9 +57,9 @@ def connect_to_mongo_collection(client, collection_name):
     if collection_name not in db.list_collection_names():
         # Se la collezione non esiste, creala
         db.create_collection(collection_name)
-        print("Creata la collezione:", collection_name)
+        logging.info("Creata la collezione:", collection_name)
     else:
-        print("La collezione esiste già:", collection_name)
+        logging.info("La collezione esiste già:", collection_name)
 
     return db.get_collection(collection_name)
 
