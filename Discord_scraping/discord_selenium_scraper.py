@@ -23,7 +23,7 @@ service = Service('driver/geckodriver')
 # Inizializzo driver  Firefox
 driver = webdriver.Firefox(service=service)
 
-# Loggarsi manualmente su Twitter
+# Loggarsi manualmente su Discord
 driver.get('https://discord.com/login')
 
 # Imposto un'attesa esplicita di massimo 60 secondi
