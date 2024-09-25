@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from beautifulsoup_analisys import beautifulsoup_user_analisys
-from utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, connect_to_mongo_collection, get_db
+from utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, connect_to_mongo_collection, get_db, x_login
 
 # Connessione al database
 client = connect_to_mongo()
@@ -61,32 +61,8 @@ search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH
 
 time.sleep(1)
 
-# Cerco i campi nei quali far inserire automaticamente le credenziali
-try:
-    email_field = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')
-    email_field.send_keys(credentials["email"])
-    email_field.send_keys(Keys.RETURN)
-    time.sleep(2)
-except NoSuchElementException:
-    print("Campo email non trovato..")
-
-# Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza
-try:
-    username_field = driver.find_element(By.XPATH,
-                                         '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
-    username_field.send_keys(credentials["username"])
-    username_field.send_keys(Keys.RETURN)
-    time.sleep(2)
-except NoSuchElementException:
-    print("Campo username non trovato..")
-
-try:
-    password_field = driver.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')
-    password_field.send_keys(credentials["password"])
-    password_field.send_keys(Keys.RETURN)
-    time.sleep(2)
-except NoSuchElementException:
-    print("Campo password non trovato..")
+# Effettuo il login a X
+x_login(credentials, driver)
 
 # 2) Eseguo la ricerca degli utenti:
 for user in target_list:
