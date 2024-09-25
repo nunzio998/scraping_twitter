@@ -17,4 +17,4 @@ for collection in collection_list:
     data = data + tuple(data_tmp)
 
 df = pd.DataFrame(data)
-df.to_csv('data_results/tweets.csv', index=False)
+df.to_csv('data_results/data.csv', index=False)
