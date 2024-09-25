@@ -1,8 +1,11 @@
 import json
 import re
+import time
 from datetime import datetime
-
 import pymongo
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 
 interest_groups = ["Killnet", "NoName057(16)", "Lazarus", "DarkHalo", "MustangPanda", "BlackEnergy", "BadMagic",
                    "DarkSide", "LockBit", "DopplePaymer", "RagnarLocker",
@@ -24,6 +27,36 @@ def read_json(path):
 
 
 config_data = read_json('utils/mongo_utils.json')
+
+
+def x_login(credentials_access, driver_access):
+    try:
+        email_field = driver_access.find_element(By.XPATH,
+                                                 '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')
+        email_field.send_keys(credentials_access["email"])
+        email_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+    except NoSuchElementException:
+        print("Campo email non trovato..")
+
+    # Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza
+    try:
+        username_field = driver_access.find_element(By.XPATH,
+                                                    '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
+        username_field.send_keys(credentials_access["username"])
+        username_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+    except NoSuchElementException:
+        print("Campo username non trovato..")
+
+    try:
+        password_field = driver_access.find_element(By.XPATH,
+                                                    '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')
+        password_field.send_keys(credentials_access["password"])
+        password_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+    except NoSuchElementException:
+        print("Campo password non trovato..")
 
 
 # Funzioni MongoDB:
