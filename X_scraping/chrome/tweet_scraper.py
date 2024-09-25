@@ -3,6 +3,7 @@ import time
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -33,7 +34,8 @@ disconnect_to_mongo(client)
 chrome_options = Options()
 
 # Gestore del driver per semplificare la gestione del driver Chrome
-service = Service(ChromeDriverManager().install())
+# N.B: Scaricare chromedriver e cambiare executable_path con il path del driver scaricato
+service = Service(executable_path=credentials['driver_path'])
 
 # Creare un'istanza del browser Chrome con le opzioni
 driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -67,14 +69,28 @@ for group in target_list:
     else:
         search_url = f"https://x.com/search?q={group}&src=typed_query"
 
-    driver.get(search_url)
+    try:
+        driver.get(search_url)
 
-    # Impostare un'attesa esplicita di massimo 60 secondi
-    wait_tweets = WebDriverWait(driver, 120)
+        # Attendo caricamento pagina
+        wait_tweets = WebDriverWait(driver, 120)
 
-    # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
-    # Ad esempio, aspettiamo che un campo di ricerca con ID 'search-input' sia visibile
-    search_tweets = wait_tweets.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
+        # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
+        search_tweets = wait_tweets.until(EC.visibility_of_element_located(
+            (By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
+    except TimeoutException:
+        print(f"Nessun risultato per {group}..")
+        continue
+
+    # Scorri la pagina verso il basso per caricare più tweet
+    last_height = driver.execute_script("return document.body.scrollHeight")
+    while True:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)  # Attendi il caricamento della pagina
+        new_height = driver.execute_script("return document.body.scrollHeight")
+        if new_height == last_height:
+            break
+        last_height = new_height
 
     # Estraggo HTML pagina con BeautifulSoup e lo stampo
     html_content = driver.page_source
