@@ -1,14 +1,16 @@
 import time
+
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
 from beautifulsoup_analisys import find_related_user, beautifulsoup_user_analisys
-from utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, connect_to_mongo_collection, x_login
+from utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
+    connect_to_mongo_collection, x_login
 
 # Connessione al database
 client = connect_to_mongo()

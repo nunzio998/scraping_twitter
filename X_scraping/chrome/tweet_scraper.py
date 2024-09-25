@@ -4,17 +4,15 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
+from X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, \
+    connect_to_mongo_collection, disconnect_to_mongo, read_parse_save, x_login
 from beautifulsoup_analisys import analisys_with_beautifulsoup
-from X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, read_parse_save, x_login
 
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")
