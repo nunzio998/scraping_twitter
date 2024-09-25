@@ -2,10 +2,11 @@ import json
 import re
 import time
 from datetime import datetime
+
 import pymongo
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 
 interest_groups = ["Killnet", "NoName057(16)", "Lazarus", "DarkHalo", "MustangPanda", "BlackEnergy", "BadMagic",
                    "DarkSide", "LockBit", "DopplePaymer", "RagnarLocker",
