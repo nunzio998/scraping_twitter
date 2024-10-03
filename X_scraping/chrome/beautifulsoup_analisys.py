@@ -21,12 +21,6 @@ def analisys_with_beautifulsoup(response_html, group):
     # Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)
     results = soup.find_all("div", class_="css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu")
 
-    # a partire da quello che ottengo da results, cerco i tag <a> che contengono l'url del tweet
-
-    # cerco i tag <a> che contengono l'url del tweet
-    urls = soup.find_all("a",
-                         class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
-
     # estraggo il testo dai div ottenuti e lo salvo in un file
     i = 0
     lines = []
@@ -35,13 +29,39 @@ def analisys_with_beautifulsoup(response_html, group):
         # aggiungo la lista temporanea alla lista delle righe
         for line in tmp_list:
             lines.append(line)
-        lines.append(f"https://x.com{urls[i]['href']}")  # aggiungo l'url del tweet
-        if i == len(urls):
-            break
+        url = result.find("a",
+                          class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
+        lines.append(f"https://x.com{url['href']}")  # aggiungo l'url del tweet
+        # lines.append(f"https://x.com{urls[i]['href']}")  # aggiungo l'url del tweet
+
+        # Cerco presenza d'immagini e/o video nei tweet
+        try:
+            # Trovo il div che contiene i media del post
+            div_imgs = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
+            # Trovo tutte le immagini presenti nel div
+            imgs = div_imgs.find_all("img", class_="css-9pa8cd")
+            for img in imgs:
+                lines.append(img['src'])
+                print(f"IMMAGINE: {img['src']}")
+        except AttributeError:
+            print("Immagini non trovate...")
+
+        try:
+            # Trovo il div che contiene i media del post
+            div_videos = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
+            # Trovo tutti i video presenti nel div
+            videos = div_videos.find_all("source", attrs={'type': 'video/mp4'})
+            for video in videos:
+                lines.append(video['src'])
+                print(f"VIDEO: {video['src']}")
+        except AttributeError:
+            print("Video non trovati...")
+
         i += 1
 
     # Filtra le righe vuote
     filtered_lines = [line.strip() for line in lines if line.strip()]
+    print(filtered_lines)
 
     return filtered_lines
 

@@ -221,24 +221,39 @@ def parse_post(lines):
         like = None
         visualizzazioni = None
 
-    # L'ultimo elemento sarà l'url del post, altrimenti scarto il post.
-    if lines[-1].strip().startswith('https://'):
-        url = lines[-1].strip()
-    else:
-        return None
+        # Creo una lista di tutti le linee che iniziano con la stringa 'https://' o 'http://'
+        links = [line.strip() for line in lines if
+                 line.strip().startswith('https://') or line.strip().startswith('http://') or line.strip().startswith(
+                     'blob:')]
 
-    # Ritorno il post in formato json
-    return {
-        'username': username,
-        'tag_username': username_tag,
-        'date': data_pubblicazione,
-        'content': contenuto,
-        'comments': commenti,
-        'reposts': repost,
-        'likes': like,
-        'views': visualizzazioni,
-        'url': url
-    }
+        # Controllo che la lista non sia vuota, se lo è scarto il post
+        if not links:
+            return None
+
+        # Prendo il primo link della lista, che sarà l'url del post
+        url = links[0]
+
+        # Ora, dal secondo elemento in poi, tutti gli elementi della lista che non iniziano con la stringa 'blob:' sono i link delle immagini
+        # Questo perché i link che iniziano con 'blob:' sono relativi ai video.
+        images = [link for link in links[1:] if not link.startswith('blob:')]
+
+        # I link che invece iniziano con 'blob:' sono i link dei video. Vengono quindi aggiunti alla lista dei video, rimuovendo la stringa 'blob:'.
+        videos = [link.replace('blob:', '') for link in links[1:] if link.startswith('blob:')]
+
+        # Ritorno il post in formato json
+        return {
+            'username': username,
+            'tag_username': username_tag,
+            'date': data_pubblicazione,
+            'content': contenuto,
+            'comments': commenti,
+            'reposts': repost,
+            'likes': like,
+            'views': visualizzazioni,
+            'url': url,
+            'images': images,
+            'videos': videos
+        }
 
 
 def read_parse_save(posts_to_save, group_name, client):
