@@ -94,7 +94,7 @@ for group in target_list:
     html_content = driver.page_source
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    res = analisys_with_beautifulsoup(soup.prettify(), group)
+    res = analisys_with_beautifulsoup(soup.prettify())
 
     # Divido le info in post e le salvo nel database
     read_parse_save(res, group, client)

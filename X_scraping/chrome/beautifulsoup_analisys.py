@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from X_scraping.chrome.utils.utils import connect_to_mongo
 
 
-def analisys_with_beautifulsoup(response_html, group):
+def analisys_with_beautifulsoup(response_html):
     """
     Funzione che consente di analizzare il contenuto html di una pagina web tramite la libreria BeautifulSoup, al fine di estrarre
     le info relative ai tweet e salvarle nel database.
@@ -11,7 +11,6 @@ def analisys_with_beautifulsoup(response_html, group):
     :param group:
     :return:
     """
-    client = connect_to_mongo()
 
     soup = BeautifulSoup(response_html, 'html.parser')
 

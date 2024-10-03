@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
 
-def analisys_with_beautifulsoup(response_html, group):
+def analisys_with_beautifulsoup(response_html):
     soup = BeautifulSoup(response_html, 'html.parser')
 
     # Mi sposto sul body lasciando stare il resto dell'html
