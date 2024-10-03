@@ -161,7 +161,7 @@ def read_posts(filtered_lines):
             posts.append(post)
             break  # esco dal ciclo for
 
-        # controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.
+        # Controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.
         # se cosi fosse il carattere successivo sarà un tag_username e quindi inizierà con '@'. In tal caso non aggiungo a post e vado avanti
         if (not filtered_lines[i + 1].strip()[0] == '@') or i == 0:
             post.append(stripped_line)
@@ -221,11 +221,24 @@ def parse_post(lines):
         like = None
         visualizzazioni = None
 
-    # L'ultimo elemento sarà l'url del post, altrimenti scarto il post.
-    if lines[-1].strip().startswith('https://'):
-        url = lines[-1].strip()
-    else:
+    # Creo una lista di tutti le linee che iniziano con la stringa 'https://' o 'http://'
+    links = [line.strip() for line in lines if line.strip().startswith('https://') or line.strip().startswith('http://') or line.strip().startswith('blob:')]
+
+
+    # Controllo che la lista non sia vuota, se lo è scarto il post
+    if not links:
         return None
+
+    # Prendo il primo link della lista, che sarà l'url del post
+    url = links[0]
+
+    # Ora, dal secondo elemento in poi, tutti gli elementi della lista che non iniziano con la stringa 'blob:' sono i link delle immagini
+    # Questo perché i link che iniziano con 'blob:' sono relativi ai video.
+    images = [link for link in links[1:] if not link.startswith('blob:')]
+
+    # I link che invece iniziano con 'blob:' sono i link dei video. Vengono quindi aggiunti alla lista dei video, rimuovendo la stringa 'blob:'.
+    videos = [link.replace('blob:', '') for link in links[1:] if link.startswith('blob:')]
+
 
     # Ritorno il post in formato json
     return {
@@ -235,9 +248,11 @@ def parse_post(lines):
         'content': contenuto,
         'comments': commenti,
         'reposts': repost,
-        'likea': like,
+        'likes': like,
         'views': visualizzazioni,
-        'url': url
+        'url': url,
+        'images': images,
+        'videos': videos
     }
 
 
@@ -258,6 +273,6 @@ def read_parse_save(posts_to_save, group_name, client):
     for post_lines in posts_lines:
         parsed_post = parse_post(post_lines)
 
-        # Salvo il post parsato nel database
+        # Salvo il post parsato nel database, se non è None
         if parsed_post:
             save_to_mongo(parsed_post, collection)

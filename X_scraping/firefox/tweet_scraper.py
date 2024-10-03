@@ -16,7 +16,7 @@ from beautifulsoup_analisys import analisys_with_beautifulsoup
 # Leggo file con credenziali
 credentials = read_json("utils/credentials.json")
 
-l = 0 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
+l = -1 # Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.
 
 # Connessione al DB per estrapolare la lista dei target sui quali far partire la ricerca
 client = connect_to_mongo()
@@ -94,16 +94,13 @@ for group in target_list:
     html_content = driver.page_source
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # Salvo la risposta in un file HTML
-    with open(f'data_results/{group}.html', 'w') as f:
-        f.write(soup.prettify())
-
     res = analisys_with_beautifulsoup(soup.prettify(), group)
 
     # Divido le info in post e le salvo nel database
     read_parse_save(res, group, client)
 
     disconnect_to_mongo(client)
+
     #TODO: ristrutturare codice a partire dalla funzione analisys_with_beautifulsoup
 
 driver.quit()

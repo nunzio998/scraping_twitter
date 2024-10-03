@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 
 
 def analisys_with_beautifulsoup(response_html, group):
-
     soup = BeautifulSoup(response_html, 'html.parser')
 
     # Mi sposto sul body lasciando stare il resto dell'html
@@ -10,11 +9,6 @@ def analisys_with_beautifulsoup(response_html, group):
 
     # Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)
     results = soup.find_all("div", class_="css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu")
-
-    # a partire da quello che ottengo da results, cerco i tag <a> che contengono l'url del tweet
-
-    # cerco i tag <a> che contengono l'url del tweet
-    urls = soup.find_all("a", class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
 
     # estraggo il testo dai div ottenuti e lo salvo in un file
     i = 0
@@ -24,11 +18,38 @@ def analisys_with_beautifulsoup(response_html, group):
         # aggiungo la lista temporanea alla lista delle righe
         for line in tmp_list:
             lines.append(line)
-        lines.append(f"https://x.com{urls[i]['href']}")  # aggiungo l'url del tweet
+        url = result.find("a", class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
+        lines.append(f"https://x.com{url['href']}")  # aggiungo l'url del tweet
+        # lines.append(f"https://x.com{urls[i]['href']}")  # aggiungo l'url del tweet
+
+        # Cerco presenza d'immagini e/o video nei tweet
+        try:
+            # Trovo il div che contiene i media del post
+            div_imgs = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
+            # Trovo tutte le immagini presenti nel div
+            imgs = div_imgs.find_all("img", class_="css-9pa8cd")
+            for img in imgs:
+                lines.append(img['src'])
+                print(f"IMMAGINE: {img['src']}")
+        except AttributeError:
+            print("Immagini non trovate...")
+
+        try:
+            # Trovo il div che contiene i media del post
+            div_videos = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
+            # Trovo tutti i video presenti nel div
+            videos = div_videos.find_all("source", attrs={'type': 'video/mp4'})
+            for video in videos:
+                lines.append(video['src'])
+                print(f"VIDEO: {video['src']}")
+        except AttributeError:
+            print("Video non trovati...")
+
         i += 1
 
     # Filtra le righe vuote
     filtered_lines = [line.strip() for line in lines if line.strip()]
+    print(filtered_lines)
 
     return filtered_lines
 
@@ -65,7 +86,8 @@ def beautifulsoup_user_analisys(html_content):
     try:
         username_div = soup.find('div', class_='css-175oi2r r-xoduu5 r-1awozwy r-18u37iz r-dnmrzs')
         if username_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx'):
-            username_div_span = username_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx')
+            username_div_span = username_div.find('span',
+                                                  class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx')
             verified_path_tag = username_div_span.find('path')
             if verified_path_tag:
                 if verified_path_tag['d'] == verified_user1 or verified_path_tag['d'] == verified_user2 or \
@@ -77,7 +99,8 @@ def beautifulsoup_user_analisys(html_content):
 
     # Trovo il numero di post
     try:
-        num_post = soup.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41').text.split(' ')[0]
+        num_post = soup.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41').text.split(
+            ' ')[0]
     except AttributeError:
         num_post = None
         print("Numero di post non trovato...")
@@ -107,8 +130,7 @@ def beautifulsoup_user_analisys(html_content):
     # Cerco elemento lavoro
     job = None
     try:
-        el_span = soup.find('span',
-                            class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21')
+        el_span = soup.find('span',  class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21')
 
         if el_span.find('path')['d'] == job_path:
             job = el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
@@ -166,6 +188,7 @@ def beautifulsoup_user_analisys(html_content):
         "website": website
     }
 
+
 def find_related_user(html_content):
     related_users = []
 
@@ -180,17 +203,13 @@ def find_related_user(html_content):
         user_ul = soup.find('ul', class_='css-175oi2r')
 
         # Dal tag <ul> trovo tutti i tag <span> che si trovano nei tag <li> che compongono la lista
-        user_list = user_ul.find_all('li',
-                                     class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
+        user_list = user_ul.find_all('li', class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
 
         for user in user_list:
-            user_div = user.find('div',
-                                 class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+            user_div = user.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
             related_users.append(user_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text)
     except AttributeError:
         print("Utenti correlati non presenti...")
         return None
 
     return related_users
-
-
