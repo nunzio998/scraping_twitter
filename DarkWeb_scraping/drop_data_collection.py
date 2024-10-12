@@ -1,3 +1,8 @@
+"""
+Questo script permette di eliminare tutti i documenti presenti nelle collezioni del database.
+
+Autore: Francesco Pinsone
+"""
 from DarkWeb_scraping.utils.utils import *
 import logging
 

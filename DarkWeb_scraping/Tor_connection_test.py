@@ -1,3 +1,8 @@
+"""
+Questo script permette di effettuare un test di connessione al servizio Tor.
+
+Autore: Francesco Pinsone
+"""
 import requests
 import logging
 

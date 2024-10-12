@@ -1,3 +1,9 @@
+"""
+Questo script si occupa di effettuare scraping su Ahmia, uno dei motori di ricerca per il dark web, e di estrarre i risultati ottenuti. In questo caso l'html che viene estratto durante lo scraping
+viene parsato avvalendosi di un LLM (Large Language Model) per estrarre informazioni utili dai risultati ottenuti.
+
+Autore: Francesco Pinsone
+"""
 import requests
 from DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
 import logging
@@ -27,9 +33,10 @@ session.proxies.update(proxies)
 # Funzione per cercare in Ahmia
 def search_ahmia(query):
     """
-    Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web.
-    :param query:
-    :return:
+    Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
+    lista di dizionari, dove ogni dizionario rappresenta un risultato.
+    :param query: stringa, query di ricerca
+    :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
     """
     # URL di Ahmia versione onion
     url = f'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/search/?q={query}'
