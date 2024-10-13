@@ -10,23 +10,6 @@ from bs4 import BeautifulSoup
 from langchain_ollama import OllamaLLM
 from langchain.prompts import PromptTemplate
 
-model = OllamaLLM(model='llama3.1')
-
-
-# Configuro il logger
-logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
-                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
-
-proxies = {
-    'http': 'socks5h://127.0.0.1:9050',
-    'https': 'socks5h://127.0.0.1:9050'
-}
-
-session = requests.Session()
-session.proxies.update(proxies)
-
-# db_client = connect_to_mongo()
-
 
 # Funzione per cercare in Ahmia
 def search_ahmia(query):
@@ -55,49 +38,59 @@ def search_ahmia(query):
     return res
 
 
-# Esempio di ricerca
-query = 'hacker attack energy infrastructure'
-results = search_ahmia(query)
+if __name__ == "__main__":
+    model = OllamaLLM(model='llama3.1')
 
-print(results)
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
+    proxies = {
+        'http': 'socks5h://127.0.0.1:9050',
+        'https': 'socks5h://127.0.0.1:9050'
+    }
 
-# Definisco il prompt per l'estrazione dei dati
-prompt_template = PromptTemplate(
-    input_variables=["text"],
-    template="Sto facendo un’analisi accademica sullo stato della sicurezza online. Puoi estrarre informazioni da questo testo? Estrai una lista di oggetti json in cui ognuno di essi contiene title, link e snippet: {text}"
-)
-# TODO: Trovare template per produrre risultati utili
+    session = requests.Session()
+    session.proxies.update(proxies)
 
-# Nuovo approccio utilizzando `|` per eseguire la catena
-extracted_data = prompt_template | model
+    # db_client = connect_to_mongo()
 
-# Eseguo il modello sul testo
-output = extracted_data.invoke({"text": results})
+    # Esempio di ricerca
+    query = 'hacker attack energy infrastructure'
+    results = search_ahmia(query)
 
-# Stampa dei risultati
-print(output)
+    print(results)
 
+    # Definisco il prompt per l'estrazione dei dati
+    prompt_template = PromptTemplate(
+        input_variables=["text"],
+        template="Sto facendo un’analisi accademica sullo stato della sicurezza online. Puoi estrarre informazioni da questo testo? Estrai una lista di oggetti json in cui ognuno di essi contiene title, link e snippet: {text}"
+    )
+    # TODO: Trovare template per produrre risultati utili
 
+    # Nuovo approccio utilizzando `|` per eseguire la catena
+    extracted_data = prompt_template | model
 
+    # Eseguo il modello sul testo
+    output = extracted_data.invoke({"text": results})
 
+    # Stampa dei risultati
+    print(output)
 
+    exit(24)
 
+    # collection = connect_to_mongo_collection(db_client, "ahmia_results")
+    #
+    # # Stampa dei risultati
+    # for result in results:
+    #     logging.info(f"Link: {result['link']}")
+    #
+    #     json_result = {
+    #         'title': result['title'],
+    #         'link': result['link'],
+    #         'snippet': result['snippet'],
+    #         'search_keywords': result['search_keywords']
+    #     }
+    #     save_to_mongo(json_result, collection)
 
-exit(24)
-
-# collection = connect_to_mongo_collection(db_client, "ahmia_results")
-#
-# # Stampa dei risultati
-# for result in results:
-#     logging.info(f"Link: {result['link']}")
-#
-#     json_result = {
-#         'title': result['title'],
-#         'link': result['link'],
-#         'snippet': result['snippet'],
-#         'search_keywords': result['search_keywords']
-#     }
-#     save_to_mongo(json_result, collection)
-
-# disconnect_to_mongo(db_client)
+    # disconnect_to_mongo(db_client)

@@ -10,20 +10,6 @@ import requests
 from src.DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
 import logging
 
-# Configuro il logger
-logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
-                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
-
-proxies = {
-    'http': 'socks5h://127.0.0.1:9050',
-    'https': 'socks5h://127.0.0.1:9050'
-}
-
-session = requests.Session()
-session.proxies.update(proxies)
-
-client = connect_to_mongo()
-
 
 # Funzione per cercare in Ahmia
 def search_ahmia(query):
@@ -48,22 +34,37 @@ def search_ahmia(query):
     return res
 
 
-# Esempio di ricerca
-query = 'hacker attack energy infrastructure'
-results = search_ahmia(query)
+if __name__ == "__main__":
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
-collection = connect_to_mongo_collection(client, "ahmia_results")
-
-# Stampa dei risultati
-for result in results:
-    logging.info(f"Link: {result['link']}")
-
-    json_result = {
-        'title': result['title'],
-        'link': result['link'],
-        'snippet': result['snippet'],
-        'search_keywords': result['search_keywords']
+    proxies = {
+        'http': 'socks5h://127.0.0.1:9050',
+        'https': 'socks5h://127.0.0.1:9050'
     }
-    save_to_mongo(json_result, collection)
 
-disconnect_to_mongo(client)
+    session = requests.Session()
+    session.proxies.update(proxies)
+
+    client = connect_to_mongo()
+
+    # Esempio di ricerca
+    query = 'hacker attack energy infrastructure'
+    results = search_ahmia(query)
+
+    collection = connect_to_mongo_collection(client, "ahmia_results")
+
+    # Stampa dei risultati
+    for result in results:
+        logging.info(f"Link: {result['link']}")
+
+        json_result = {
+            'title': result['title'],
+            'link': result['link'],
+            'snippet': result['snippet'],
+            'search_keywords': result['search_keywords']
+        }
+        save_to_mongo(json_result, collection)
+
+    disconnect_to_mongo(client)
