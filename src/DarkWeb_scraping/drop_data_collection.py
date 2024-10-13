@@ -6,7 +6,12 @@ Autore: Francesco Pinsone
 from src.DarkWeb_scraping.utils.utils import *
 import logging
 
-if __name__ == "__main__":
+
+def drop_data():
+    """
+    Funzione per eliminare tutti i documenti presenti nelle collezioni del database.\n
+    :return: None
+    """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
@@ -23,3 +28,7 @@ if __name__ == "__main__":
         logging.info(f"Eliminati {result.deleted_count} documenti per la collection {collection}")
 
     disconnect_to_mongo(client)
+
+
+if __name__ == "__main__":
+    drop_data()

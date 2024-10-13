@@ -6,7 +6,12 @@ Autore: Francesco Pinsone
 import requests
 import logging
 
-if __name__ == "__main__":
+
+def test_connection():
+    """
+    Funzione per effettuare un test di connessione al servizio Tor.\n
+    :return: None
+    """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
@@ -24,3 +29,7 @@ if __name__ == "__main__":
         logging.info(response.text)
     except requests.exceptions.RequestException as e:
         logging.exception(f"Errore di connessione: {e}")
+
+
+if __name__ == "__main__":
+    test_connection()

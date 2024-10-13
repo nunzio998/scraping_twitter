@@ -15,8 +15,8 @@ from langchain.prompts import PromptTemplate
 def search_ahmia(query):
     """
     Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
-    lista di dizionari, dove ogni dizionario rappresenta un risultato.
-    :param query: stringa, query di ricerca
+    lista di dizionari, dove ogni dizionario rappresenta un risultato.\n
+    :param query: stringa, query di ricerca\n
     :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
     """
     # URL di Ahmia versione onion

@@ -7,7 +7,12 @@ import pandas as pd
 
 from src.DarkWeb_scraping.utils.utils import *
 
-if __name__ == "__main__":
+
+def export_csv():
+    """
+    Funzione per esportare i dati presenti nel database in un file csv.\n
+    :return: None
+    """
     # Mi connetto al database
     client = connect_to_mongo()
 
@@ -24,3 +29,7 @@ if __name__ == "__main__":
 
     df = pd.DataFrame(data)
     df.to_csv('data_results/data.csv', index=False)
+
+
+if __name__ == "__main__":
+    export_csv()
