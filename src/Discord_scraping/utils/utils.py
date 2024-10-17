@@ -1,3 +1,13 @@
+"""
+Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
+Alcuni esempi sono:
+- Gestione interazioni con MongoDB
+- Parsing dei dati estratti
+- Procedure di login
+
+Autore: Francesco Pinsone
+"""
+
 import json
 import re
 import time

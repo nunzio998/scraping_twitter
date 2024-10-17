@@ -1,9 +1,8 @@
 """
 Questo script ha il compito di fare scraping sulla versione web di Discord utilizzando quindi la libreria Python
-Selenium. I contenuti estratti vengono poi sottoposti ad un processo di parsing tramite l'utilizzo di BeautifulSoup
- ed infine salvati su db.\n
+Selenium. I contenuti estratti vengono poi sottoposti ad un processo di parsing tramite l'utilizzo di BeautifulSoup ed infine salvati su db.\n
 
-Author: Francesco Pinsone.
+Autore: Francesco Pinsone.
 """
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys

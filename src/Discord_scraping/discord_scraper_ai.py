@@ -3,7 +3,7 @@ Questo script ha il compito di fare scraping sulla versione web di Discord utili
 Selenium. Inoltre avvalendosi di un LLM (Large Language Model) è in grado di effettuare il parsing di una pagina HTML
 in modo automatico ed efficace, senza quindi affidarsi esclusivamente all'utilizzo di BeautifulSoup.\n
 
-Author: Francesco Pinsone.
+Autore: Francesco Pinsone.
 """
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
