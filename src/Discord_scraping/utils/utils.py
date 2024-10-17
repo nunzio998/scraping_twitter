@@ -14,22 +14,22 @@ logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
 
 def read_json(path):
     """
-    Funzione per leggere un file JSON.
-    :param path:
-    :return:
+    Funzione per la lettura di file JSON.\n
+    :param path: percorso del file JSON\n
+    :return: dict, contenuto del file JSON
     """
     with open(path, 'r') as file:
         return json.load(file)
 
 
-config_data = read_json('utils/credentials.json')
+config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi Vigimare/python_workspace/src/Discord_scraping/utils/credentials.json')
 
 
 # Funzioni MongoDB:
 def connect_to_mongo():
     """
-    Funzione per connettersi al database.
-    :return:
+    Funzione che consente di connettersi al database MongoDB.\n
+    :return: client, oggetto che rappresenta la connessione al database
     """
     connection_string = config_data['connection_string']
     client = pymongo.MongoClient(connection_string)
@@ -45,9 +45,9 @@ def connect_to_mongo():
 
 def disconnect_to_mongo(client):
     """
-    Funzione per disconnettersi dal database.
-    :param client:
-    :return:
+    Funzione che consente di disconnettersi dal database MongoDB.\n
+    :param client: oggetto che rappresenta la connessione al database\n
+    :return: None
     """
     logging.info("Disconnesso dal database: " + client.server_info()["version"])
     client.close()
@@ -55,10 +55,10 @@ def disconnect_to_mongo(client):
 
 def connect_to_mongo_collection(client, collection_name):
     """
-    Funzione per connettersi al database e alla collezione.
-    :param client:
-    :param collection_name:
-    :return:
+    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n
+    :param client: oggetto che rappresenta la connessione al database\n
+    :param collection_name: stringa, nome della collezione\n
+    :return: collection, oggetto che rappresenta la collezione
     """
     db = client.get_database(config_data['database'])
 
@@ -75,20 +75,22 @@ def connect_to_mongo_collection(client, collection_name):
 
 def save_to_mongo(data, collection):
     """
-    Funzione per salvare i dati nel database.
-    :param data:
-    :param collection:
-    :return:
+    Funzione per il salvataggio di dati nel database MongoDB.\n
+    :param data: dict, dati da salvare\n
+    :param collection: oggetto che rappresenta la collezione\n
+    :return: None
     """
     collection.insert_one(data)
 
 
 def beautifulsoup_analisys(driver, scroll_times):
     """
-    Funzione per estrarre i messaggi da Discord.
-    :param driver:
-    :param scroll_times:
-    :return:
+    Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.\n
+    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l'html della pagina.\n
+    :param scroll_times: numero di esecuzioni di scroll up della chat per caricare più messaggi.\n
+    :return: list: lista dei messaggi.\n
+            str: nome del server.\n
+            str: nome del canale.
     """
     all_messages = []
 
@@ -128,10 +130,10 @@ def beautifulsoup_analisys(driver, scroll_times):
 # Funzione per scorrere verso l'alto e caricare più messaggi
 def scroll_up(driver, times):
     """
-    Funzione per scorrere verso l'alto e caricare più messaggi.
-    :param driver:
-    :param times:
-    :return:
+    Funzione per scorrere verso l'alto e caricare più messaggi.\n
+    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l'html della pagina.\n
+    :param times: numero di esecuzioni di scroll up della chat per caricare più messaggi.\n
+    :return: None
     """
     for _ in range(times):
         page = driver.find_element(By.TAG_NAME, 'html')
