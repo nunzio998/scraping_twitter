@@ -1,8 +1,8 @@
 """
 Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:
-- Gestione interazioni con MongoDB
-- Parsing dei dati estratti
+Alcuni esempi sono:\n
+- Gestione interazioni con MongoDB\n
+- Parsing dei dati estratti\n
 - Procedure di login
 
 Autore: Francesco Pinsone
