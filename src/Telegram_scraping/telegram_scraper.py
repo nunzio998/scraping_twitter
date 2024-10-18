@@ -1,29 +1,41 @@
+"""
+Questo script ha il compito di effettuare lo scraping di dati da Telegram. Tale obbiettivo viene perseguito tramite
+l'apposita libreria Python Telegram, 'telethon'. Questa permette all'utente di utilizzare le api della piattaforma e di
+avere quindi accesso ai contenuti dei canali ai quali l'utente è iscritto. In questa modalità, quindi, i dati
+vengono facilmente estratti, trattati e infine salvati su un apposito DB.\n
+
+Autore: Francesco Pinsone
+"""
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 
 from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
 
-# Le tue credenziali API
+# # credenziali API
+#
+# credentials = read_json("utils/credentials.json")
+#
+# api_id = credentials["api_id"]
+# api_hash = credentials["api_hash"]
+# phone = credentials["phone"]
+#
+# # Nome del canale da cui fare scraping
+# channels_username = ['MinisteroSalute', 'VoodooHardware']
+#
+# # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
+# keywords = ['salute', 'sanità', 'hardware']
+#
+# # Creare il client
+# client = TelegramClient('telegram_scraper', api_id, api_hash)
 
-credentials = read_json("utils/credentials.json")
 
-api_id = credentials["api_id"]
-api_hash = credentials["api_hash"]
-phone = credentials["phone"]
-
-# Nome del canale da cui fare scraping
-channels_username = ['MinisteroSalute', 'VoodooHardware']
-
-# Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
-keywords = ['salute', 'sanità', 'hardware']
-
-# Creare il client
-client = TelegramClient('telegram_scraper', api_id, api_hash)
-
-
-async def main(m_client, channel_group):
+async def telegram_scraper(m_client, channel_group):
     """
-    Funzione principale per il recupero dei messaggi da un canale Telegram.
+    Funzione principale per il recupero dei messaggi da un canale Telegram.\n
+    Una volta avviato il client Telegram viene acquisita una cronologia dei messaggi del canale d'interesse.
+    Tali messaggi vengono poi filtrati tramite l'utilizzo di keywords che possono variare di volta in volta in base
+    alla ricerca. Viene poi effettuata una pulizia dei dati filtrati per selezionare i campi che contengono
+    maggior contenuto informativo. Infine i dati vengono salvati su un apposito DB.\n
     :param m_client:
     :param channel_group:
     :return:
@@ -78,8 +90,32 @@ async def main(m_client, channel_group):
 
 mongo_client = connect_to_mongo()
 
-with client:
-    for channel in channels_username:
-        client.loop.run_until_complete(main(mongo_client, channel))
+# with client:
+#     for channel in channels_username:
+#         client.loop.run_until_complete(telegram_scraper(mongo_client, channel))
+#
+# disconnect_to_mongo(mongo_client)
 
-disconnect_to_mongo(mongo_client)
+if __name__ == "__main__":
+    # credenziali API
+
+    credentials = read_json("utils/credentials.json")
+
+    api_id = credentials["api_id"]
+    api_hash = credentials["api_hash"]
+    phone = credentials["phone"]
+
+    # Nome del canale da cui fare scraping
+    channels_username = ['MinisteroSalute', 'VoodooHardware']
+
+    # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
+    keywords = ['salute', 'sanità', 'hardware']
+
+    # Creare il client
+    client = TelegramClient('telegram_scraper', api_id, api_hash)
+
+    mongo_client = connect_to_mongo()
+
+    with client:
+        for channel in channels_username:
+            client.loop.run_until_complete(telegram_scraper(mongo_client, channel))

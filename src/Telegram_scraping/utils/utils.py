@@ -1,3 +1,12 @@
+"""
+Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
+Alcuni esempi sono:\n
+- Gestione interazioni con MongoDB\n
+- Parsing dei dati estratti\n
+- Procedure di login
+
+Autore: Francesco Pinsone
+"""
 import json
 import pymongo
 import logging
@@ -6,11 +15,12 @@ import logging
 logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
+
 def read_json(path):
     """
-    Funzione per leggere un file JSON.
-    :param path:
-    :return:
+    Funzione per la lettura di file JSON.\n
+    :param path: percorso del file JSON\n
+    :return: dict, contenuto del file JSON
     """
     with open(path, 'r') as file:
         return json.load(file)
@@ -22,8 +32,8 @@ config_data = read_json('utils/credentials.json')
 # Funzioni MongoDB:
 def connect_to_mongo():
     """
-    Funzione per connettersi al database.
-    :return:
+    Funzione che consente di connettersi al database MongoDB.\n
+    :return: client, oggetto che rappresenta la connessione al database
     """
     connection_string = config_data['connection_string']
     client = pymongo.MongoClient(connection_string)
@@ -39,9 +49,9 @@ def connect_to_mongo():
 
 def disconnect_to_mongo(client):
     """
-    Funzione per disconnettersi dal database.
-    :param client:
-    :return:
+    Funzione che consente di disconnettersi dal database MongoDB.\n
+    :param client: oggetto che rappresenta la connessione al database\n
+    :return: None
     """
     logging.info("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
@@ -49,10 +59,10 @@ def disconnect_to_mongo(client):
 
 def connect_to_mongo_collection(client, collection_name):
     """
-    Funzione per connettersi al database e alla collezione.
-    :param client:
-    :param collection_name:
-    :return:
+    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n
+    :param client: oggetto che rappresenta la connessione al database\n
+    :param collection_name: stringa, nome della collezione\n
+    :return: collection, oggetto che rappresenta la collezione
     """
     db = client.get_database(config_data['database'])
 
@@ -69,10 +79,10 @@ def connect_to_mongo_collection(client, collection_name):
 
 def save_to_mongo(data, collection):
     """
-    Funzione per salvare i dati nel database.
-    :param data:
-    :param collection:
-    :return:
+    Funzione per il salvataggio di dati nel database MongoDB.\n
+    :param data: dict, dati da salvare\n
+    :param collection: oggetto che rappresenta la collezione\n
+    :return: None
     """
     collection.insert_one(data)
     logging.info("Salvato nel database: ", data['id'])
