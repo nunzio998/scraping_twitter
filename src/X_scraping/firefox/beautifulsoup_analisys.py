@@ -2,6 +2,14 @@ from bs4 import BeautifulSoup
 
 
 def analisys_with_beautifulsoup(response_html):
+    """
+    Funzione che consente di analizzare il contenuto html di una pagina web tramite la libreria BeautifulSoup, al fine di estrarre
+    le info relative ai tweet e salvarle nel database.
+    :param response_html:
+    :param group:
+    :return:
+    """
+
     soup = BeautifulSoup(response_html, 'html.parser')
 
     # Mi sposto sul body lasciando stare il resto dell'html
@@ -55,6 +63,12 @@ def analisys_with_beautifulsoup(response_html):
 
 
 def beautifulsoup_user_analisys(html_content):
+    """
+    Funzione che consente di analizzare il contenuto html di una pagina web tramite la libreria BeautifulSoup, al fine di estrarre
+    le info relative agli utenti X e salvarle nel database.
+    :param html_content:
+    :return:
+    """
     # Salvo gli attributi 'd' dei tag 'path' che definiscono le icone che identificano le info dell'utente nel profilo. Uso quindi le icone per riconoscere i vari elementi e distinguerli
     job_path = 'M19.5 6H17V4.5C17 3.12 15.88 2 14.5 2h-5C8.12 2 7 3.12 7 4.5V6H4.5C3.12 6 2 7.12 2 8.5v10C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-10C22 7.12 20.88 6 19.5 6zM9 4.5c0-.28.23-.5.5-.5h5c.28 0 .5.22.5.5V6H9V4.5zm11 14c0 .28-.22.5-.5.5h-15c-.27 0-.5-.22-.5-.5v-3.04c.59.35 1.27.54 2 .54h5v1h2v-1h5c.73 0 1.41-.19 2-.54v3.04zm0-6.49c0 1.1-.9 1.99-2 1.99h-5v-1h-2v1H6c-1.1 0-2-.9-2-2V8.5c0-.28.23-.5.5-.5h15c.28 0 .5.22.5.5v3.51z'
     location_path = 'M12 7c-1.93 0-3.5 1.57-3.5 3.5S10.07 14 12 14s3.5-1.57 3.5-3.5S13.93 7 12 7zm0 5c-.827 0-1.5-.673-1.5-1.5S11.173 9 12 9s1.5.673 1.5 1.5S12.827 12 12 12zm0-10c-4.687 0-8.5 3.813-8.5 8.5 0 5.967 7.621 11.116 7.945 11.332l.555.37.555-.37c.324-.216 7.945-5.365 7.945-11.332C20.5 5.813 16.687 2 12 2zm0 17.77c-1.665-1.241-6.5-5.196-6.5-9.27C5.5 6.916 8.416 4 12 4s6.5 2.916 6.5 6.5c0 4.073-4.835 8.028-6.5 9.27z'
