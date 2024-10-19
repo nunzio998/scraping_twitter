@@ -18,7 +18,7 @@ db = get_db(client)
 
 
 # Creo una lista vuota per i target
-target_list = ['dodfpdopofd', 'gghfghtgrg6ghj', 'lololghmèùop987oh']
+target_list = []
 # Prendo tutti i target dai documenti presenti in tutte le collezioni del db
 for collection_name in db.list_collection_names():
     if collection_name != 'users_info'and collection_name != 'target_groups':
