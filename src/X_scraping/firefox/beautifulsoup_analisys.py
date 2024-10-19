@@ -70,7 +70,7 @@ def beautifulsoup_user_analisys(html_content):
     # Mi sposto nel tag main dove sono le info che mi interessano
     soup = soup.main
 
-    soup = soup.find('div', class_='css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1c4cdxw r-1t251xo r-f8sm7e r-13qz1uu r-1ye8kvj')
+    soup = soup.find('div', class_='css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj')
 
     # Trovo il tag dell'utente
     try:
@@ -106,23 +106,27 @@ def beautifulsoup_user_analisys(html_content):
         print("Numero di post non trovato...")
 
     # Trovo il numero di following e followers
-    try:
-        follows = soup.find('div', class_='css-175oi2r r-13awgt0 r-18u37iz r-1w6e6rj')
+    if soup.find('div', class_='css-175oi2r r-13awgt0 r-18u37iz r-1w6e6rj'):
+        follows_div = soup.find('div', class_='css-175oi2r r-13awgt0 r-18u37iz r-1w6e6rj')
+        try:
+            following_div = follows_div.find('div', class_='css-175oi2r r-1rtiivn')
+            followings = following_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
 
-        following_div = follows.find('div', class_='css-175oi2r r-1rtiivn')
-        followings = following_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
+            following_div.decompose()
+        except AttributeError:
+            followings = None
+            print("Numero di following non trovato...")
 
-        following_div.decompose()
-    except AttributeError:
+        try:
+            followers_div = follows_div.find('div', class_='css-175oi2r')
+            followers = followers_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
+        except AttributeError:
+            followers = None
+            print("Numero di followers non trovato...")
+    else:
         followings = None
-        print("Numero di following non trovato...")
-
-    try:
-        followers_div = follows.find('div', class_='css-175oi2r')
-        followers = followers_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
-    except AttributeError:
         followers = None
-        print("Numero di followers non trovato...")
+        print("Numero di following e followers non trovati...")
 
     # Mi sposto sul div che contiene le informazioni dell'utente
     soup = soup.find('div', class_='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-16dba41 r-56xrmm')
