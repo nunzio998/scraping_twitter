@@ -36,9 +36,9 @@ async def telegram_scraper(m_client, channel_group):
     Tali messaggi vengono poi filtrati tramite l'utilizzo di keywords che possono variare di volta in volta in base
     alla ricerca. Viene poi effettuata una pulizia dei dati filtrati per selezionare i campi che contengono
     maggior contenuto informativo. Infine i dati vengono salvati su un apposito DB.\n
-    :param m_client:
-    :param channel_group:
-    :return:
+    :param m_client: oggetto che identifica il client di mongoDB\n
+    :param channel_group: nome del canale Telegram\n
+    :return: None
     """
     # Avviare il client
     await client.start()
@@ -88,7 +88,7 @@ async def telegram_scraper(m_client, channel_group):
         print(message_data)
         save_to_mongo(message_data, collection)
 
-mongo_client = connect_to_mongo()
+# mongo_client = connect_to_mongo()
 
 # with client:
 #     for channel in channels_username:
