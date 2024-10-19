@@ -1,12 +1,13 @@
 import time
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 
 from beautifulsoup_analisys import find_related_user, beautifulsoup_user_analisys
 from utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
@@ -72,7 +73,17 @@ for user in target_list:
         print(f"TimeoutException: utente {user} non trovato..")
         continue
 
-    time.sleep(2)
+    time.sleep(1)
+
+    # Controllo se l'account è temporanemente limitato. Se lo è sarà presente il seguente bottone per mostrare il profilo, in tal caso clicco sul bottone
+    try:
+        show_profile_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button')
+        show_profile_button.send_keys(Keys.RETURN)
+    except NoSuchElementException:
+        print("Account non limitato..")
+        pass
+
+    time.sleep(1)
 
     html_content = driver.page_source
 
@@ -97,7 +108,17 @@ for user in target_list:
                 print(f"TimeoutException: utente {user_related} non trovato..")
                 continue
 
-            time.sleep(2)
+            time.sleep(1)
+
+            # Controllo se l'account è temporanemente limitato. Se lo è sarà presente il seguente bottone per mostrare il profilo, in tal caso clicco sul bottone
+            try:
+                show_profile_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button')
+                show_profile_button.send_keys(Keys.RETURN)
+            except NoSuchElementException:
+                print("Account non limitato..")
+                pass
+
+            time.sleep(1)
 
             html_content = driver.page_source
 
