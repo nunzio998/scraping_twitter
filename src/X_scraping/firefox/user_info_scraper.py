@@ -25,9 +25,9 @@ for collection_name in db.list_collection_names():
         collection = connect_to_mongo_collection(client, collection_name)
         for document in collection.find():
             username_tag = document.get('username_tag')
-            if username_tag and (username_tag.split('@')[1] not in target_list):
+            if username_tag and (username_tag not in target_list):
                 # Aggiungi alla lista se non è già presente
-                target_list.append(username_tag.split('@')[1])
+                target_list.append(username_tag)
             else: # Prossima iterazione
                 continue
     else: # Prossima iterazione
@@ -64,6 +64,12 @@ x_login(credentials, driver)
 
 # 2) Eseguo la ricerca degli utenti:
 for user in target_list:
+    # Controllo se l'utente è già presente nel database
+    doc = collection.find_one({'username_tag': user})
+    if doc:
+        print('Utente già presente:', user)
+        continue
+
     # Cerco l'utente
     driver.get(f"https://www.X.com/{user}")
 
@@ -87,12 +93,6 @@ for user in target_list:
 
     if res['username_tag'] is None:
         print('Utente non trovato:', user)
-        continue
-
-    # Controllo se l'utente è già presente nel database
-    doc = collection.find_one({'username_tag': res['username_tag']})
-    if doc:
-        print('Utente già presente:', res['username_tag'])
         continue
 
     # 3) Salvo i risultati nel database
