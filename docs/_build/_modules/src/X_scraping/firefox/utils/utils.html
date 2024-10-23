@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.X_scraping.firefox.utils.utils &mdash; Wall-e Project 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Wall-e Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../DarkWeb_scraper.html">DarkWeb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Discord_scraper.html">Discord</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Telegram_scraper.html">Telegram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../X_scraper.html">X</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Wall-e Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.X_scraping.firefox.utils.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.X_scraping.firefox.utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.</span>
+<span class="sd">Alcuni esempi sono:\n</span>
+<span class="sd">- Gestione interazioni con MongoDB\n</span>
+<span class="sd">- Parsing dei dati estratti\n</span>
+<span class="sd">- Procedure di login</span>
+
+<span class="sd">Autore: Francesco Pinsone</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span><span class="p">,</span> <span class="n">TimeoutException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+
+
+<span class="n">interest_groups</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Killnet&quot;</span><span class="p">,</span> <span class="s2">&quot;NoName057(16)&quot;</span><span class="p">,</span> <span class="s2">&quot;Lazarus&quot;</span><span class="p">,</span> <span class="s2">&quot;DarkHalo&quot;</span><span class="p">,</span> <span class="s2">&quot;MustangPanda&quot;</span><span class="p">,</span> <span class="s2">&quot;BlackEnergy&quot;</span><span class="p">,</span> <span class="s2">&quot;BadMagic&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;DarkSide&quot;</span><span class="p">,</span> <span class="s2">&quot;LockBit&quot;</span><span class="p">,</span> <span class="s2">&quot;DopplePaymer&quot;</span><span class="p">,</span> <span class="s2">&quot;RagnarLocker&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;REvil&quot;</span><span class="p">,</span> <span class="s2">&quot;DragonFly&quot;</span><span class="p">]</span>
+
+<span class="n">primary_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hacker&quot;</span><span class="p">,</span> <span class="s2">&quot;cyberwar&quot;</span><span class="p">,</span> <span class="s2">&quot;cyber&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">]</span>
+
+<span class="n">secondary_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;italy&quot;</span><span class="p">,</span> <span class="s2">&quot;europe&quot;</span><span class="p">,</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="s2">&quot;attack&quot;</span><span class="p">,</span> <span class="s2">&quot;threat&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="read_json">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_json">[docs]</a>
+<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione per la lettura di file JSON.\n</span>
+<span class="sd">    :param path: percorso del file JSON\n</span>
+<span class="sd">    :return: dict, contenuto del file JSON</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+
+
+
+<span class="n">config_data</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s1">&#39;/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi Vigimare/python_workspace/src/X_scraping/firefox/utils/mongo_utils.json&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="x_login">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.x_login">[docs]</a>
+<span class="k">def</span> <span class="nf">x_login</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">,</span> <span class="n">driver_access</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che automatizza la procedura di accesso ad X. Prende in input le credenziali d&#39;accesso (&#39;credentials.json) e il driver</span>
+<span class="sd">    selenium che serve a controllare il browser. Per prima cosa controlla la presenza del campo email, se è presente inserisce</span>
+<span class="sd">    l&#39;email specificata in &#39;credentials.json&#39; e simula la pressione del tasto invio sulla tastiera. Prosegue ripetendo lo stesso</span>
+<span class="sd">    procedimento per i campi username e password.</span>
+<span class="sd">    :param credentials_access: dict, dizionario di credenziali d&#39;accesso specificate in &#39;credentials.json&#39;\n</span>
+<span class="sd">    :param driver_access: driver selenium per il controllo del browser\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">email_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                 <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input&#39;</span><span class="p">)</span>
+        <span class="n">email_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">])</span>
+        <span class="n">email_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo email non trovato..&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">username_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                    <span class="s1">&#39;/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input&#39;</span><span class="p">)</span>
+        <span class="n">username_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">])</span>
+        <span class="n">username_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo username non trovato..&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">password_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                    <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input&#39;</span><span class="p">)</span>
+        <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">])</span>
+        <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo password non trovato..&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># Funzioni MongoDB:</span>
+<div class="viewcode-block" id="connect_to_mongo">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo">[docs]</a>
+<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che consente di connettersi al database MongoDB.\n</span>
+<span class="sd">    :return client: oggetto che rappresenta la connessione al database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection_string</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;connection_string&#39;</span><span class="p">]</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+    <span class="c1"># Provo a connettermi al database</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">admin</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;ping&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connesso al database: &quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">client</span></div>
+
+
+
+<div class="viewcode-block" id="disconnect_to_mongo">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.disconnect_to_mongo">[docs]</a>
+<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB.\n</span>
+<span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Disconnesso dal database: &quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_db">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.get_db">[docs]</a>
+<span class="k">def</span> <span class="nf">get_db</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che ritorna il database MongoDB.</span>
+<span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
+<span class="sd">    :return: oggetto che rappresenta la connessione al db specificato in &#39;credentials.json&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="connect_to_mongo_collection">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo_collection">[docs]</a>
+<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n</span>
+<span class="sd">    :param client: oggetto che rappresenta la connessione al database\n</span>
+<span class="sd">    :param collection_name: stringa, nome della collezione\n</span>
+<span class="sd">    :return: collection, oggetto che rappresenta la collezione</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Verifica se la collezione esiste già</span>
+    <span class="k">if</span> <span class="n">collection_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">():</span>
+        <span class="c1"># Se la collezione non esiste, creala</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creata la collezione:&quot;</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La collezione esiste già:&quot;</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="save_to_mongo">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_to_mongo">[docs]</a>
+<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione per il salvataggio di dati nel database MongoDB.\n</span>
+<span class="sd">    :param data: dict, dati da salvare\n</span>
+<span class="sd">    :param collection: oggetto che rappresenta la collezione\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Salvato nel database: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="save_user_info_to_mongo">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_user_info_to_mongo">[docs]</a>
+<span class="k">def</span> <span class="nf">save_user_info_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che si occupa di il salvataggio di dati, relativi alle info utente, nel database MongoDB.</span>
+<span class="sd">    Questa funzione viene richiamata dallo script &#39;user_info_scraper.py&#39;. In tale script non usiamo la funzione</span>
+<span class="sd">    &#39;save_to_mongo&#39; come visto negli altri script in quanto dopo il salvataggio non visualizziamo più l&#39;url di un</span>
+<span class="sd">    post salvato ma abbiamo bisogno di visualizzare lo username tag dell&#39;utente di cui stiamo salvando le info nel db.\n</span>
+<span class="sd">    :param data: dict, dati da salvare\n</span>
+<span class="sd">    :param collection: oggetto che rappresenta la collezione\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Salvato nel database: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">])</span></div>
+
+
+
+<span class="c1"># config_data = read_json(&#39;mongo_utils.json&#39;)</span>
+
+<span class="c1"># Leggo il file e divido i post</span>
+<div class="viewcode-block" id="read_posts">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_posts">[docs]</a>
+<span class="k">def</span> <span class="nf">read_posts</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che si occupa di leggere i post e dividerli in base al numero di righe. In particolare, dell&#39;insieme di righe</span>
+<span class="sd">    che ricevo in input so che ogni tweet inizia con una riga di questo tipo: &#39;@tag_utente&#39;. Sfruttando questa informazione</span>
+<span class="sd">    la funzione riesce ad organizzare questo insieme di righe in una lista di tweet. Ovvero so che fino alla prossima riga che</span>
+<span class="sd">    inizia con il carattere &#39;@&#39; tutte le righe che mi trovo davanti saranno informazioni relative ad un unico tweet.\n</span>
+<span class="sd">    :param filtered_lines: list, lista di linee non vuote che contengono info sui tweet da estrarre\n</span>
+<span class="sd">    :return posts: list, lista dei tweet sui quali effettuare il parsing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">posts</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lista che conterrà tutti i post</span>
+    <span class="n">post</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lista di appoggio temporanea per salvare le righe di un post</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">)):</span>
+        <span class="c1"># controllo se lines[i] è l&#39;ultimo elemento della lista</span>
+        <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">filtered_lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># se sono all&#39;ultimo elemento della lista, aggiungo la riga a post e poi aggiungo post a posts</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stripped_line</span><span class="p">)</span>
+            <span class="n">posts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+            <span class="k">break</span>  <span class="c1"># esco dal ciclo for</span>
+
+        <span class="c1"># Controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.</span>
+        <span class="c1"># se cosi fosse il carattere successivo sarà un tag_username e quindi inizierà con &#39;@&#39;. In tal caso non aggiungo a post e vado avanti</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">filtered_lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;@&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stripped_line</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># ho letto un intero post</span>
+            <span class="n">posts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+            <span class="n">post</span> <span class="o">=</span> <span class="p">[</span><span class="n">stripped_line</span><span class="p">]</span>  <span class="c1"># resetto la lista di appoggio per il prossimo post</span>
+    <span class="k">return</span> <span class="n">posts</span></div>
+
+
+
+<span class="c1"># Prende la lista contenente i post e estrare da questi solo le info utili in formato json</span>
+<div class="viewcode-block" id="parse_post">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_post">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_post</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista</span>
+<span class="sd">    di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo</span>
+<span class="sd">    opportuno ed estrarne il giusto contenuto informativo. Ogni tweet viene infatti organizzato in un oggetto con la</span>
+<span class="sd">    seguente struttura:\n</span>
+<span class="sd">    - &#39;username&#39;: username dell&#39;autore del tweet\n</span>
+<span class="sd">    - &#39;tag_username&#39;: username_tag dell&#39;autore del tweet\n</span>
+<span class="sd">    - &#39;date&#39;: data di pubblicazione\n</span>
+<span class="sd">    - &#39;content&#39;: testo del tweet\n</span>
+<span class="sd">    - &#39;comments&#39;: numero di commenti\n</span>
+<span class="sd">    - &#39;reposts&#39;: numero di repost\n</span>
+<span class="sd">    - &#39;likes&#39;: numero di like\n</span>
+<span class="sd">    - &#39;views&#39;: numero di visualizzazioni\n</span>
+<span class="sd">    - &#39;url&#39;: url del tweet\n</span>
+<span class="sd">    - &#39;images&#39;: immagini contenute nel tweet\n</span>
+<span class="sd">    - &#39;videos&#39;: video contenuti nel tweet\n</span>
+<span class="sd">    :param lines: list, lista di elementi che che rappresentano il tweet\n</span>
+<span class="sd">    :return: oggetto con il formato descritto in precedenza\n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Skip invalid posts</span>
+
+    <span class="n">username</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">username_tag</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">data_pubblicazione</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_pubblicazione</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Controlla se la data ha solo giorno e mese</span>
+        <span class="n">data_pubblicazione</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># So che il contenuto del post si trova dalla quarta riga in poi. Utilizzando un&#39;espressione regolare, posso ignorare le righe che contengono solo numeri.</span>
+    <span class="c1"># Ovvero quelle righe che contengono solo il numero di like, commenti, condivisioni, ecc.</span>
+    <span class="n">contenuto_lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+    <span class="n">contenuto</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">contenuto_lines</span> <span class="k">if</span>
+                         <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\d+(\.\d+)?$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^https://&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+
+    <span class="c1"># Considerando tutti gli elementi di lines prendo solo quelli che contengono solo numeri e li inserisco in una lista</span>
+    <span class="n">numeri</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\d+(\.\d+)?$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">commenti</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">repost</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">visualizzazioni</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">commenti</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">repost</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">visualizzazioni</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">commenti</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">repost</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">visualizzazioni</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">commenti</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">repost</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">visualizzazioni</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">commenti</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">repost</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">visualizzazioni</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Creo una lista di tutti le linee che iniziano con la stringa &#39;https://&#39; o &#39;http://&#39;</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">)]</span>
+
+
+    <span class="c1"># Controllo che la lista non sia vuota, se lo è scarto il post</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">links</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Prendo il primo link della lista, che sarà l&#39;url del post</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">links</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Ora, dal secondo elemento in poi, tutti gli elementi della lista che non iniziano con la stringa &#39;blob:&#39; sono i link delle immagini</span>
+    <span class="c1"># Questo perché i link che iniziano con &#39;blob:&#39; sono relativi ai video.</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">)]</span>
+
+    <span class="c1"># I link che invece iniziano con &#39;blob:&#39; sono i link dei video. Vengono quindi aggiunti alla lista dei video, rimuovendo la stringa &#39;blob:&#39;.</span>
+    <span class="n">videos</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">)]</span>
+
+
+    <span class="c1"># Ritorno il post in formato json</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+        <span class="s1">&#39;tag_username&#39;</span><span class="p">:</span> <span class="n">username_tag</span><span class="p">,</span>
+        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">data_pubblicazione</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">contenuto</span><span class="p">,</span>
+        <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="n">commenti</span><span class="p">,</span>
+        <span class="s1">&#39;reposts&#39;</span><span class="p">:</span> <span class="n">repost</span><span class="p">,</span>
+        <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">like</span><span class="p">,</span>
+        <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="n">visualizzazioni</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span>
+        <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="n">images</span><span class="p">,</span>
+        <span class="s1">&#39;videos&#39;</span><span class="p">:</span> <span class="n">videos</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="read_parse_save">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_parse_save">[docs]</a>
+<span class="k">def</span> <span class="nf">read_parse_save</span><span class="p">(</span><span class="n">posts_to_save</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script</span>
+<span class="sd">    &#39;tweet_scraper.py&#39;. Alla funzione viene passata una lista che contiene tutte le righe dell&#39;html estratto. Righe che quindi</span>
+<span class="sd">    rappresentano i vari tweet da estrarre. Per prima cosa con la funzione &#39;read_posts()&#39; i post vengono raggruppati e divisi</span>
+<span class="sd">    in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.</span>
+<span class="sd">    A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione &#39;parse_post()&#39; e poi salvato a db.\n</span>
+<span class="sd">    :param posts_to_save: list, lista che contiene tutte le righe dell&#39;html estratto\n</span>
+<span class="sd">    :param group_name: str, nome del gruppo target che sto analizzando\n</span>
+<span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">posts_lines</span> <span class="o">=</span> <span class="n">read_posts</span><span class="p">(</span><span class="n">posts_to_save</span><span class="p">)</span>
+
+    <span class="c1"># Connessione alla collezione dati</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">group_name</span><span class="p">)</span>
+
+    <span class="c1"># Parso ogni post e lo aggiungo al database</span>
+    <span class="k">for</span> <span class="n">post_lines</span> <span class="ow">in</span> <span class="n">posts_lines</span><span class="p">:</span>
+        <span class="n">parsed_post</span> <span class="o">=</span> <span class="n">parse_post</span><span class="p">(</span><span class="n">post_lines</span><span class="p">)</span>
+
+        <span class="c1"># Salvo il post parsato nel database, se non è None</span>
+        <span class="k">if</span> <span class="n">parsed_post</span><span class="p">:</span>
+            <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">parsed_post</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_user">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.check_user">[docs]</a>
+<span class="k">def</span> <span class="nf">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che effettua un check per verificare l&#39;effettiva esistenza dello specificato utente.\n</span>
+<span class="sd">    Se l&#39;utente esiste vado avanti (ritorno True) altrimenti continuo col prossimo utente (ritorno False).\n</span>
+<span class="sd">    :param driver: driver selenium per il controllo del browser\n</span>
+<span class="sd">    :param user: nome dell&#39;utente di cui devo fare il check\n</span>
+<span class="sd">    :return bool: valore booleano che indica se l&#39;utente esiste o no</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Verifico che l&#39;utente esista, se non esiste passo alla prossima iterazione</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Attendo caricamento pagina</span>
+        <span class="n">wait_user</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+
+        <span class="c1"># Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile</span>
+        <span class="n">search_tweets</span> <span class="o">=</span> <span class="n">wait_user</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2&#39;</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TimeoutException: utente </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> non trovato..&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="check_limited_user">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.check_limited_user">[docs]</a>
+<span class="k">def</span> <span class="nf">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che verifica se l&#39;utente è temporaneamente limitato. In tal caso al caricamento della pagina sarà presente un</span>
+<span class="sd">    bottone che deve essere premuto per visualizzare correttamente la pagina X del determinato utente. La funzione quindi</span>
+<span class="sd">    effettua un check sull&#39;effettiva presenza di tale bottone e in caso positivo simula la pressione del tasto invio sulla</span>
+<span class="sd">    tastiera per premerlo. In caso contrario l&#39;utente non è limitato e si va avanti normalmente.\n</span>
+<span class="sd">    :param driver: driver selenium per il controllo del browser</span>
+<span class="sd">    :return None:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">show_profile_button</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button&#39;</span><span class="p">)</span>
+        <span class="n">show_profile_button</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Account non limitato..&quot;</span><span class="p">)</span>
+        <span class="k">pass</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Francesco Pinsone.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

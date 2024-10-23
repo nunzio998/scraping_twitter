@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.X_scraping.firefox.related_user_finder &mdash; Wall-e Project 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Wall-e Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../DarkWeb_scraper.html">DarkWeb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Discord_scraper.html">Discord</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Telegram_scraper.html">Telegram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../X_scraper.html">X</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Wall-e Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.X_scraping.firefox.related_user_finder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.X_scraping.firefox.related_user_finder</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Questo script ha lo scopo di trovare gli utenti correlati, per ognuno degli utenti di cui abbiamo già fatto scraping, ed estrane le informazioni.\n</span>
+<span class="sd">Gli utenti di cui abbiamo già estratto le info si trovano nella collection &#39;users_info&#39;. Per ognuno di questi si cercano i correlati</span>
+<span class="sd">e per ogni utente correlato trovato si effettua lo scraping e si salvano i risultati a db in &#39;user_info&#39;.\n</span>
+
+<span class="sd">Autore: Francesco Pinsone.\n</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+<span class="kn">from</span> <span class="nn">src.X_scraping.firefox.beautifulsoup_analisys</span> <span class="kn">import</span> <span class="n">find_related_user</span><span class="p">,</span> <span class="n">beautifulsoup_user_analisys</span>
+<span class="kn">from</span> <span class="nn">src.X_scraping.firefox.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_user_info_to_mongo</span><span class="p">,</span> \
+    <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">x_login</span><span class="p">,</span> <span class="n">check_limited_user</span><span class="p">,</span> <span class="n">check_user</span>
+
+
+<div class="viewcode-block" id="find_related_users">
+<a class="viewcode-back" href="../../../../related_user_finder_firefox.html#src.X_scraping.firefox.related_user_finder.find_related_users">[docs]</a>
+<span class="k">def</span> <span class="nf">find_related_users</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che racchiude il funzionamento dello script per intero.\n</span>
+<span class="sd">    Dopo aver effettuato la connesione al db e aver instaziato il driver selenium (che permette l&#39;automazione del browser)</span>
+<span class="sd">    lo script estrapola una lista di utenti target (di cui cercare i correlati) dalla collection &#39;users_info&#39; del db.\n</span>
+<span class="sd">    Dopo aver completato la procedura di login lo script inizia la ricerca dei correlati per ognuno dei target presenti nella lista.</span>
+<span class="sd">    Per ogni utente se ne verifica l&#39;effettiva esistenza e si effettua un check per verificare che non sia temporaneamente limitato</span>
+<span class="sd">    dalla piattaforma. Dopo questi check le info possono essere estratte e salvate a db.\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Connessione al database</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
+
+    <span class="c1"># Leggo file con credenziali</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Geckodriver</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="s1">&#39;driver/geckodriver&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Inizializzo driver  Firefox</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+    <span class="c1"># driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))</span>
+
+    <span class="c1"># 1) Estrapolo la lista dei target sui quali far partire la ricerca dalla collection &#39;users_info&#39;.</span>
+    <span class="c1"># Lista dove salvare i target</span>
+    <span class="n">target_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># mi connetto alla collection &#39;users_info&#39;</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;users_info&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">():</span>
+        <span class="n">username_tag</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username_tag&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username_tag</span> <span class="ow">and</span> <span class="p">(</span><span class="n">username_tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">):</span>
+            <span class="c1"># Aggiungi alla lista se non è già presente</span>
+            <span class="n">target_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">username_tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Prossima iterazione</span>
+            <span class="k">continue</span>
+
+    <span class="c1"># 2) Eseguo l&#39;accesso a X:</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.twitter.com/login&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Imposto un&#39;attesa esplicita di massimo 60 secondi</span>
+    <span class="n">wait_login</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Aspetto che un campo di ricerca con ID &#39;search-input&#39; sia visibile</span>
+    <span class="n">search_input_login</span> <span class="o">=</span> <span class="n">wait_login</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input&#39;</span><span class="p">)))</span>
+
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Effettuo il login a X</span>
+    <span class="n">x_login</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
+
+    <span class="c1"># 3) Per ogni utente nella lista target cerco gli utenti correlati</span>
+    <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
+        <span class="c1"># Cerco l&#39;utente</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://www.X.com/</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Verifico che l&#39;utente esista, se non esiste passo alla prossima iterazione (utente)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Controllo se l&#39;account è temporanemente limitato. Se lo è sarà presente il seguente bottone per mostrare il profilo, in tal caso clicco sul bottone</span>
+        <span class="n">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">html_content</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
+
+        <span class="n">related_users</span> <span class="o">=</span> <span class="n">find_related_user</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">related_users</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 4) Ora, per ognuno degli utenti correlati trovati, cerco le informazioni utente e le salvo nel database nella collection &#39;users_info&#39;</span>
+        <span class="k">if</span> <span class="n">related_users</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">user_related</span> <span class="ow">in</span> <span class="n">related_users</span><span class="p">:</span>
+                <span class="c1"># Cerco l&#39;utente</span>
+                <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://www.X.com/</span><span class="si">{</span><span class="n">user_related</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Verifico che l&#39;utente esista, se non esiste passo alla prossima iterazione (utente)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="c1"># Controllo se l&#39;account è temporanemente limitato. Se lo è sarà presente il seguente bottone per mostrare il profilo, in tal caso clicco sul bottone</span>
+                <span class="n">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">html_content</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
+
+                <span class="c1"># Analisi con BeautifulSoup</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">beautifulsoup_user_analisys</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Controllo se l&#39;utente è già presente nel database</span>
+                <span class="n">doc</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;username_tag&#39;</span><span class="p">:</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">]})</span>
+                <span class="k">if</span> <span class="n">doc</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Utente già presente:&#39;</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">])</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Salvo le informazioni nel database</span>
+                <span class="n">save_user_info_to_mongo</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;info utente </span><span class="si">{</span><span class="n">user_related</span><span class="si">}</span><span class="s2"> salvate nel database..&quot;</span><span class="p">)</span>
+
+    <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+    <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">find_related_users</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Francesco Pinsone.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

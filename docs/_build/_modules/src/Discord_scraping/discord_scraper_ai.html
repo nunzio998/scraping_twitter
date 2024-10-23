@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.Discord_scraping.discord_scraper_ai &mdash; Wall-e Project 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Wall-e Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../DarkWeb_scraper.html">DarkWeb_scraper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Discord_scraper.html">Discord_scraper</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Wall-e Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.Discord_scraping.discord_scraper_ai</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.Discord_scraping.discord_scraper_ai</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Questo script ha il compito di fare scraping sulla versione web di Discord utilizzando quindi la libreria Python</span>
+<span class="sd">Selenium. Inoltre avvalendosi di un LLM (Large Language Model) è in grado di effettuare il parsing di una pagina HTML</span>
+<span class="sd">in modo automatico ed efficace, senza quindi affidarsi esclusivamente all&#39;utilizzo di BeautifulSoup.\n</span>
+
+<span class="sd">Autore: Francesco Pinsone.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">src.Discord_scraping.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">beautifulsoup_analisys</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> \
+    <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">langchain_ollama</span> <span class="kn">import</span> <span class="n">OllamaLLM</span>
+<span class="kn">from</span> <span class="nn">langchain.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+
+
+<div class="viewcode-block" id="discord_ai_scraper">
+<a class="viewcode-back" href="../../../discord_scraper_ai.html#src.Discord_scraping.discord_scraper_ai.discord_ai_scraper">[docs]</a>
+<span class="k">def</span> <span class="nf">discord_ai_scraper</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che definisce la metodologia di lavoro dello script. Dopo aver inizializzato LLM e driver per il controllo del browser</span>
+<span class="sd">    si effettua l&#39;accesso a Discord web. Una volta eseguito il login, per ognuno dei canali e server specificati, si</span>
+<span class="sd">    scaricano i messaggi presenti e si effettua il parsing tramite LLM. I risultati verranno poi salvati su db.\n</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">OllamaLLM</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;llama3.1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Configuro il logger</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
+                        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
+
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Inizializzo il service selenium</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="s1">&#39;driver/geckodriver&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Inizializzo driver  Firefox</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+
+    <span class="c1"># Loggarsi manualmente su Discord</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://discord.com/login&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Imposto un&#39;attesa esplicita di massimo 60 secondi</span>
+    <span class="n">wait_login</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="n">search_input_login</span> <span class="o">=</span> <span class="n">wait_login</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s1">&#39;uid_7&#39;</span><span class="p">)))</span>
+
+    <span class="c1"># Cerco i campi nei quali far inserire automaticamente le credenziali</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">email_field</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s1">&#39;uid_7&#39;</span><span class="p">)</span>
+        <span class="n">email_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">])</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Campo email non trovato..&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">password_field</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s1">&#39;uid_9&#39;</span><span class="p">)</span>
+        <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">])</span>
+        <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Campo password non trovato..&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Mi connetto al database</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
+
+    <span class="c1"># Ottengo la lista dei target presenti nel database</span>
+    <span class="n">targets_collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;discord_target&quot;</span><span class="p">)</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="n">targets_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+    <span class="n">target_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;server_id&#39;</span><span class="p">],</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;channel_id&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
+
+    <span class="n">prompt_template</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+        <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span>
+        <span class="n">template</span><span class="o">=</span><span class="s2">&quot;A partire dal seguente testo vorrei che tu estragga per me una lista di oggetti json ognuno composto da author, date, content e channel_name. La lista e gli oggetti che devi generare per me devono presentarsi nel seguente formato:</span><span class="si">{text}</span><span class="s2">.&quot;</span>
+                 <span class="s2">&quot;Nota bene: Non voglio un esempio di codice python che automatizzi l&#39;operazione, ma voglio che sia tu ad estrarre i dati in modo che io possa utilizzarli per creare un codice python che automatizzi l&#39;operazione.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Formato che gli oggwtti devono avere:</span>
+    <span class="c1"># [{&quot;author&quot;: &quot;&quot;, &quot;date&quot;: &quot;&quot;, &quot;content&quot;: &quot;&quot;, &quot;channel_name&quot;: &quot;&quot;}, {&quot;author&quot;: &quot;&quot;, &quot;date&quot;: &quot;&quot;, &quot;content&quot;: &quot;&quot;, &quot;channel_name&quot;: &quot;&quot;}]</span>
+
+    <span class="c1"># TODO: Trovare il giusto prompt per l&#39;estrazione dei dati</span>
+
+    <span class="k">for</span> <span class="n">server_id</span><span class="p">,</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
+        <span class="c1"># carico la pagina del server su cui voglio fare scraping</span>
+        <span class="n">search_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://discord.com/channels/</span><span class="si">{</span><span class="n">server_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">channel_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">search_url</span><span class="p">)</span>
+
+        <span class="c1"># Attendo caricamento pagina</span>
+        <span class="n">wait_messages</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+
+        <span class="c1"># Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile</span>
+        <span class="n">search_messages</span> <span class="o">=</span> <span class="n">wait_messages</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="s1">&#39;panels_a4d4d9&#39;</span><span class="p">)))</span>
+
+        <span class="c1"># Numero di volte che vuoi scorrere verso l&#39;alto</span>
+        <span class="n">scroll_times</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">page_source</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Lista per salvare tutti i messaggi, nome del server e nome del canale</span>
+        <span class="n">all_messages</span><span class="p">,</span> <span class="n">server_name</span><span class="p">,</span> <span class="n">channel_name</span> <span class="o">=</span> <span class="n">beautifulsoup_analisys</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">scroll_times</span><span class="p">)</span>
+
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;messagesWrapper_e2e187 group-spacing-16&#39;</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">text</span>
+
+        <span class="c1"># print(results)</span>
+
+        <span class="n">extracted_data</span> <span class="o">=</span> <span class="n">prompt_template</span> <span class="o">|</span> <span class="n">model</span>
+
+        <span class="c1"># Eseguo il modello sul testo</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">extracted_data</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">})</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="c1"># # Mi connetto alla collezione relativa al server da cui voglio estrarre i dati, se non esiste la creo</span>
+        <span class="c1"># collection = connect_to_mongo_collection(client, server_name)</span>
+        <span class="c1">#</span>
+        <span class="c1"># for message in all_messages:</span>
+        <span class="c1">#     message_to_save = {</span>
+        <span class="c1">#         &#39;author&#39;: message[&#39;author&#39;],</span>
+        <span class="c1">#         &#39;date&#39;: message[&#39;date&#39;],</span>
+        <span class="c1">#         &#39;content&#39;: message[&#39;content&#39;],</span>
+        <span class="c1">#         &#39;channel_name&#39;: channel_name</span>
+        <span class="c1">#     }</span>
+        <span class="c1">#     save_to_mongo(message_to_save, collection)</span>
+
+    <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">discord_ai_scraper</span><span class="p">()</span>
+
+    <span class="c1"># TODO: gestire captcha durante l&#39;accesso a Discord web.</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Francesco Pinsone.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

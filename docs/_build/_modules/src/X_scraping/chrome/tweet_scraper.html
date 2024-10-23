@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.X_scraping.chrome.tweet_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Wall-e Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../DarkWeb_scraper.html">DarkWeb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Discord_scraper.html">Discord</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Telegram_scraper.html">Telegram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../X_scraper.html">X</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Wall-e Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.X_scraping.chrome.tweet_scraper</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.X_scraping.chrome.tweet_scraper</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Lo script ha il compito di effettuare un&#39;attività di scraping su X andando a fare ricerca dei tweet per parole chiave.</span>
+<span class="sd">Sulla base di un report sulla cybersecurity del 2024 sono stati scelti i nomi di una serie di gruppi hacker come target list</span>
+<span class="sd">iniziale sulla quale far lavorare lo script. Ad ogni esecuzione lo script effettua una ricerca su X ed estrae i tweet che ne risultano.</span>
+<span class="sd">Per ogni tweet vengono salvate diverse informazioni: autore, contenuto, url, gruppo hacker di riferimento, immagini e video contenuti.\n</span>
+
+<span class="sd">Autore: Francesco Pinsone.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+
+<span class="kn">from</span> <span class="nn">src.X_scraping.chrome.utils.utils</span> <span class="kn">import</span> <span class="n">primary_keywords</span><span class="p">,</span> <span class="n">secondary_keywords</span><span class="p">,</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> \
+    <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">read_parse_save</span><span class="p">,</span> <span class="n">x_login</span>
+<span class="kn">from</span> <span class="nn">src.X_scraping.chrome.beautifulsoup_analisys</span> <span class="kn">import</span> <span class="n">analisys_with_beautifulsoup</span>
+
+
+<div class="viewcode-block" id="scrape_tweets">
+<a class="viewcode-back" href="../../../../tweet_scraper_chrome.html#src.X_scraping.chrome.tweet_scraper.scrape_tweets">[docs]</a>
+<span class="k">def</span> <span class="nf">scrape_tweets</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che racchiude l&#39;intero funzionamento dello script.\n</span>
+<span class="sd">    Dopo aver effettuato la connessione a MondoDB e inizializzato il driver selenium per l&#39;automazione del browser effettua il</span>
+<span class="sd">    login ad X. Subito dopo per ogni target effettua la ricerca e filtra il contenuto della pagina html che ottiene al fine di</span>
+<span class="sd">    ottenere una lista di elementi relativi a tutti i tweet trovati. Questo insieme di informazioni viene dapprima diviso, per</span>
+<span class="sd">    differenziare i vari elementi, e poi parsato per ottenere i tweet nel giusto formato da poter poi salvare nel db.\n</span>
+<span class="sd">    :return None:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Leggo file con credenziali</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+
+    <span class="n">l</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># Parametro che indica quante parole chiave usare oltre al nome del gruppo di interesse. Può essere imostato a 0, 1 o 2.</span>
+
+    <span class="c1"># Connessione al DB per estrapolare la lista dei target sui quali far partire la ricerca</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
+    <span class="n">targets_collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;target_groups&quot;</span><span class="p">)</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="n">targets_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+    <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
+    <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+    <span class="c1"># TODO valutare modifica all&#39;url di ricerca dei tweet e alla modalità di ricerca tramite gruppi target</span>
+
+    <span class="n">chrome_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+
+    <span class="c1"># Gestore del driver per semplificare la gestione del driver Chrome</span>
+    <span class="c1"># N.B: Scaricare chromedriver e cambiare executable_path con il path del driver scaricato</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="o">=</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;driver_path&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Creare un&#39;istanza del browser Chrome con le opzioni</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">chrome_options</span><span class="p">)</span>
+
+    <span class="c1"># Loggarsi manualmente su Twitter</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.twitter.com/login&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Imposto un&#39;attesa esplicita di massimo 60 secondi</span>
+    <span class="n">wait_login</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Aspetto che un campo di ricerca con ID &#39;search-input&#39; sia visibile</span>
+    <span class="n">search_input_login</span> <span class="o">=</span> <span class="n">wait_login</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                                            <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input&#39;</span><span class="p">)))</span>
+
+    <span class="c1"># Effettuo il login ad X</span>
+    <span class="n">x_login</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2"> in lavorazione..&quot;</span><span class="p">)</span>
+
+        <span class="n">keyword1</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">primary_keywords</span><span class="p">)</span>
+        <span class="n">keyword2</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">secondary_keywords</span><span class="p">)</span>
+
+        <span class="c1"># Mando richiesta get con query nei parametri</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">search_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://x.com/search?f=top&amp;q=</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&amp;src=typed_query&quot;</span>
+        <span class="k">elif</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">search_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://x.com/search?q=</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">%20</span><span class="si">{</span><span class="n">keyword1</span><span class="si">}</span><span class="s2">%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&amp;src=typed_query&quot;</span>
+        <span class="k">elif</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">search_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://x.com/search?q=</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">%20</span><span class="si">{</span><span class="n">keyword1</span><span class="si">}</span><span class="s2">%20</span><span class="si">{</span><span class="n">keyword2</span><span class="si">}</span><span class="s2">%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&amp;src=typed_query&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">search_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://x.com/search?q=</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">&amp;src=typed_query&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">search_url</span><span class="p">)</span>
+
+            <span class="c1"># Attendo caricamento pagina</span>
+            <span class="n">wait_tweets</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+
+            <span class="c1"># Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile</span>
+            <span class="n">search_tweets</span> <span class="o">=</span> <span class="n">wait_tweets</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div&#39;</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nessun risultato per </span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2">..&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Scorri la pagina verso il basso per caricare più tweet</span>
+        <span class="n">last_height</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return document.body.scrollHeight&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;window.scrollTo(0, document.body.scrollHeight);&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Attendi il caricamento della pagina</span>
+            <span class="n">new_height</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return document.body.scrollHeight&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_height</span> <span class="o">==</span> <span class="n">last_height</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">last_height</span> <span class="o">=</span> <span class="n">new_height</span>
+
+        <span class="c1"># Estraggo HTML pagina con BeautifulSoup e lo stampo</span>
+        <span class="n">html_content</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Salvo la risposta in un file HTML</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;data_results/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">.html&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">prettify</span><span class="p">())</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">analisys_with_beautifulsoup</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">prettify</span><span class="p">())</span>
+
+        <span class="c1"># Divido le info in post e le salvo nel database</span>
+        <span class="n">read_parse_save</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+
+        <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+
+        <span class="c1"># TODO: ristrutturare codice a partire dalla funzione analisys_with_beautifulsoup</span>
+
+    <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">scrape_tweets</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Francesco Pinsone.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

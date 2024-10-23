@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.X_scraping.firefox.beautifulsoup_analisys &mdash; Wall-e Project 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Wall-e Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../DarkWeb_scraper.html">DarkWeb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Discord_scraper.html">Discord</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Telegram_scraper.html">Telegram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../X_scraper.html">X</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Wall-e Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.X_scraping.firefox.beautifulsoup_analisys</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.X_scraping.firefox.beautifulsoup_analisys</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Questo script contiene tutte le funzioni che analizzano e manipolano il contenuto html di una pagina web tramite la libreria BeautifulSoup.</span>
+<span class="sd">Ogni funzione in questo script svolge un determinato compito e viene richiamata da uno script preciso.\n</span>
+
+<span class="sd">Autore: Francesco Pinsone.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+
+
+<div class="viewcode-block" id="analisys_with_beautifulsoup">
+<a class="viewcode-back" href="../../../../beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup">[docs]</a>
+<span class="k">def</span> <span class="nf">analisys_with_beautifulsoup</span><span class="p">(</span><span class="n">response_html</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    La funzione ha il compito di analizzare e filtrare il contenuto html che le viene passato come parametro.\n</span>
+<span class="sd">    L&#39;obiettivo quindi è quello di estrarre le informazioni utili per il nostro scopo.</span>
+<span class="sd">    Per prima cosa cerca tutti i tag div che contengono i tweet e li salva in una lista. Per ogni tweet cerca ed estrae</span>
+<span class="sd">    anche l&#39;url, le immagini e i video che contiene e li appende alla lista delle righe. Ritorna infine la lista delle righe</span>
+<span class="sd">    che sarà poi soggetta ad una procedura di parsing.\n</span>
+<span class="sd">    :param response_html: contenuto html della pagina web.\n</span>
+<span class="sd">    :return: filtered_lines: list, lista delle righe filtrate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response_html</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Mi sposto sul body lasciando stare il resto dell&#39;html</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">body</span>
+
+    <span class="c1"># Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu&quot;</span><span class="p">)</span>
+
+    <span class="c1"># estraggo il testo dai div ottenuti e lo salvo in un file</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">tmp_list</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># lista temporanea per salvare il testo del tweet</span>
+        <span class="c1"># aggiungo la lista temporanea alla lista delle righe</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tmp_list</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://x.com</span><span class="si">{</span><span class="n">url</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># aggiungo l&#39;url del tweet</span>
+        <span class="c1"># lines.append(f&quot;https://x.com{urls[i][&#39;href&#39;]}&quot;)  # aggiungo l&#39;url del tweet</span>
+
+        <span class="c1"># Cerco presenza d&#39;immagini e/o video nei tweet</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Trovo il div che contiene i media del post</span>
+            <span class="n">div_imgs</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-9aw3ui r-1s2bzr4&quot;</span><span class="p">)</span>
+            <span class="c1"># Trovo tutte le immagini presenti nel div</span>
+            <span class="n">imgs</span> <span class="o">=</span> <span class="n">div_imgs</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-9pa8cd&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">imgs</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMMAGINE: </span><span class="si">{</span><span class="n">img</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Immagini non trovate...&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Trovo il div che contiene i media del post</span>
+            <span class="n">div_videos</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-9aw3ui r-1s2bzr4&quot;</span><span class="p">)</span>
+            <span class="c1"># Trovo tutti i video presenti nel div</span>
+            <span class="n">videos</span> <span class="o">=</span> <span class="n">div_videos</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;video/mp4&#39;</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">video</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">video</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VIDEO: </span><span class="si">{</span><span class="n">video</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Video non trovati...&quot;</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Filtra le righe vuote</span>
+    <span class="n">filtered_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">filtered_lines</span></div>
+
+
+
+<div class="viewcode-block" id="beautifulsoup_user_analisys">
+<a class="viewcode-back" href="../../../../beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys">[docs]</a>
+<span class="k">def</span> <span class="nf">beautifulsoup_user_analisys</span><span class="p">(</span><span class="n">html_content</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Questa funzione viene richiamata ed utilizzata dallo script &#39;user_info_scraper.py&#39; che ha quindi il compito di estrarre</span>
+<span class="sd">    informazioni relativi agli utenti X. La funzione prende in input il contenuto html della pagina web di un</span>
+<span class="sd">    utente X e ne estrae, con l&#39;utilizzo di beautifulsoup, le informazioni chiave. Per ogni utente la funzione estrae:\n</span>
+<span class="sd">    - tag username\n</span>
+<span class="sd">    - verificato (spunta blu)\n</span>
+<span class="sd">    - numero di post pubblicati\n</span>
+<span class="sd">    - numero di persone seguite (following)\n</span>
+<span class="sd">    - numero di persone che seguono l&#39;utente (follower)\n</span>
+<span class="sd">    - lavoro, se presente\n</span>
+<span class="sd">    - località, se presente\n</span>
+<span class="sd">    - data di iscrizione, se presente\n</span>
+<span class="sd">    - data di nascita, se presente\n</span>
+<span class="sd">    - sito web, se presente\n</span>
+<span class="sd">    :param html_content: contenuto html della pagina web relativa all&#39;utente X\n</span>
+<span class="sd">    :return: dict con le informazioni sopra elencate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Salvo gli attributi &#39;d&#39; dei tag &#39;path&#39; che definiscono le icone che identificano le info dell&#39;utente nel profilo. Uso quindi le icone per riconoscere i vari elementi e distinguerli</span>
+    <span class="n">job_path</span> <span class="o">=</span> <span class="s1">&#39;M19.5 6H17V4.5C17 3.12 15.88 2 14.5 2h-5C8.12 2 7 3.12 7 4.5V6H4.5C3.12 6 2 7.12 2 8.5v10C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-10C22 7.12 20.88 6 19.5 6zM9 4.5c0-.28.23-.5.5-.5h5c.28 0 .5.22.5.5V6H9V4.5zm11 14c0 .28-.22.5-.5.5h-15c-.27 0-.5-.22-.5-.5v-3.04c.59.35 1.27.54 2 .54h5v1h2v-1h5c.73 0 1.41-.19 2-.54v3.04zm0-6.49c0 1.1-.9 1.99-2 1.99h-5v-1h-2v1H6c-1.1 0-2-.9-2-2V8.5c0-.28.23-.5.5-.5h15c.28 0 .5.22.5.5v3.51z&#39;</span>
+    <span class="n">location_path</span> <span class="o">=</span> <span class="s1">&#39;M12 7c-1.93 0-3.5 1.57-3.5 3.5S10.07 14 12 14s3.5-1.57 3.5-3.5S13.93 7 12 7zm0 5c-.827 0-1.5-.673-1.5-1.5S11.173 9 12 9s1.5.673 1.5 1.5S12.827 12 12 12zm0-10c-4.687 0-8.5 3.813-8.5 8.5 0 5.967 7.621 11.116 7.945 11.332l.555.37.555-.37c.324-.216 7.945-5.365 7.945-11.332C20.5 5.813 16.687 2 12 2zm0 17.77c-1.665-1.241-6.5-5.196-6.5-9.27C5.5 6.916 8.416 4 12 4s6.5 2.916 6.5 6.5c0 4.073-4.835 8.028-6.5 9.27z&#39;</span>
+    <span class="n">subscription_path</span> <span class="o">=</span> <span class="s1">&#39;M7 4V3h2v1h6V3h2v1h1.5C19.89 4 21 5.12 21 6.5v12c0 1.38-1.11 2.5-2.5 2.5h-13C4.12 21 3 19.88 3 18.5v-12C3 5.12 4.12 4 5.5 4H7zm0 2H5.5c-.27 0-.5.22-.5.5v12c0 .28.23.5.5.5h13c.28 0 .5-.22.5-.5v-12c0-.28-.22-.5-.5-.5H17v1h-2V6H9v1H7V6zm0 6h2v-2H7v2zm0 4h2v-2H7v2zm4-4h2v-2h-2v2zm0 4h2v-2h-2v2zm4-4h2v-2h-2v2z&#39;</span>
+    <span class="n">website_path</span> <span class="o">=</span> <span class="s1">&#39;M18.36 5.64c-1.95-1.96-5.11-1.96-7.07 0L9.88 7.05 8.46 5.64l1.42-1.42c2.73-2.73 7.16-2.73 9.9 0 2.73 2.74 2.73 7.17 0 9.9l-1.42 1.42-1.41-1.42 1.41-1.41c1.96-1.96 1.96-5.12 0-7.07zm-2.12 3.53l-7.07 7.07-1.41-1.41 7.07-7.07 1.41 1.41zm-12.02.71l1.42-1.42 1.41 1.42-1.41 1.41c-1.96 1.96-1.96 5.12 0 7.07 1.95 1.96 5.11 1.96 7.07 0l1.41-1.41 1.42 1.41-1.42 1.42c-2.73 2.73-7.16 2.73-9.9 0-2.73-2.74-2.73-7.17 0-9.9z&#39;</span>
+    <span class="n">birth_path</span> <span class="o">=</span> <span class="s1">&#39;M8 10c0-2.21 1.79-4 4-4v2c-1.1 0-2 .9-2 2H8zm12 1c0 4.27-2.69 8.01-6.44 8.83L15 22H9l1.45-2.17C6.7 19.01 4 15.27 4 11c0-4.84 3.46-9 8-9s8 4.16 8 9zm-8 7c3.19 0 6-3 6-7s-2.81-7-6-7-6 3-6 7 2.81 7 6 7z&#39;</span>
+    <span class="n">verified_user1</span> <span class="o">=</span> <span class="s1">&#39;M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.607.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.29-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.854-1.24 1.44c-.608-.223-1.267-.272-1.902-.14-.635.13-1.22.436-1.69.882-.445.47-.749 1.055-.878 1.688-.13.633-.08 1.29.144 1.896-.587.274-1.087.705-1.443 1.245-.356.54-.555 1.17-.574 1.817.02.647.218 1.276.574 1.817.356.54.856.972 1.443 1.245-.224.606-.274 1.263-.144 1.896.13.634.433 1.218.877 1.688.47.443 1.054.747 1.687.878.633.132 1.29.084 1.897-.136.274.586.705 1.084 1.246 1.439.54.354 1.17.551 1.816.569.647-.016 1.276-.213 1.817-.567s.972-.854 1.245-1.44c.604.239 1.266.296 1.903.164.636-.132 1.22-.447 1.68-.907.46-.46.776-1.044.908-1.681s.075-1.299-.165-1.903c.586-.274 1.084-.705 1.439-1.246.354-.54.551-1.17.569-1.816zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.4-4.794 1.347 1.246z&#39;</span>
+    <span class="n">verified_user2</span> <span class="o">=</span> <span class="s1">&#39;M12.05 2.056c-.568-.608-1.532-.608-2.1 0l-1.393 1.49c-.284.303-.685.47-1.1.455L5.42 3.932c-.832-.028-1.514.654-1.486 1.486l.069 2.039c.014.415-.152.816-.456 1.1l-1.49 1.392c-.608.568-.608 1.533 0 2.101l1.49 1.393c.304.284.47.684.456 1.1l-.07 2.038c-.027.832.655 1.514 1.487 1.486l2.038-.069c.415-.014.816.152 1.1.455l1.392 1.49c.569.609 1.533.609 2.102 0l1.393-1.49c.283-.303.684-.47 1.099-.455l2.038.069c.832.028 1.515-.654 1.486-1.486L18 14.542c-.015-.415.152-.815.455-1.099l1.49-1.393c.608-.568.608-1.533 0-2.101l-1.49-1.393c-.303-.283-.47-.684-.455-1.1l.068-2.038c.029-.832-.654-1.514-1.486-1.486l-2.038.07c-.415.013-.816-.153-1.1-.456zm-5.817 9.367l3.429 3.428 5.683-6.206-1.347-1.247-4.4 4.795-2.072-2.072z&#39;</span>
+    <span class="n">verified_user3</span> <span class="o">=</span> <span class="s1">&#39;M13.324 3.848L11 1.6 8.676 3.848l-3.201-.453-.559 3.184L2.06 8.095 3.48 11l-1.42 2.904 2.856 1.516.559 3.184 3.201-.452L11 20.4l2.324-2.248 3.201.452.559-3.184 2.856-1.516L18.52 11l1.42-2.905-2.856-1.516-.559-3.184zm-7.09 7.575l3.428 3.428 5.683-6.206-1.347-1.247-4.4 4.795-2.072-2.072z&#39;</span>
+
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Mi sposto nel tag main dove sono le info che mi interessano</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">main</span>
+
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Trovo il tag dell&#39;utente</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&#39;</span><span class="p">)</span>
+        <span class="n">span_username</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span>
+        <span class="n">tag_username</span> <span class="o">=</span> <span class="n">span_username</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">tag_username</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Username non trovato...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Controllo se l&#39;utente è verificato</span>
+    <span class="n">verified</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">username_div</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-xoduu5 r-1awozwy r-18u37iz r-dnmrzs&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx&#39;</span><span class="p">):</span>
+            <span class="n">username_div_span</span> <span class="o">=</span> <span class="n">username_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span>
+                                                  <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx&#39;</span><span class="p">)</span>
+            <span class="n">verified_path_tag</span> <span class="o">=</span> <span class="n">username_div_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verified_path_tag</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user1</span> <span class="ow">or</span> <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user2</span> <span class="ow">or</span> \
+                        <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user3</span><span class="p">:</span>
+                    <span class="n">verified</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">verified</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Utente non verificato...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Trovo il numero di post</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num_post</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">num_post</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numero di post non trovato...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Trovo il numero di following e followers</span>
+    <span class="k">if</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-13awgt0 r-18u37iz r-1w6e6rj&#39;</span><span class="p">):</span>
+        <span class="n">follows_div</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-13awgt0 r-18u37iz r-1w6e6rj&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">following_div</span> <span class="o">=</span> <span class="n">follows_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-1rtiivn&#39;</span><span class="p">)</span>
+            <span class="n">followings</span> <span class="o">=</span> <span class="n">following_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+
+            <span class="n">following_div</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">followings</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numero di following non trovato...&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">followers_div</span> <span class="o">=</span> <span class="n">follows_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
+            <span class="n">followers</span> <span class="o">=</span> <span class="n">followers_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">followers</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numero di followers non trovato...&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">followings</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">followers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numero di following e followers non trovati...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Mi sposto sul div che contiene le informazioni dell&#39;utente</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-16dba41 r-56xrmm&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Cerco elemento lavoro</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">el_span</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span>  <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">job_path</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="c1"># rimuovo lo span dall&#39;html per evitare errori nella ricerca del prossimo elemento</span>
+            <span class="n">el_span</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo lavoro non presente...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Cerco elementi località, data iscrizione e data di nascita poiché il loro html ha la stessa classe. Li inizializzo a None.</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">subscription</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">birth</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">el_span</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">location_path</span><span class="p">:</span>
+                <span class="n">location</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+
+            <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">subscription_path</span><span class="p">:</span>
+                <span class="n">subscription</span> <span class="o">=</span> \
+                    <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">birth_path</span><span class="p">:</span>
+                <span class="n">birth</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># rimuovo lo span dall&#39;html per evitare errori nella ricerca del prossimo elemento</span>
+            <span class="n">el_span</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo località/data iscrizione/data di nascita non presente...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Cerco elemento sito web</span>
+    <span class="n">website</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">el_span</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">website_path</span><span class="p">:</span>
+            <span class="n">website</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+        <span class="c1"># rimuovo lo span dall&#39;html per evitare errori nella ricerca del prossimo elemento</span>
+        <span class="n">el_span</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">website</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo sito web non presente...&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;username_tag&quot;</span><span class="p">:</span> <span class="n">tag_username</span><span class="p">,</span>
+        <span class="s2">&quot;verified&quot;</span><span class="p">:</span> <span class="n">verified</span><span class="p">,</span>
+        <span class="s2">&quot;num_post&quot;</span><span class="p">:</span> <span class="n">num_post</span><span class="p">,</span>
+        <span class="s2">&quot;following&quot;</span><span class="p">:</span> <span class="n">followings</span><span class="p">,</span>
+        <span class="s2">&quot;followers&quot;</span><span class="p">:</span> <span class="n">followers</span><span class="p">,</span>
+        <span class="s2">&quot;job&quot;</span><span class="p">:</span> <span class="n">job</span><span class="p">,</span>
+        <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span>
+        <span class="s2">&quot;subscription&quot;</span><span class="p">:</span> <span class="n">subscription</span><span class="p">,</span>
+        <span class="s2">&quot;birth&quot;</span><span class="p">:</span> <span class="n">birth</span><span class="p">,</span>
+        <span class="s2">&quot;website&quot;</span><span class="p">:</span> <span class="n">website</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="find_related_user">
+<a class="viewcode-back" href="../../../../beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.find_related_user">[docs]</a>
+<span class="k">def</span> <span class="nf">find_related_user</span><span class="p">(</span><span class="n">html_content</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    La funzione riceve in input l&#39;html della pagina web di un utente di X dal quale estrae gli utenti correlati</span>
+<span class="sd">    suggeriti nel menu aside che si trova a destra. Ognuno di questi utenti viene inserito in una lista di utenti</span>
+<span class="sd">    correlati che viene infine ritornata.\n</span>
+<span class="sd">    :param html_content: il contenuto html della pagina web dell&#39;utente X\n</span>
+<span class="sd">    :return related_users: list, lista di utenti correlati.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">related_users</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Mi sposto nel tag main dove sono le info che mi interessano</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">main</span>
+
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;aside&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
+
+        <span class="n">user_ul</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Dal tag &lt;ul&gt; trovo tutti i tag &lt;span&gt; che si trovano nei tag &lt;li&gt; che compongono la lista</span>
+        <span class="n">user_list</span> <span class="o">=</span> <span class="n">user_ul</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">user_list</span><span class="p">:</span>
+            <span class="n">user_div</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&#39;</span><span class="p">)</span>
+            <span class="n">related_users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Utenti correlati non presenti...&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">related_users</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Francesco Pinsone.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
