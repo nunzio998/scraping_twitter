@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>beautifulsoup_analisys &mdash; Wall-e Project 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="db_to_csv" href="db_to_csv_x_firefox.html" />
+    <link rel="prev" title="utils" href="utils_x_firefox.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Wall-e Project
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="DarkWeb_scraper.html">DarkWeb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Discord_scraper.html">Discord</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Telegram_scraper.html">Telegram</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="X_scraper.html">X</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Google_Chrome.html">Google Chrome</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="Firefox.html">Firefox</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html">utils</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">beautifulsoup_analisys</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup"><code class="docutils literal notranslate"><span class="pre">analisys_with_beautifulsoup()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys"><code class="docutils literal notranslate"><span class="pre">beautifulsoup_user_analisys()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.firefox.beautifulsoup_analisys.find_related_user"><code class="docutils literal notranslate"><span class="pre">find_related_user()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="db_to_csv_x_firefox.html">db_to_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_firefox.html">drop_data_collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="related_user_finder_firefox.html">related_user_finder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tweet_scraper_firefox.html">tweet_scraper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_info_scraper_firefox.html">user_info_scraper</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Wall-e Project</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="X_scraper.html">X</a></li>
+          <li class="breadcrumb-item"><a href="Firefox.html">Firefox</a></li>
+      <li class="breadcrumb-item active">beautifulsoup_analisys</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/beautifulsoup_analisys_firefox.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-src.X_scraping.firefox.beautifulsoup_analisys">
+<span id="beautifulsoup-analisys"></span><h1>beautifulsoup_analisys<a class="headerlink" href="#module-src.X_scraping.firefox.beautifulsoup_analisys" title="Link to this heading"></a></h1>
+<p>Questo script contiene tutte le funzioni che analizzano e manipolano il contenuto html di una pagina web tramite la libreria BeautifulSoup.
+Ogni funzione in questo script svolge un determinato compito e viene richiamata da uno script preciso.</p>
+<p>Autore: Francesco Pinsone.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.beautifulsoup_analisys.</span></span><span class="sig-name descname"><span class="pre">analisys_with_beautifulsoup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_html</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/beautifulsoup_analisys.html#analisys_with_beautifulsoup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup" title="Link to this definition"></a></dt>
+<dd><p>La funzione ha il compito di analizzare e filtrare il contenuto html che le viene passato come parametro.</p>
+<p>L’obiettivo quindi è quello di estrarre le informazioni utili per il nostro scopo.
+Per prima cosa cerca tutti i tag div che contengono i tweet e li salva in una lista. Per ogni tweet cerca ed estrae
+anche l’url, le immagini e i video che contiene e li appende alla lista delle righe. Ritorna infine la lista delle righe
+che sarà poi soggetta ad una procedura di parsing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>response_html</strong> – contenuto html della pagina web.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>filtered_lines: list, lista delle righe filtrate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.beautifulsoup_analisys.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_user_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/beautifulsoup_analisys.html#beautifulsoup_user_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys" title="Link to this definition"></a></dt>
+<dd><p>Questa funzione viene richiamata ed utilizzata dallo script ‘user_info_scraper.py’ che ha quindi il compito di estrarre
+informazioni relativi agli utenti X. La funzione prende in input il contenuto html della pagina web di un
+utente X e ne estrae, con l’utilizzo di beautifulsoup, le informazioni chiave. Per ogni utente la funzione estrae:</p>
+<ul class="simple">
+<li><p>tag username</p></li>
+<li><p>verificato (spunta blu)</p></li>
+<li><p>numero di post pubblicati</p></li>
+<li><p>numero di persone seguite (following)</p></li>
+<li><p>numero di persone che seguono l’utente (follower)</p></li>
+<li><p>lavoro, se presente</p></li>
+<li><p>località, se presente</p></li>
+<li><p>data di iscrizione, se presente</p></li>
+<li><p>data di nascita, se presente</p></li>
+<li><p>sito web, se presente</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>html_content</strong> – contenuto html della pagina web relativa all’utente X</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict con le informazioni sopra elencate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.X_scraping.firefox.beautifulsoup_analisys.find_related_user">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.beautifulsoup_analisys.</span></span><span class="sig-name descname"><span class="pre">find_related_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/beautifulsoup_analisys.html#find_related_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.beautifulsoup_analisys.find_related_user" title="Link to this definition"></a></dt>
+<dd><p>La funzione riceve in input l’html della pagina web di un utente di X dal quale estrae gli utenti correlati
+suggeriti nel menu aside che si trova a destra. Ognuno di questi utenti viene inserito in una lista di utenti
+correlati che viene infine ritornata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>html_content</strong> – il contenuto html della pagina web dell’utente X</p>
+</dd>
+<dt class="field-even">Return related_users<span class="colon">:</span></dt>
+<dd class="field-even"><p>list, lista di utenti correlati.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="utils_x_firefox.html" class="btn btn-neutral float-left" title="utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="db_to_csv_x_firefox.html" class="btn btn-neutral float-right" title="db_to_csv" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Francesco Pinsone.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
