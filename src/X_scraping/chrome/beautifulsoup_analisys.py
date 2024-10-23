@@ -1,13 +1,21 @@
+"""
+Questo script contiene tutte le funzioni che analizzano e manipolano il contenuto html di una pagina web tramite la libreria BeautifulSoup.
+Ogni funzione in questo script svolge un determinato compito e viene richiamata da uno script preciso.\n
+
+Autore: Francesco Pinsone.
+"""
 from bs4 import BeautifulSoup
 
 
 def analisys_with_beautifulsoup(response_html):
     """
-    Funzione che consente di analizzare il contenuto html di una pagina web tramite la libreria BeautifulSoup, al fine di estrarre
-    le info relative ai tweet e salvarle nel database.
-    :param response_html:
-    :param group:
-    :return:
+    La funzione ha il compito di analizzare e filtrare il contenuto html che le viene passato come parametro.\n
+    L'obiettivo quindi è quello di estrarre le informazioni utili per il nostro scopo.
+    Per prima cosa cerca tutti i tag div che contengono i tweet e li salva in una lista. Per ogni tweet cerca ed estrae
+    anche l'url, le immagini e i video che contiene e li appende alla lista delle righe. Ritorna infine la lista delle righe
+    che sarà poi soggetta ad una procedura di parsing.\n
+    :param response_html: contenuto html della pagina web.\n
+    :return: filtered_lines: list, lista delle righe filtrate.
     """
 
     soup = BeautifulSoup(response_html, 'html.parser')
@@ -65,10 +73,21 @@ def analisys_with_beautifulsoup(response_html):
 
 def beautifulsoup_user_analisys(html_content):
     """
-    Funzione che consente di analizzare il contenuto html di una pagina web tramite la libreria BeautifulSoup, al fine di estrarre
-    le info relative agli utenti X e salvarle nel database.
-    :param html_content:
-    :return:
+    Questa funzione viene richiamata ed utilizzata dallo script 'user_info_scraper.py' che ha quindi il compito di estrarre
+    informazioni relativi agli utenti X. La funzione prende in input il contenuto html della pagina web di un
+    utente X e ne estrae, con l'utilizzo di beautifulsoup, le informazioni chiave. Per ogni utente la funzione estrae:\n
+    - tag username\n
+    - verificato (spunta blu)\n
+    - numero di post pubblicati\n
+    - numero di persone seguite (following)\n
+    - numero di persone che seguono l'utente (follower)\n
+    - lavoro, se presente\n
+    - località, se presente\n
+    - data di iscrizione, se presente\n
+    - data di nascita, se presente\n
+    - sito web, se presente\n
+    :param html_content: contenuto html della pagina web relativa all'utente X\n
+    :return: dict con le informazioni sopra elencate
     """
     # Salvo gli attributi 'd' dei tag 'path' che definiscono le icone che identificano le info dell'utente nel profilo. Uso quindi le icone per riconoscere i vari elementi e distinguerli
     job_path = 'M19.5 6H17V4.5C17 3.12 15.88 2 14.5 2h-5C8.12 2 7 3.12 7 4.5V6H4.5C3.12 6 2 7.12 2 8.5v10C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-10C22 7.12 20.88 6 19.5 6zM9 4.5c0-.28.23-.5.5-.5h5c.28 0 .5.22.5.5V6H9V4.5zm11 14c0 .28-.22.5-.5.5h-15c-.27 0-.5-.22-.5-.5v-3.04c.59.35 1.27.54 2 .54h5v1h2v-1h5c.73 0 1.41-.19 2-.54v3.04zm0-6.49c0 1.1-.9 1.99-2 1.99h-5v-1h-2v1H6c-1.1 0-2-.9-2-2V8.5c0-.28.23-.5.5-.5h15c.28 0 .5.22.5.5v3.51z'
@@ -213,6 +232,13 @@ def beautifulsoup_user_analisys(html_content):
 
 
 def find_related_user(html_content):
+    """
+    La funzione riceve in input l'html della pagina web di un utente di X dal quale estrae gli utenti correlati
+    suggeriti nel menu aside che si trova a destra. Ognuno di questi utenti viene inserito in una lista di utenti
+    correlati che viene infine ritornata.\n
+    :param html_content: il contenuto html della pagina web dell'utente X\n
+    :return related_users: list, lista di utenti correlati.
+    """
     related_users = []
 
     soup = BeautifulSoup(html_content, 'html.parser')

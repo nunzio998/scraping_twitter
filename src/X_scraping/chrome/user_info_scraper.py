@@ -1,5 +1,11 @@
-import time
+"""
+Script che ha la funzione di estrarre le informazioni principali di uno o più utenti X.\n
+Gli utenti da sottoporre a questo processo vengono estratti dalle varie collection, ovvero dai dati
+relativi ai tweet raccolti fino a quel momento. Si considerano quindi tutti gli autori dei tweet salvati.\n
 
+Autore: Francesco Pinsone.
+"""
+import time
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
@@ -7,102 +13,115 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-from beautifulsoup_analisys import beautifulsoup_user_analisys
-from utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
+from src.X_scraping.chrome.beautifulsoup_analisys import beautifulsoup_user_analisys
+from src.X_scraping.chrome.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
     connect_to_mongo_collection, get_db, x_login
 
-# Connessione al database
-client = connect_to_mongo()
 
-db = get_db(client)
+def scrape_user_info():
+    """
+    Funzione che racchiude l'intero funzionamento dello script.\n
+    Dopo aver effettuato la connessione al db estrae una lista di utenti target da tutte le collection che contengono
+    dati relativi ai tweet salvati. Effettua poi la procedura di login ad X e in seguito inizia lo scraping delle info
+    per ognuno degli utenti presenti nella lista dei target. Ad ogni iterazione le informazioni raccolte vengono salvate
+    a db nella collection 'users_info'.\n
+    :return None:
+    """
+    # Connessione al database
+    client = connect_to_mongo()
 
-# Creo una lista vuota per i target
-target_list = []
-# Prendo tutti i target dai documenti presenti in tutte le collezioni del db
-for collection_name in db.list_collection_names():
-    if collection_name != 'users_info' and collection_name != 'target_groups':
-        collection = connect_to_mongo_collection(client, collection_name)
-        for document in collection.find():
-            username_tag = document.get('username_tag')
-            if username_tag and (username_tag not in target_list):
-                # Aggiungi alla lista se non è già presente
-                target_list.append(username_tag)
-            else:  # Prossima iterazione
-                continue
-    else:  # Prossima iterazione
-        continue
+    db = get_db(client)
 
-# Leggo file con credenziali
-credentials = read_json("utils/credentials.json")
+    # Creo una lista vuota per i target
+    target_list = []
+    # Prendo tutti i target dai documenti presenti in tutte le collezioni del db
+    for collection_name in db.list_collection_names():
+        if collection_name != 'users_info' and collection_name != 'target_groups':
+            collection = connect_to_mongo_collection(client, collection_name)
+            for document in collection.find():
+                username_tag = document.get('username_tag')
+                if username_tag and (username_tag not in target_list):
+                    # Aggiungi alla lista se non è già presente
+                    target_list.append(username_tag)
+                else:  # Prossima iterazione
+                    continue
+        else:  # Prossima iterazione
+            continue
 
-collection = connect_to_mongo_collection(client, 'users_info')
+    # Leggo file con credenziali
+    credentials = read_json("utils/credentials.json")
 
-# 1) Eseguo l'accesso a X:
+    collection = connect_to_mongo_collection(client, 'users_info')
 
-chrome_options = Options()
+    # 1) Eseguo l'accesso a X:
 
-# Gestore del driver per semplificare la gestione del driver Chrome
-# service = Service(ChromeDriverManager().install()) # Decommentare per scaricare il driver all'avvio del programma
-service = Service(credentials['driver_path'])
+    chrome_options = Options()
 
-# Creare un'istanza del browser Chrome con le opzioni
-driver = webdriver.Chrome(service=service, options=chrome_options)
+    # Gestore del driver per semplificare la gestione del driver Chrome
+    # service = Service(ChromeDriverManager().install()) # Decommentare per scaricare il driver all'avvio del programma
+    service = Service(credentials['driver_path'])
 
-# Loggarsi manualmente su Twitter
-driver.get('https://www.twitter.com/login')
+    # Creare un'istanza del browser Chrome con le opzioni
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
-# Imposto un'attesa esplicita di massimo 60 secondi
-wait_login = WebDriverWait(driver, 60)
+    # Loggarsi manualmente su Twitter
+    driver.get('https://www.twitter.com/login')
 
-# Aspetto che un campo di ricerca con ID 'search-input' sia visibile
-search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH,
-                                                                        '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
+    # Imposto un'attesa esplicita di massimo 60 secondi
+    wait_login = WebDriverWait(driver, 60)
 
-time.sleep(1)
+    # Aspetto che un campo di ricerca con ID 'search-input' sia visibile
+    search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH,
+                                                                            '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
 
-# Effettuo il login ad X
-x_login(credentials, driver)
+    time.sleep(1)
 
-# 2) Eseguo la ricerca degli utenti:
-for user in target_list:
-    # Controllo se l'utente è già presente nel database
-    doc = collection.find_one({'username_tag': user})
-    if doc:
-        print('Utente già presente:', user)
-        continue
+    # Effettuo il login ad X
+    x_login(credentials, driver)
 
-    # Cerco l'utente
-    driver.get(f"https://www.X.com/{user}")
+    # 2) Eseguo la ricerca degli utenti:
+    for user in target_list:
+        # Controllo se l'utente è già presente nel database
+        doc = collection.find_one({'username_tag': user})
+        if doc:
+            print('Utente già presente:', user)
+            continue
 
-    # Verifico che l'utente esista, se non esiste passo alla prssima iterazione
+        # Cerco l'utente
+        driver.get(f"https://www.X.com/{user}")
 
-    try:
-        # Attendo caricamento pagina
-        wait_user = WebDriverWait(driver, 120)
+        # Verifico che l'utente esista, se non esiste passo alla prssima iterazione
 
-        # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
-        search_tweets = wait_user.until(EC.visibility_of_element_located((By.XPATH,
-                                                                          '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2')))
-    except TimeoutException:
-        print(f"TimeoutException: utente {user} non trovato..")
-        continue
+        try:
+            # Attendo caricamento pagina
+            wait_user = WebDriverWait(driver, 120)
 
-    time.sleep(2)
+            # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
+            search_tweets = wait_user.until(EC.visibility_of_element_located((By.XPATH,
+                                                                              '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2')))
+        except TimeoutException:
+            print(f"TimeoutException: utente {user} non trovato..")
+            continue
 
-    html_content = driver.page_source
+        time.sleep(2)
 
-    # Analisi con BeautifulSoup
-    res = beautifulsoup_user_analisys(html_content)
+        html_content = driver.page_source
 
-    if res['username_tag'] is None:
-        print('Utente non trovato:', user)
-        continue
+        # Analisi con BeautifulSoup
+        res = beautifulsoup_user_analisys(html_content)
 
-    # 3) Salvo i risultati nel database
-    save_user_info_to_mongo(res, collection)
+        if res['username_tag'] is None:
+            print('Utente non trovato:', user)
+            continue
 
-    print(res)
+        # 3) Salvo i risultati nel database
+        save_user_info_to_mongo(res, collection)
 
-driver.quit()
-disconnect_to_mongo(client)
+        print(res)
+
+    driver.quit()
+    disconnect_to_mongo(client)
+
+
+if __name__ == "__main__":
+    scrape_user_info()
