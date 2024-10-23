@@ -80,7 +80,7 @@ snscrape==0.7.0.20230622
 socks==0
 sortedcontainers==2.4.0
 soupsieve==2.5
-Sphinx==7.4.7
+Sphinx==7.4.5
 sphinx-rtd-theme==3.0.1
 sphinxcontrib-applehelp==2.0.0
 sphinxcontrib-devhelp==2.0.0
