@@ -48,7 +48,7 @@ lxml==5.2.1
 MarkupSafe==2.1.0
 multidict==6.0.5
 ntscraper==0.3.13
-numpy==1.26.4
+numpy==1.25.0
 ollama==0.3.3
 openai==1.47.0
 orjson==3.10.7
