@@ -223,6 +223,7 @@ def parse_post(lines):
 
     username = lines[0].strip()
     username_tag = lines[1].strip()
+    #TODO: controllo sul formato della data. Inoltre se la data è ad esempio: '16h' dovrò aggiungere la data corrente
     data_pubblicazione = lines[3].strip()
     if len(data_pubblicazione.split()) == 2:  # Controlla se la data ha solo giorno e mese
         data_pubblicazione += f" {datetime.now().year}"
