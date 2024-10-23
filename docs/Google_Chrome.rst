@@ -1,6 +1,6 @@
 Google Chrome
 =============
-
+Versione che consente lo scraping utilizzando Google Chrome come browser.
 
 .. toctree::
    :maxdepth: 4

@@ -1,5 +1,6 @@
 Firefox
 =======
+Versione che consente lo scraping utilizzando Firefox come browser.
 
 
 .. toctree::
