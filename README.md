@@ -252,8 +252,7 @@ Il database contiene le seguenti collection:
         "author": "string",
         "date": "string",
         "content": "string",
-        "channel_name": "string",
-        "server": "string"
+        "channel_name": "string"
     }
     ```
 - **discord_target**: contiene gli id dei server e dei canali target. <br>
