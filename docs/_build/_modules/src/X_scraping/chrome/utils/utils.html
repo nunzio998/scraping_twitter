@@ -261,46 +261,9 @@
 
 <span class="c1"># config_data = read_json(&#39;mongo_utils.json&#39;)</span>
 
-<span class="c1"># Leggo il file e divido i post</span>
-<div class="viewcode-block" id="read_posts">
-<a class="viewcode-back" href="../../../../../utils_x_chrome.html#src.X_scraping.chrome.utils.utils.read_posts">[docs]</a>
-<span class="k">def</span> <span class="nf">read_posts</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che si occupa di leggere i post e dividerli in base al numero di righe. In particolare, dell&#39;insieme di righe</span>
-<span class="sd">    che ricevo in input so che ogni tweet inizia con una riga di questo tipo: &#39;@tag_utente&#39;. Sfruttando questa informazione</span>
-<span class="sd">    la funzione riesce ad organizzare questo insieme di righe in una lista di tweet. Ovvero so che fino alla prossima riga che</span>
-<span class="sd">    inizia con il carattere &#39;@&#39; tutte le righe che mi trovo davanti saranno informazioni relative ad un unico tweet.\n</span>
-<span class="sd">    :param filtered_lines: list, lista di linee non vuote che contengono info sui tweet da estrarre\n</span>
-<span class="sd">    :return posts: list, lista dei tweet sui quali effettuare il parsing</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">posts</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lista che conterrà tutti i post</span>
-    <span class="n">post</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lista di appoggio temporanea per salvare le righe di un post</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">)):</span>
-        <span class="c1"># controllo se lines[i] è l&#39;ultimo elemento della lista</span>
-        <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">filtered_lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="c1"># se sono all&#39;ultimo elemento della lista, aggiungo la riga a post e poi aggiungo post a posts</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stripped_line</span><span class="p">)</span>
-            <span class="n">posts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
-            <span class="k">break</span>  <span class="c1"># esco dal ciclo for</span>
-
-        <span class="c1"># controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.</span>
-        <span class="c1"># se cosi fosse il carattere successivo sarà un tag_username e quindi inizierà con &#39;@&#39;. In tal caso non aggiungo a post e vado avanti</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">filtered_lines</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;@&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stripped_line</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># ho letto un intero post</span>
-            <span class="n">posts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
-            <span class="n">post</span> <span class="o">=</span> <span class="p">[</span><span class="n">stripped_line</span><span class="p">]</span>  <span class="c1"># resetto la lista di appoggio per il prossimo post</span>
-    <span class="k">return</span> <span class="n">posts</span></div>
-
-
-
-<span class="c1"># Prende la lista contenente i post e estrare da questi solo le info utili in formato json</span>
-<div class="viewcode-block" id="parse_post">
-<a class="viewcode-back" href="../../../../../utils_x_chrome.html#src.X_scraping.chrome.utils.utils.parse_post">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_post</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_tweet">
+<a class="viewcode-back" href="../../../../../utils_x_chrome.html#src.X_scraping.chrome.utils.utils.parse_tweet">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_tweet</span><span class="p">(</span><span class="n">tweet</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista</span>
 <span class="sd">    di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo</span>
@@ -310,33 +273,36 @@
 <span class="sd">    - &#39;tag_username&#39;: username_tag dell&#39;autore del tweet\n</span>
 <span class="sd">    - &#39;date&#39;: data di pubblicazione\n</span>
 <span class="sd">    - &#39;content&#39;: testo del tweet\n</span>
+<span class="sd">    - &#39;reshared&#39;: contenuto di un eventuale post ricondiviso\n</span>
+<span class="sd">    - &#39;images&#39;: immagini contenute nel tweet\n</span>
+<span class="sd">    - &#39;videos&#39;: video contenuti nel tweet\n</span>
 <span class="sd">    - &#39;comments&#39;: numero di commenti\n</span>
 <span class="sd">    - &#39;reposts&#39;: numero di repost\n</span>
 <span class="sd">    - &#39;likes&#39;: numero di like\n</span>
 <span class="sd">    - &#39;views&#39;: numero di visualizzazioni\n</span>
 <span class="sd">    - &#39;url&#39;: url del tweet\n</span>
-<span class="sd">    - &#39;images&#39;: immagini contenute nel tweet\n</span>
-<span class="sd">    - &#39;videos&#39;: video contenuti nel tweet\n</span>
-<span class="sd">    :param lines: list, lista di elementi che che rappresentano il tweet\n</span>
+<span class="sd">    :param tweet: list, lista di elementi che che rappresentano il tweet\n</span>
 <span class="sd">    :return: oggetto con il formato descritto in precedenza\n</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Skip invalid posts</span>
 
-    <span class="n">username</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">username_tag</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">data_pubblicazione</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_pubblicazione</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Controlla se la data ha solo giorno e mese</span>
-        <span class="n">data_pubblicazione</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># So che il contenuto del post si trova dalla quarta riga in poi. Utilizzando un&#39;espressione regolare, posso ignorare le righe che contengono solo numeri.</span>
-    <span class="c1"># Ovvero quelle righe che contengono solo il numero di like, commenti, condivisioni, ecc.</span>
-    <span class="n">contenuto_lines</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
-    <span class="n">contenuto</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">contenuto_lines</span> <span class="k">if</span>
-                         <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\d+(\.\d+)?$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^https://&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
+    <span class="n">username_tag</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="c1"># Considerando tutti gli elementi di lines prendo solo quelli che contengono solo numeri e li inserisco in una lista</span>
-    <span class="n">numeri</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^\d+(\.\d+)?$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())]</span>
+    <span class="n">data_pubblicazione</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">contenuto</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tweet</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+    <span class="n">ricondivisione</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="n">images</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+
+    <span class="n">videos</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+
+    <span class="n">numeri</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+\.?\d*&#39;</span><span class="p">,</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">numeri</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">commenti</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">repost</span> <span class="o">=</span> <span class="n">numeri</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -363,68 +329,50 @@
         <span class="n">like</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">visualizzazioni</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Creo una lista di tutti le linee che iniziano con la stringa &#39;https://&#39; o &#39;http://&#39;</span>
-        <span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span>
-                 <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;https://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
-                     <span class="s1">&#39;blob:&#39;</span><span class="p">)]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
 
-        <span class="c1"># Controllo che la lista non sia vuota, se lo è scarto il post</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">links</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="c1"># Prendo il primo link della lista, che sarà l&#39;url del post</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">links</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Ora, dal secondo elemento in poi, tutti gli elementi della lista che non iniziano con la stringa &#39;blob:&#39; sono i link delle immagini</span>
-        <span class="c1"># Questo perché i link che iniziano con &#39;blob:&#39; sono relativi ai video.</span>
-        <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">)]</span>
-
-        <span class="c1"># I link che invece iniziano con &#39;blob:&#39; sono i link dei video. Vengono quindi aggiunti alla lista dei video, rimuovendo la stringa &#39;blob:&#39;.</span>
-        <span class="n">videos</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">link</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;blob:&#39;</span><span class="p">)]</span>
-
-        <span class="c1"># Ritorno il post in formato json</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
-            <span class="s1">&#39;tag_username&#39;</span><span class="p">:</span> <span class="n">username_tag</span><span class="p">,</span>
-            <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">data_pubblicazione</span><span class="p">,</span>
-            <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">contenuto</span><span class="p">,</span>
-            <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="n">commenti</span><span class="p">,</span>
-            <span class="s1">&#39;reposts&#39;</span><span class="p">:</span> <span class="n">repost</span><span class="p">,</span>
-            <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">like</span><span class="p">,</span>
-            <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="n">visualizzazioni</span><span class="p">,</span>
-            <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span>
-            <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="n">images</span><span class="p">,</span>
-            <span class="s1">&#39;videos&#39;</span><span class="p">:</span> <span class="n">videos</span>
-        <span class="p">}</span></div>
+    <span class="c1"># Ritorno il post in formato json</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+        <span class="s1">&#39;tag_username&#39;</span><span class="p">:</span> <span class="n">username_tag</span><span class="p">,</span>
+        <span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">data_pubblicazione</span><span class="p">,</span>
+        <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">contenuto</span><span class="p">,</span>
+        <span class="s1">&#39;reshared&#39;</span><span class="p">:</span> <span class="n">ricondivisione</span><span class="p">,</span>
+        <span class="s1">&#39;images&#39;</span><span class="p">:</span> <span class="n">images</span><span class="p">,</span>
+        <span class="s1">&#39;videos&#39;</span><span class="p">:</span> <span class="n">videos</span><span class="p">,</span>
+        <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="n">commenti</span><span class="p">,</span>
+        <span class="s1">&#39;reposts&#39;</span><span class="p">:</span> <span class="n">repost</span><span class="p">,</span>
+        <span class="s1">&#39;likes&#39;</span><span class="p">:</span> <span class="n">like</span><span class="p">,</span>
+        <span class="s1">&#39;views&#39;</span><span class="p">:</span> <span class="n">visualizzazioni</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url</span>
+    <span class="p">}</span></div>
 
 
 
-<div class="viewcode-block" id="read_parse_save">
-<a class="viewcode-back" href="../../../../../utils_x_chrome.html#src.X_scraping.chrome.utils.utils.read_parse_save">[docs]</a>
-<span class="k">def</span> <span class="nf">read_parse_save</span><span class="p">(</span><span class="n">posts_to_save</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_and_save">
+<a class="viewcode-back" href="../../../../../utils_x_chrome.html#src.X_scraping.chrome.utils.utils.parse_and_save">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_and_save</span><span class="p">(</span><span class="n">tweets_to_save</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script</span>
 <span class="sd">    &#39;tweet_scraper.py&#39;. Alla funzione viene passata una lista che contiene tutte le righe dell&#39;html estratto. Righe che quindi</span>
 <span class="sd">    rappresentano i vari tweet da estrarre. Per prima cosa con la funzione &#39;read_posts()&#39; i post vengono raggruppati e divisi</span>
 <span class="sd">    in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.</span>
 <span class="sd">    A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione &#39;parse_post()&#39; e poi salvato a db.\n</span>
-<span class="sd">    :param posts_to_save: list, lista che contiene tutte le righe dell&#39;html estratto\n</span>
+<span class="sd">    :param tweets_to_save: list, lista che contiene tutte le righe dell&#39;html estratto\n</span>
 <span class="sd">    :param group_name: str, nome del gruppo target che sto analizzando\n</span>
 <span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
 <span class="sd">    :return: None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">posts_lines</span> <span class="o">=</span> <span class="n">read_posts</span><span class="p">(</span><span class="n">posts_to_save</span><span class="p">)</span>
 
     <span class="c1"># Connessione alla collezione dati</span>
     <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">group_name</span><span class="p">)</span>
 
     <span class="c1"># Parso ogni post e lo aggiungo al database</span>
-    <span class="k">for</span> <span class="n">post_lines</span> <span class="ow">in</span> <span class="n">posts_lines</span><span class="p">:</span>
-        <span class="n">parsed_post</span> <span class="o">=</span> <span class="n">parse_post</span><span class="p">(</span><span class="n">post_lines</span><span class="p">)</span>
-
-        <span class="c1"># Salvo il post parsato nel database</span>
-        <span class="k">if</span> <span class="n">parsed_post</span><span class="p">:</span>
-            <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">parsed_post</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span></div>
+    <span class="k">for</span> <span class="n">tweet</span> <span class="ow">in</span> <span class="n">tweets_to_save</span><span class="p">:</span>
+        <span class="n">parsed_tweet</span> <span class="o">=</span> <span class="n">parse_tweet</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span>
+        <span class="c1"># Salvo il post parsato nel database, se non è None</span>
+        <span class="k">if</span> <span class="n">parsed_tweet</span><span class="p">:</span>
+            <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">parsed_tweet</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span></div>
 
 
 
