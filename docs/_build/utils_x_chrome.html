@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="db_to_csv" href="db_to_csv_x_chrome.html" />
-    <link rel="prev" title="Google Chrome" href="Google_Chrome.html" /> 
+    <link rel="next" title="Firefox" href="Firefox.html" />
+    <link rel="prev" title="beautifulsoup_analisys" href="beautifulsoup_analisys_chrome.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,6 +49,12 @@
 <li class="toctree-l1"><a class="reference internal" href="Telegram_scraper.html">Telegram</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="X_scraper.html">X</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="Google_Chrome.html">Google Chrome</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="db_to_csv_x_chrome.html">db_to_csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_chrome.html">drop_data_collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="related_user_finder_chrome.html">related_user_finder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tweet_scraper_chrome.html">tweet_scraper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_info_scraper_chrome.html">user_info_scraper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_chrome.html">beautifulsoup_analisys</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">utils</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.check_limited_user"><code class="docutils literal notranslate"><span class="pre">check_limited_user()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.check_user"><code class="docutils literal notranslate"><span class="pre">check_user()</span></code></a></li>
@@ -56,20 +62,14 @@
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.parse_post"><code class="docutils literal notranslate"><span class="pre">parse_post()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.parse_and_save"><code class="docutils literal notranslate"><span class="pre">parse_and_save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.parse_tweet"><code class="docutils literal notranslate"><span class="pre">parse_tweet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.read_parse_save"><code class="docutils literal notranslate"><span class="pre">read_parse_save()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.read_posts"><code class="docutils literal notranslate"><span class="pre">read_posts()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.save_user_info_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_user_info_to_mongo()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.chrome.utils.utils.x_login"><code class="docutils literal notranslate"><span class="pre">x_login()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="db_to_csv_x_chrome.html">db_to_csv</a></li>
-<li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_chrome.html">drop_data_collection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="related_user_finder_chrome.html">related_user_finder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tweet_scraper_chrome.html">tweet_scraper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_info_scraper_chrome.html">user_info_scraper</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="Firefox.html">Firefox</a></li>
@@ -202,8 +202,30 @@ tastiera per premerlo. In caso contrario l’utente non è limitato e si va avan
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.parse_post">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#parse_post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.parse_post" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.parse_and_save">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_and_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweets_to_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#parse_and_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.parse_and_save" title="Link to this definition"></a></dt>
+<dd><p>Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script
+‘tweet_scraper.py’. Alla funzione viene passata una lista che contiene tutte le righe dell’html estratto. Righe che quindi
+rappresentano i vari tweet da estrarre. Per prima cosa con la funzione ‘read_posts()’ i post vengono raggruppati e divisi
+in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.
+A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione ‘parse_post()’ e poi salvato a db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweets_to_save</strong> – list, lista che contiene tutte le righe dell’html estratto</p></li>
+<li><p><strong>group_name</strong> – str, nome del gruppo target che sto analizzando</p></li>
+<li><p><strong>client</strong> – oggetto che rappresenta la connessione a mongoDB</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.parse_tweet">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#parse_tweet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.parse_tweet" title="Link to this definition"></a></dt>
 <dd><p>Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista
 di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo
 opportuno ed estrarne il giusto contenuto informativo. Ogni tweet viene infatti organizzato in un oggetto con la
@@ -213,17 +235,18 @@ seguente struttura:</p>
 <li><p>‘tag_username’: username_tag dell’autore del tweet</p></li>
 <li><p>‘date’: data di pubblicazione</p></li>
 <li><p>‘content’: testo del tweet</p></li>
+<li><p>‘reshared’: contenuto di un eventuale post ricondiviso</p></li>
+<li><p>‘images’: immagini contenute nel tweet</p></li>
+<li><p>‘videos’: video contenuti nel tweet</p></li>
 <li><p>‘comments’: numero di commenti</p></li>
 <li><p>‘reposts’: numero di repost</p></li>
 <li><p>‘likes’: numero di like</p></li>
 <li><p>‘views’: numero di visualizzazioni</p></li>
 <li><p>‘url’: url del tweet</p></li>
-<li><p>‘images’: immagini contenute nel tweet</p></li>
-<li><p>‘videos’: video contenuti nel tweet</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lines</strong> – list, lista di elementi che che rappresentano il tweet</p>
+<dd class="field-odd"><p><strong>tweet</strong> – list, lista di elementi che che rappresentano il tweet</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>oggetto con il formato descritto in precedenza</p>
@@ -241,45 +264,6 @@ seguente struttura:</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>dict, contenuto del file JSON</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.read_parse_save">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_parse_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posts_to_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#read_parse_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.read_parse_save" title="Link to this definition"></a></dt>
-<dd><p>Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script
-‘tweet_scraper.py’. Alla funzione viene passata una lista che contiene tutte le righe dell’html estratto. Righe che quindi
-rappresentano i vari tweet da estrarre. Per prima cosa con la funzione ‘read_posts()’ i post vengono raggruppati e divisi
-in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.
-A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione ‘parse_post()’ e poi salvato a db.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>posts_to_save</strong> – list, lista che contiene tutte le righe dell’html estratto</p></li>
-<li><p><strong>group_name</strong> – str, nome del gruppo target che sto analizzando</p></li>
-<li><p><strong>client</strong> – oggetto che rappresenta la connessione a mongoDB</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.read_posts">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_posts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filtered_lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#read_posts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.read_posts" title="Link to this definition"></a></dt>
-<dd><p>Funzione che si occupa di leggere i post e dividerli in base al numero di righe. In particolare, dell’insieme di righe
-che ricevo in input so che ogni tweet inizia con una riga di questo tipo: <a class="reference external" href="mailto:'&#37;&#52;&#48;tag_utente">‘<span>&#64;</span>tag_utente</a>’. Sfruttando questa informazione
-la funzione riesce ad organizzare questo insieme di righe in una lista di tweet. Ovvero so che fino alla prossima riga che
-inizia con il carattere ‘&#64;’ tutte le righe che mi trovo davanti saranno informazioni relative ad un unico tweet.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filtered_lines</strong> – list, lista di linee non vuote che contengono info sui tweet da estrarre</p>
-</dd>
-<dt class="field-even">Return posts<span class="colon">:</span></dt>
-<dd class="field-even"><p>list, lista dei tweet sui quali effettuare il parsing</p>
 </dd>
 </dl>
 </dd></dl>
@@ -345,8 +329,8 @@ procedimento per i campi username e password.
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="Google_Chrome.html" class="btn btn-neutral float-left" title="Google Chrome" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="db_to_csv_x_chrome.html" class="btn btn-neutral float-right" title="db_to_csv" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="beautifulsoup_analisys_chrome.html" class="btn btn-neutral float-left" title="beautifulsoup_analisys" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Firefox.html" class="btn btn-neutral float-right" title="Firefox" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

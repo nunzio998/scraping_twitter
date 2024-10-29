@@ -80,6 +80,8 @@
              
   <section id="x">
 <h1>X<a class="headerlink" href="#x" title="Link to this heading"></a></h1>
+<p>Gli script relativi a questa fonte hanno l’obiettivo di estrarre dati da X a partire da ricerche effettuate sulla piattaforma
+sulla base di parole chiave. I dati raccolti sono generalmente relativi a contenuti pubblicati e ad utenti ritenuti d’interesse.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -92,9 +94,18 @@
 <li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_chrome.html#src.X_scraping.chrome.drop_data_collection.drop_data"><code class="docutils literal notranslate"><span class="pre">drop_data()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="related_user_finder_chrome.html">related_user_finder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tweet_scraper_chrome.html">tweet_scraper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_info_scraper_chrome.html">user_info_scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="related_user_finder_chrome.html">related_user_finder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="related_user_finder_chrome.html#src.X_scraping.chrome.related_user_finder.find_related_users"><code class="docutils literal notranslate"><span class="pre">find_related_users()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tweet_scraper_chrome.html">tweet_scraper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tweet_scraper_chrome.html#src.X_scraping.chrome.tweet_scraper.scrape_tweets"><code class="docutils literal notranslate"><span class="pre">scrape_tweets()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user_info_scraper_chrome.html">user_info_scraper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_info_scraper_chrome.html#src.X_scraping.chrome.user_info_scraper.scrape_user_info"><code class="docutils literal notranslate"><span class="pre">scrape_user_info()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="beautifulsoup_analisys_chrome.html">beautifulsoup_analisys</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_chrome.html#src.X_scraping.chrome.beautifulsoup_analisys.analisys_with_beautifulsoup"><code class="docutils literal notranslate"><span class="pre">analisys_with_beautifulsoup()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_chrome.html#src.X_scraping.chrome.beautifulsoup_analisys.beautifulsoup_user_analisys"><code class="docutils literal notranslate"><span class="pre">beautifulsoup_user_analisys()</span></code></a></li>
@@ -108,10 +119,9 @@
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.parse_post"><code class="docutils literal notranslate"><span class="pre">parse_post()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.parse_and_save"><code class="docutils literal notranslate"><span class="pre">parse_and_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.parse_tweet"><code class="docutils literal notranslate"><span class="pre">parse_tweet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.read_parse_save"><code class="docutils literal notranslate"><span class="pre">read_parse_save()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.read_posts"><code class="docutils literal notranslate"><span class="pre">read_posts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.save_user_info_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_user_info_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_chrome.html#src.X_scraping.chrome.utils.utils.x_login"><code class="docutils literal notranslate"><span class="pre">x_login()</span></code></a></li>
@@ -128,12 +138,18 @@
 <li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_firefox.html#src.X_scraping.firefox.drop_data_collection.drop_data"><code class="docutils literal notranslate"><span class="pre">drop_data()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="related_user_finder_firefox.html">related_user_finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="related_user_finder_firefox.html">related_user_finder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="related_user_finder_firefox.html#src.X_scraping.firefox.related_user_finder.find_related_users"><code class="docutils literal notranslate"><span class="pre">find_related_users()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tweet_scraper_firefox.html">tweet_scraper</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tweet_scraper_firefox.html#src.X_scraping.firefox.tweet_scraper.scrape_tweets"><code class="docutils literal notranslate"><span class="pre">scrape_tweets()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="user_info_scraper_firefox.html">user_info_scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_info_scraper_firefox.html">user_info_scraper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_info_scraper_firefox.html#src.X_scraping.firefox.user_info_scraper.scrape_user_info"><code class="docutils literal notranslate"><span class="pre">scrape_user_info()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="beautifulsoup_analisys_firefox.html">beautifulsoup_analisys</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup"><code class="docutils literal notranslate"><span class="pre">analisys_with_beautifulsoup()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys"><code class="docutils literal notranslate"><span class="pre">beautifulsoup_user_analisys()</span></code></a></li>
@@ -147,10 +163,9 @@
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.get_db"><code class="docutils literal notranslate"><span class="pre">get_db()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_post"><code class="docutils literal notranslate"><span class="pre">parse_post()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_and_save"><code class="docutils literal notranslate"><span class="pre">parse_and_save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_tweet"><code class="docutils literal notranslate"><span class="pre">parse_tweet()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_parse_save"><code class="docutils literal notranslate"><span class="pre">read_parse_save()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_posts"><code class="docutils literal notranslate"><span class="pre">read_posts()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_user_info_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_user_info_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html#src.X_scraping.firefox.utils.utils.x_login"><code class="docutils literal notranslate"><span class="pre">x_login()</span></code></a></li>
