@@ -164,39 +164,6 @@ def save_user_info_to_mongo(data, collection):
 
 # config_data = read_json('mongo_utils.json')
 
-# Leggo il file e divido i post
-def read_posts(filtered_lines):
-    """
-    Funzione che si occupa di leggere i post e dividerli in base al numero di righe. In particolare, dell'insieme di righe
-    che ricevo in input so che ogni tweet inizia con una riga di questo tipo: '@tag_utente'. Sfruttando questa informazione
-    la funzione riesce ad organizzare questo insieme di righe in una lista di tweet. Ovvero so che fino alla prossima riga che
-    inizia con il carattere '@' tutte le righe che mi trovo davanti saranno informazioni relative ad un unico tweet.\n
-    :param filtered_lines: list, lista di linee non vuote che contengono info sui tweet da estrarre\n
-    :return posts: list, lista dei tweet sui quali effettuare il parsing
-    """
-    posts = []  # lista che conterrà tutti i post
-    post = []  # lista di appoggio temporanea per salvare le righe di un post
-
-    for i in range(0, len(filtered_lines)):
-        # controllo se lines[i] è l'ultimo elemento della lista
-        stripped_line = filtered_lines[i].strip()
-
-        # se sono all'ultimo elemento della lista, aggiungo la riga a post e poi aggiungo post a posts
-        if i == len(filtered_lines) - 1:
-            post.append(stripped_line)
-            posts.append(post)
-            break  # esco dal ciclo for
-
-        # Controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.
-        # se cosi fosse il carattere successivo sarà un tag_username e quindi inizierà con '@'. In tal caso non aggiungo a post e vado avanti
-        if (not filtered_lines[i + 1].strip()[0] == '@') or i == 0:
-            post.append(stripped_line)
-        else:  # ho letto un intero post
-            posts.append(post)
-            post = [stripped_line]  # resetto la lista di appoggio per il prossimo post
-    return posts
-
-
 def parse_tweet(tweet):
     """
     Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista
