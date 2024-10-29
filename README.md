@@ -296,13 +296,14 @@ Il database contiene le seguenti collection:
         "tag_username": "string",
         "date": "string",
         "content": "string",
+        "reshared": "array",
+        "images": "array",
+        "videos": "array",
         "commments": "string",
         "reposts": "string",
         "likes": "string",
         "views": "string",
-        "url": "string",
-        "images": "array",
-        "videos": "array"
+        "url": "string"
     }
     ```
 - **target_groups**: contiene i nomi dei gruppi hacker target. <br>
