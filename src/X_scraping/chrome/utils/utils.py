@@ -163,41 +163,7 @@ def save_user_info_to_mongo(data, collection):
 
 # config_data = read_json('mongo_utils.json')
 
-# Leggo il file e divido i post
-def read_posts(filtered_lines):
-    """
-    Funzione che si occupa di leggere i post e dividerli in base al numero di righe. In particolare, dell'insieme di righe
-    che ricevo in input so che ogni tweet inizia con una riga di questo tipo: '@tag_utente'. Sfruttando questa informazione
-    la funzione riesce ad organizzare questo insieme di righe in una lista di tweet. Ovvero so che fino alla prossima riga che
-    inizia con il carattere '@' tutte le righe che mi trovo davanti saranno informazioni relative ad un unico tweet.\n
-    :param filtered_lines: list, lista di linee non vuote che contengono info sui tweet da estrarre\n
-    :return posts: list, lista dei tweet sui quali effettuare il parsing
-    """
-    posts = []  # lista che conterrà tutti i post
-    post = []  # lista di appoggio temporanea per salvare le righe di un post
-
-    for i in range(0, len(filtered_lines)):
-        # controllo se lines[i] è l'ultimo elemento della lista
-        stripped_line = filtered_lines[i].strip()
-
-        # se sono all'ultimo elemento della lista, aggiungo la riga a post e poi aggiungo post a posts
-        if i == len(filtered_lines) - 1:
-            post.append(stripped_line)
-            posts.append(post)
-            break  # esco dal ciclo for
-
-        # controllo che il carattere in cui mi trovo non sia il primo di un nuovo post.
-        # se cosi fosse il carattere successivo sarà un tag_username e quindi inizierà con '@'. In tal caso non aggiungo a post e vado avanti
-        if (not filtered_lines[i + 1].strip()[0] == '@') or i == 0:
-            post.append(stripped_line)
-        else:  # ho letto un intero post
-            posts.append(post)
-            post = [stripped_line]  # resetto la lista di appoggio per il prossimo post
-    return posts
-
-
-# Prende la lista contenente i post e estrare da questi solo le info utili in formato json
-def parse_post(lines):
+def parse_tweet(tweet):
     """
     Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista
     di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo
@@ -207,34 +173,36 @@ def parse_post(lines):
     - 'tag_username': username_tag dell'autore del tweet\n
     - 'date': data di pubblicazione\n
     - 'content': testo del tweet\n
+    - 'reshared': contenuto di un eventuale post ricondiviso\n
+    - 'images': immagini contenute nel tweet\n
+    - 'videos': video contenuti nel tweet\n
     - 'comments': numero di commenti\n
     - 'reposts': numero di repost\n
     - 'likes': numero di like\n
     - 'views': numero di visualizzazioni\n
     - 'url': url del tweet\n
-    - 'images': immagini contenute nel tweet\n
-    - 'videos': video contenuti nel tweet\n
-    :param lines: list, lista di elementi che che rappresentano il tweet\n
+    :param tweet: list, lista di elementi che che rappresentano il tweet\n
     :return: oggetto con il formato descritto in precedenza\n
     """
-    if len(lines) < 4:
+    if len(tweet) < 9:
         return None  # Skip invalid posts
 
-    username = lines[0].strip()
-    username_tag = lines[1].strip()
-    #TODO: controllo sul formato della data. Inoltre se la data è ad esempio: '16h' dovrò aggiungere la data corrente
-    data_pubblicazione = lines[3].strip()
-    if len(data_pubblicazione.split()) == 2:  # Controlla se la data ha solo giorno e mese
-        data_pubblicazione += f" {datetime.now().year}"
+    username = tweet[0]
 
-    # So che il contenuto del post si trova dalla quarta riga in poi. Utilizzando un'espressione regolare, posso ignorare le righe che contengono solo numeri.
-    # Ovvero quelle righe che contengono solo il numero di like, commenti, condivisioni, ecc.
-    contenuto_lines = lines[4:]
-    contenuto = ' '.join(line.strip() for line in contenuto_lines if
-                         not re.match(r'^\d+(\.\d+)?$', line.strip()) and not re.match(r'^https://', line.strip()))
+    username_tag = tweet[1]
 
-    # Considerando tutti gli elementi di lines prendo solo quelli che contengono solo numeri e li inserisco in una lista
-    numeri = [line.strip() for line in lines if re.match(r'^\d+(\.\d+)?$', line.strip())]
+    data_pubblicazione = tweet[2]
+
+    contenuto = ' '.join(tweet[3].split())
+
+    ricondivisione = tweet[4]
+
+    images = tweet[5]
+
+    videos = tweet[6]
+
+    numeri = re.findall(r'\d+\.?\d*', tweet[7])
+
     if len(numeri) == 4:
         commenti = numeri[0]
         repost = numeri[1]
@@ -261,65 +229,47 @@ def parse_post(lines):
         like = None
         visualizzazioni = None
 
-        # Creo una lista di tutti le linee che iniziano con la stringa 'https://' o 'http://'
-        links = [line.strip() for line in lines if
-                 line.strip().startswith('https://') or line.strip().startswith('http://') or line.strip().startswith(
-                     'blob:')]
+    url = tweet[8]
 
-        # Controllo che la lista non sia vuota, se lo è scarto il post
-        if not links:
-            return None
-
-        # Prendo il primo link della lista, che sarà l'url del post
-        url = links[0]
-
-        # Ora, dal secondo elemento in poi, tutti gli elementi della lista che non iniziano con la stringa 'blob:' sono i link delle immagini
-        # Questo perché i link che iniziano con 'blob:' sono relativi ai video.
-        images = [link for link in links[1:] if not link.startswith('blob:')]
-
-        # I link che invece iniziano con 'blob:' sono i link dei video. Vengono quindi aggiunti alla lista dei video, rimuovendo la stringa 'blob:'.
-        videos = [link.replace('blob:', '') for link in links[1:] if link.startswith('blob:')]
-
-        # Ritorno il post in formato json
-        return {
-            'username': username,
-            'tag_username': username_tag,
-            'date': data_pubblicazione,
-            'content': contenuto,
-            'comments': commenti,
-            'reposts': repost,
-            'likes': like,
-            'views': visualizzazioni,
-            'url': url,
-            'images': images,
-            'videos': videos
-        }
+    # Ritorno il post in formato json
+    return {
+        'username': username,
+        'tag_username': username_tag,
+        'date': data_pubblicazione,
+        'content': contenuto,
+        'reshared': ricondivisione,
+        'images': images,
+        'videos': videos,
+        'comments': commenti,
+        'reposts': repost,
+        'likes': like,
+        'views': visualizzazioni,
+        'url': url
+    }
 
 
-def read_parse_save(posts_to_save, group_name, client):
+def parse_and_save(tweets_to_save, group_name, client):
     """
     Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script
     'tweet_scraper.py'. Alla funzione viene passata una lista che contiene tutte le righe dell'html estratto. Righe che quindi
     rappresentano i vari tweet da estrarre. Per prima cosa con la funzione 'read_posts()' i post vengono raggruppati e divisi
     in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.
     A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione 'parse_post()' e poi salvato a db.\n
-    :param posts_to_save: list, lista che contiene tutte le righe dell'html estratto\n
+    :param tweets_to_save: list, lista che contiene tutte le righe dell'html estratto\n
     :param group_name: str, nome del gruppo target che sto analizzando\n
     :param client: oggetto che rappresenta la connessione a mongoDB\n
     :return: None
     """
-    posts_lines = read_posts(posts_to_save)
 
     # Connessione alla collezione dati
     collection = connect_to_mongo_collection(client, group_name)
 
     # Parso ogni post e lo aggiungo al database
-    for post_lines in posts_lines:
-        parsed_post = parse_post(post_lines)
-
-        # Salvo il post parsato nel database
-        if parsed_post:
-            save_to_mongo(parsed_post, collection)
+    for tweet in tweets_to_save:
+        parsed_tweet = parse_tweet(tweet)
+        # Salvo il post parsato nel database, se non è None
+        if parsed_tweet:
+            save_to_mongo(parsed_tweet, collection)
 
 
 def check_user(driver, user):
