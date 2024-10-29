@@ -24,51 +24,82 @@ def analisys_with_beautifulsoup(response_html):
     soup = soup.body
 
     # Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)
-    results = soup.find_all("div", class_="css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu")
+    results = soup.find_all("article", class_="css-175oi2r r-18u37iz r-1udh08x r-1c4vpko r-1c7gwzm r-o7ynqc r-6416eg r-1ny4l3l r-1loqt21")
 
     # estraggo il testo dai div ottenuti e lo salvo in un file
-    i = 0
-    lines = []
+    tweets = []
     for result in results:
-        tmp_list = result.text.split("\n")  # lista temporanea per salvare il testo del tweet
-        # aggiungo la lista temporanea alla lista delle righe
-        for line in tmp_list:
-            lines.append(line)
-        url = result.find("a",
-                          class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
-        lines.append(f"https://x.com{url['href']}")  # aggiungo l'url del tweet
-        # lines.append(f"https://x.com{urls[i]['href']}")  # aggiungo l'url del tweet
+
+        div_username = result.find("div", class_="css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs")
+        username = div_username.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
+        # print(f"username: {username}")
+
+        div_tag_username = result.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+        tag_username = div_tag_username.text.strip()
+        # print(f"tag:{tag_username}")
+
+        div_date = result.find("div", class_="css-175oi2r r-18u37iz r-1q142lx")
+        date = div_date.find("time")['datetime']
+        # print(f"data:{date}")
+
+        div_contenuto = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
+        content = div_contenuto.text.strip()
+        # print(f"contenuto:{content}")
+
+        # Provo a cercare contenuti ricondivisi
+        reshared = []
+        try:
+            div_ricondiviso = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
+
+            div_utente_ricondiviso = div_ricondiviso.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+            utente_ricondiviso = div_utente_ricondiviso.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
+            contenuto_ricondiviso = None
+            try:
+                div_contenuto_ricondiviso = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim r-14gqq1x")
+                contenuto_ricondiviso = div_contenuto_ricondiviso.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").strip()
+            except TypeError:
+                print("Nessun contenuto ricondivisibile..")
+
+            reshared = [utente_ricondiviso, contenuto_ricondiviso]
+        except AttributeError:
+            print("Nessun contenuto ricondiviso..")
 
         # Cerco presenza d'immagini e/o video nei tweet
+        img_list = []
         try:
             # Trovo il div che contiene i media del post
             div_imgs = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
             # Trovo tutte le immagini presenti nel div
             imgs = div_imgs.find_all("img", class_="css-9pa8cd")
+            img_list = []
             for img in imgs:
-                lines.append(img['src'])
-                print(f"IMMAGINE: {img['src']}")
+                img_list.append(img['src'])
         except AttributeError:
             print("Immagini non trovate...")
 
+        video_list = []
         try:
             # Trovo il div che contiene i media del post
             div_videos = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
             # Trovo tutti i video presenti nel div
             videos = div_videos.find_all("source", attrs={'type': 'video/mp4'})
+            video_list = []
             for video in videos:
-                lines.append(video['src'])
-                print(f"VIDEO: {video['src']}")
+                video_list.append(video['src'])
         except AttributeError:
             print("Video non trovati...")
 
-        i += 1
+        div_numeri = result.find("div", class_="css-175oi2r r-1kbdv8c r-18u37iz r-1wtj0ep r-1ye8kvj r-1s2bzr4")
+        numbers = div_numeri.text.strip()
 
-    # Filtra le righe vuote
-    filtered_lines = [line.strip() for line in lines if line.strip()]
-    print(filtered_lines)
+        a_url = result.find("a", class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
+        url = f"https://x.com{a_url['href']}"
 
-    return filtered_lines
+        tweet = [username, tag_username, date, content, reshared, img_list, video_list, numbers, url]
+
+        tweets.append(tweet)
+
+    return tweets
 
 
 def beautifulsoup_user_analisys(html_content):
