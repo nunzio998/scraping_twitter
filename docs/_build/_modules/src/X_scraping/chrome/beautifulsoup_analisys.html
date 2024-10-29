@@ -100,51 +100,82 @@
     <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">body</span>
 
     <span class="c1"># Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-1iusvr4 r-16y2uox r-1777fci r-kzbkwu&quot;</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;article&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-18u37iz r-1udh08x r-1c4vpko r-1c7gwzm r-o7ynqc r-6416eg r-1ny4l3l r-1loqt21&quot;</span><span class="p">)</span>
 
     <span class="c1"># estraggo il testo dai div ottenuti e lo salvo in un file</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tweets</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-        <span class="n">tmp_list</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># lista temporanea per salvare il testo del tweet</span>
-        <span class="c1"># aggiungo la lista temporanea alla lista delle righe</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tmp_list</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span>
-                          <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21&quot;</span><span class="p">)</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://x.com</span><span class="si">{</span><span class="n">url</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># aggiungo l&#39;url del tweet</span>
-        <span class="c1"># lines.append(f&quot;https://x.com{urls[i][&#39;href&#39;]}&quot;)  # aggiungo l&#39;url del tweet</span>
+
+        <span class="n">div_username</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs&quot;</span><span class="p">)</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">div_username</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># print(f&quot;username: {username}&quot;)</span>
+
+        <span class="n">div_tag_username</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&quot;</span><span class="p">)</span>
+        <span class="n">tag_username</span> <span class="o">=</span> <span class="n">div_tag_username</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># print(f&quot;tag:{tag_username}&quot;)</span>
+
+        <span class="n">div_date</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-18u37iz r-1q142lx&quot;</span><span class="p">)</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">div_date</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
+        <span class="c1"># print(f&quot;data:{date}&quot;)</span>
+
+        <span class="n">div_contenuto</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim&quot;</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">div_contenuto</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="c1"># print(f&quot;contenuto:{content}&quot;)</span>
+
+        <span class="c1"># Provo a cercare contenuti ricondivisi</span>
+        <span class="n">reshared</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">div_ricondiviso</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-9aw3ui r-1s2bzr4&quot;</span><span class="p">)</span>
+
+            <span class="n">div_utente_ricondiviso</span> <span class="o">=</span> <span class="n">div_ricondiviso</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&quot;</span><span class="p">)</span>
+            <span class="n">utente_ricondiviso</span> <span class="o">=</span> <span class="n">div_utente_ricondiviso</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">contenuto_ricondiviso</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">div_contenuto_ricondiviso</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim r-14gqq1x&quot;</span><span class="p">)</span>
+                <span class="n">contenuto_ricondiviso</span> <span class="o">=</span> <span class="n">div_contenuto_ricondiviso</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nessun contenuto ricondivisibile..&quot;</span><span class="p">)</span>
+
+            <span class="n">reshared</span> <span class="o">=</span> <span class="p">[</span><span class="n">utente_ricondiviso</span><span class="p">,</span> <span class="n">contenuto_ricondiviso</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nessun contenuto ricondiviso..&quot;</span><span class="p">)</span>
 
         <span class="c1"># Cerco presenza d&#39;immagini e/o video nei tweet</span>
+        <span class="n">img_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Trovo il div che contiene i media del post</span>
             <span class="n">div_imgs</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-9aw3ui r-1s2bzr4&quot;</span><span class="p">)</span>
             <span class="c1"># Trovo tutte le immagini presenti nel div</span>
             <span class="n">imgs</span> <span class="o">=</span> <span class="n">div_imgs</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-9pa8cd&quot;</span><span class="p">)</span>
+            <span class="n">img_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">imgs</span><span class="p">:</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMMAGINE: </span><span class="si">{</span><span class="n">img</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">img_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Immagini non trovate...&quot;</span><span class="p">)</span>
 
+        <span class="n">video_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Trovo il div che contiene i media del post</span>
             <span class="n">div_videos</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-9aw3ui r-1s2bzr4&quot;</span><span class="p">)</span>
             <span class="c1"># Trovo tutti i video presenti nel div</span>
             <span class="n">videos</span> <span class="o">=</span> <span class="n">div_videos</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;video/mp4&#39;</span><span class="p">})</span>
+            <span class="n">video_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">video</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">video</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VIDEO: </span><span class="si">{</span><span class="n">video</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">video_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">video</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Video non trovati...&quot;</span><span class="p">)</span>
 
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">div_numeri</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-1kbdv8c r-18u37iz r-1wtj0ep r-1ye8kvj r-1s2bzr4&quot;</span><span class="p">)</span>
+        <span class="n">numbers</span> <span class="o">=</span> <span class="n">div_numeri</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-    <span class="c1"># Filtra le righe vuote</span>
-    <span class="n">filtered_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">filtered_lines</span><span class="p">)</span>
+        <span class="n">a_url</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21&quot;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://x.com</span><span class="si">{</span><span class="n">a_url</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">return</span> <span class="n">filtered_lines</span></div>
+        <span class="n">tweet</span> <span class="o">=</span> <span class="p">[</span><span class="n">username</span><span class="p">,</span> <span class="n">tag_username</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">reshared</span><span class="p">,</span> <span class="n">img_list</span><span class="p">,</span> <span class="n">video_list</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="n">url</span><span class="p">]</span>
+
+        <span class="n">tweets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tweets</span></div>
 
 
 
