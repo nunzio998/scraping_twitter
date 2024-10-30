@@ -107,21 +107,30 @@
     <span class="n">tweets</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
 
-        <span class="n">div_username</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs&quot;</span><span class="p">)</span>
-        <span class="n">username</span> <span class="o">=</span> <span class="n">div_username</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="c1"># print(f&quot;username: {username}&quot;)</span>
+        <span class="c1"># Se non è presente l&#39;autore il tweet viene scartato</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">div_username</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs&quot;</span><span class="p">)</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">div_username</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1"># print(f&quot;username: {username}&quot;)</span>
 
-        <span class="n">div_tag_username</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&quot;</span><span class="p">)</span>
-        <span class="n">tag_username</span> <span class="o">=</span> <span class="n">div_tag_username</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="c1"># print(f&quot;tag:{tag_username}&quot;)</span>
+            <span class="n">div_tag_username</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&quot;</span><span class="p">)</span>
+            <span class="n">tag_username</span> <span class="o">=</span> <span class="n">div_tag_username</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1"># print(f&quot;tag:{tag_username}&quot;)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tweet scartato per assenza autore..&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
 
         <span class="n">div_date</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-175oi2r r-18u37iz r-1q142lx&quot;</span><span class="p">)</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">div_date</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)[</span><span class="s1">&#39;datetime&#39;</span><span class="p">]</span>
         <span class="c1"># print(f&quot;data:{date}&quot;)</span>
 
-        <span class="n">div_contenuto</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim&quot;</span><span class="p">)</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">div_contenuto</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="c1"># print(f&quot;contenuto:{content}&quot;)</span>
+        <span class="c1"># Controllo che il tweet abbia contenuto testuale</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">div_contenuto</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s2">&quot;css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim&quot;</span><span class="p">)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">div_contenuto</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1"># print(f&quot;contenuto:{content}&quot;)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Il tweet non ha contenuto..&quot;</span><span class="p">)</span>
 
         <span class="c1"># Provo a cercare contenuti ricondivisi</span>
         <span class="n">reshared</span> <span class="o">=</span> <span class="p">[]</span>
