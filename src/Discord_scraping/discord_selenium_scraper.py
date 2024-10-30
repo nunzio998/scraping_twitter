@@ -12,11 +12,74 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 import time
+import json
 
 from src.Discord_scraping.utils.utils import read_json, beautifulsoup_analisys, connect_to_mongo, save_to_mongo, \
     connect_to_mongo_collection, \
     disconnect_to_mongo
 import logging
+
+
+def load_cookies(driver, cookies_path="utils/cookies.json"):
+    """
+    Carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium
+    """
+    with open(cookies_path, "r") as file:
+        cookies = json.load(file)
+    for cookie in cookies:
+        driver.add_cookie(cookie)
+
+
+def discord_login(driver, logging, credentials):
+    # Loggarsi su Discord
+    driver.get('https://discord.com/login')
+
+    # Imposto un'attesa esplicita di massimo 60 secondi
+    wait_login = WebDriverWait(driver, 60)
+
+    search_input_login = wait_login.until(EC.visibility_of_element_located((By.ID, 'uid_7')))
+
+    # Controllo la presenza o meno della schermata che specifica la volontà di accedere a Discord col proprio utente o sceglierne un altro.
+    # La schermata compare solitamente dopo un elevato numero di esecuzioni. Se è presente simulo la pressione del bottone "Accedi".
+    try:
+        access_button_field = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div[1]/div[1]/div/div/div/section/div[2]/div[2]/div/div/div[3]/button[1]")
+        access_button_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+    except NoSuchElementException:
+        logging.info("Schermata di selezione utente assente..")
+
+    # Cerco i campi nei quali far inserire automaticamente le credenziali
+    try:
+        email_field = driver.find_element(By.ID, 'uid_7')
+        email_field.send_keys(credentials["email"])
+        time.sleep(2)
+    except NoSuchElementException:
+        logging.info("Tentativo 1: Campo email non trovato..")
+        try:
+            email_field = driver.find_element(By.ID, 'uid_8')
+            email_field.send_keys(credentials["email"])
+            time.sleep(2)
+        except NoSuchElementException:
+            logging.info("Tentativo 2: Campo email non trovato..")
+            logging.info("Impossibile effettuare l'accesso a Discord.")
+            exit(-1)
+
+    try:
+        password_field = driver.find_element(By.ID, 'uid_9')
+        password_field.send_keys(credentials["password"])
+        password_field.send_keys(Keys.RETURN)
+        time.sleep(2)
+    except NoSuchElementException:
+        logging.info("Tentativo 1: Campo password non trovato..")
+        try:
+            password_field = driver.find_element(By.ID, 'uid_10')
+            password_field.send_keys(credentials["password"])
+            password_field.send_keys(Keys.RETURN)
+            time.sleep(2)
+        except NoSuchElementException:
+            logging.info("Tentativo 2: Campo password non trovato..")
+            logging.info("Impossibile effettuare l'accesso a Discord.")
+            exit(-1)
 
 
 def discord_scraper():
@@ -40,29 +103,27 @@ def discord_scraper():
     # Inizializzo driver  Firefox
     driver = webdriver.Firefox(service=service)
 
-    # Loggarsi manualmente su Discord
-    driver.get('https://discord.com/login')
+    # Effettuo il login a Discord
+    discord_login(driver, logging, credentials)
 
-    # Imposto un'attesa esplicita di massimo 60 secondi
-    wait_login = WebDriverWait(driver, 60)
+    time.sleep(1)
 
-    search_input_login = wait_login.until(EC.visibility_of_element_located((By.ID, 'uid_7')))
-
-    # Cerco i campi nei quali far inserire automaticamente le credenziali
+    # Cerco la presenza del captcha, se presente lo aggiro.
     try:
-        email_field = driver.find_element(By.ID, 'uid_7')
-        email_field.send_keys(credentials["email"])
-        time.sleep(1)
-    except NoSuchElementException:
-        logging.exception("Campo email non trovato..")
+        captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
+        logging.exception("Captcha presente, carico cookies..")
 
-    try:
-        password_field = driver.find_element(By.ID, 'uid_9')
-        password_field.send_keys(credentials["password"])
-        password_field.send_keys(Keys.RETURN)
-        time.sleep(1)
+        # Carico i cookies e faccio il refresh del driver
+        load_cookies(driver)
+        # driver.refresh()
+
+        # Ripeto la procedura di login
+        discord_login(driver, logging, credentials)
+        time.sleep(2)
     except NoSuchElementException:
-        logging.exception("Campo password non trovato..")
+        logging.info("Captcha non presente..")
+
+    time.sleep(1)
 
     # Mi connetto al database
     client = connect_to_mongo()
