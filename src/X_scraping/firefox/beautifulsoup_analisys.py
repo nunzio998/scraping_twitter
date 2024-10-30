@@ -31,21 +31,30 @@ def analisys_with_beautifulsoup(response_html):
     tweets = []
     for result in results:
 
-        div_username = result.find("div", class_="css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs")
-        username = div_username.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
-        # print(f"username: {username}")
+        # Se non è presente l'autore il tweet viene scartato
+        try:
+            div_username = result.find("div", class_="css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs")
+            username = div_username.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
+            # print(f"username: {username}")
 
-        div_tag_username = result.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
-        tag_username = div_tag_username.text.strip()
-        # print(f"tag:{tag_username}")
+            div_tag_username = result.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+            tag_username = div_tag_username.text.strip()
+            # print(f"tag:{tag_username}")
+        except AttributeError:
+            print("Tweet scartato per assenza autore..")
+            continue
 
         div_date = result.find("div", class_="css-175oi2r r-18u37iz r-1q142lx")
         date = div_date.find("time")['datetime']
         # print(f"data:{date}")
 
-        div_contenuto = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
-        content = div_contenuto.text.strip()
-        # print(f"contenuto:{content}")
+        # Controllo che il tweet abbia contenuto testuale
+        try:
+            div_contenuto = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
+            content = div_contenuto.text.strip()
+            # print(f"contenuto:{content}")
+        except AttributeError:
+            print("Il tweet non ha contenuto..")
 
         # Provo a cercare contenuti ricondivisi
         reshared = []
