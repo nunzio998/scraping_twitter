@@ -173,6 +173,7 @@ def parse_tweet(tweet):
     - 'username': username dell'autore del tweet\n
     - 'tag_username': username_tag dell'autore del tweet\n
     - 'date': data di pubblicazione\n
+    - 'scrape_date': data in cui il dato è stato estratto ed elaborato dal codice\n
     - 'content': testo del tweet\n
     - 'reshared': contenuto di un eventuale post ricondiviso\n
     - 'images': immagini contenute nel tweet\n
@@ -237,6 +238,7 @@ def parse_tweet(tweet):
         'username': username,
         'tag_username': username_tag,
         'date': data_pubblicazione,
+        'scrape_date': datetime.today().strftime('%Y-%m-%d'),
         'content': contenuto,
         'reshared': ricondivisione,
         'images': images,
