@@ -71,7 +71,7 @@ def scrape_tweets():
 
     last_update = coll.find_one({"id": "01"}).get("last_update")
 
-    for group in ["Killnet"]:
+    for group in target_list:
 
         print(f"{group} in lavorazione..")
 
