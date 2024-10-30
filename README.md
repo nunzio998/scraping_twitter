@@ -329,6 +329,14 @@ Il database contiene le seguenti collection:
         "website": "string"
     }
     ```
+- **last_update**: contiene l'informazione relativa all'ultima esecuzione del codice e quindi all'ultima ricerca effettuata. Tale informazione viene chiaramente aggiornata ad ogni esecuzione. <br>
+    La struttura dei documenti è la seguente:
+    ```json
+    {
+        "id": "string",
+        "last_update": "string"
+    }
+    ```
   
 ## **Dipendenze**
 Le principali dipendenze del progetto includono:
