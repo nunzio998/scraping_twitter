@@ -6,16 +6,16 @@ Per ogni tweet vengono salvate diverse informazioni: autore, contenuto, url, gru
 
 Autore: Francesco Pinsone.
 """
-import random
 import time
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 from src.X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, \
     connect_to_mongo_collection, disconnect_to_mongo, parse_and_save, x_login
@@ -34,21 +34,24 @@ def scrape_tweets():
     # Leggo file con credenziali
     credentials = read_json("utils/credentials.json")
 
-    # Connessione al DB per estrapolare la lista dei target sui quali far partire la ricerca
+    # Connessione al DB
     client = connect_to_mongo()
+
+    # Estrapolazione della lista di target su cui far partire la ricerca
     targets_collection = connect_to_mongo_collection(client, "target_groups")
     documents = targets_collection.find()
     target_list = [doc['name'] for doc in documents]
-    disconnect_to_mongo(client)
 
-    # TODO valutare modifica all'url di ricerca dei tweet e alla modalità di ricerca tramite gruppi target
+    # TODO valutare modifica alla modalità di ricerca tramite gruppi target
 
-    # Geckodriver
-    service = Service('driver/geckodriver')
+    chrome_options = Options()
 
-    # Inizializzo driver  Firefox
-    driver = webdriver.Firefox(service=service)
-    # driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+    # Gestore del driver per semplificare la gestione del driver Chrome
+    # service = Service(ChromeDriverManager().install()) # Decommentare per scaricare il driver all'avvio del programma
+    service = Service(credentials['driver_path'])
+
+    # Creare un'istanza del browser Chrome con le opzioni
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
     # Loggarsi manualmente su Twitter
     driver.get('https://www.twitter.com/login')
@@ -64,8 +67,13 @@ def scrape_tweets():
     # Effettuo il login a X
     x_login(credentials, driver)
 
-    for group in target_list:
-        client = connect_to_mongo()
+    today = datetime.today().strftime('%Y-%m-%d')
+
+    coll = connect_to_mongo_collection(client, "last_update")
+
+    last_update = coll.find_one({"id": "01"}).get("last_update")
+
+    for group in ["Killnet"]:
 
         print(f"{group} in lavorazione..")
 
@@ -74,7 +82,7 @@ def scrape_tweets():
         #
         # search_url = f"https://x.com/search?q={group}%20{keyword1}%20{keyword2}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
 
-        search_url = f"https://x.com/search?q={group}%20-filter%3Areplies&src=typed_query"
+        search_url = f"https://x.com/search?q={group}%20until%3A{today}%20since%3A{last_update}%20-filter%3Areplies&src=typed_query"
 
         try:
             driver.get(search_url)
@@ -103,12 +111,14 @@ def scrape_tweets():
         soup = BeautifulSoup(html_content, 'html.parser')
 
         res = analisys_with_beautifulsoup(soup.prettify())
-        print(res)
+
         # Divido le info in post e le salvo nel database
         parse_and_save(res, group, client)
 
-        disconnect_to_mongo(client)
-
+    # Salvo la nuova data di ultimo aggiornamento, mi disconnetto da MongoDB e chiudo il driver.
+    coll = connect_to_mongo_collection(client, "last_update")
+    coll.update_one({"id": "01"}, {"$set": {"last_update": today}})
+    disconnect_to_mongo(client)
     driver.quit()
 
 
