@@ -22,7 +22,10 @@ import logging
 
 def load_cookies(driver, cookies_path="utils/cookies.json"):
     """
-    Carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium
+    Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium.\n
+    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l'html della pagina.\n
+    :param cookies_path: path del file json che contiene i cookies di sessione per superare il captcha.\n
+    :return: None\n
     """
     with open(cookies_path, "r") as file:
         cookies = json.load(file)
@@ -31,6 +34,13 @@ def load_cookies(driver, cookies_path="utils/cookies.json"):
 
 
 def discord_login(driver, logging, credentials):
+    """
+    Funzione che automatizza la procedura di login a Discord.
+    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l'html della pagina.\n
+    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull'andamento del processo.\n
+    :param credentials: struttura dati che contiene le credenziali dell'utente per l'accesso al proprio profilo Discord.\n
+    :return: None\n
+    """
     # Loggarsi su Discord
     driver.get('https://discord.com/login')
 
