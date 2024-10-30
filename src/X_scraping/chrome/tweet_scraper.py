@@ -7,7 +7,7 @@ Per ogni tweet vengono salvate diverse informazioni: autore, contenuto, url, gru
 Autore: Francesco Pinsone.
 """
 import time
-
+from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
@@ -67,6 +67,7 @@ def scrape_tweets():
     # Effettuo il login a X
     x_login(credentials, driver)
 
+    # Imposto la data odierna e ottengo l'ultima data di aggiornamento
     today = datetime.today().strftime('%Y-%m-%d')
 
     coll = connect_to_mongo_collection(client, "last_update")

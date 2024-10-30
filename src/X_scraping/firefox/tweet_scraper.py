@@ -64,6 +64,7 @@ def scrape_tweets():
     # Effettuo il login a X
     x_login(credentials, driver)
 
+    # Imposto la data odierna e ottengo l'ultima data di aggiornamento
     today = datetime.today().strftime('%Y-%m-%d')
 
     coll = connect_to_mongo_collection(client, "last_update")
