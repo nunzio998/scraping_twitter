@@ -91,6 +91,7 @@ def save_to_mongo(data, collection):
     :return: None
     """
     collection.insert_one(data)
+    logging.info(f"Salvato nel db: {data}")
 
 
 def beautifulsoup_analisys(driver, scroll_times):
@@ -115,7 +116,7 @@ def beautifulsoup_analisys(driver, scroll_times):
 
         # Trova nome server e nome canale
         server_name = soup.find('h2', class_='defaultColor_a595eb lineClamp1_a595eb text-md/semibold_dc00ef defaultColor_e42ec6 name_fd6364').text
-        channel_name = soup.find('h1', class_='defaultColor_a595eb heading-md/semibold_dc00ef defaultColor_e9e35f title_fc4f04').text.split(': ')[1]
+        channel_name = soup.find('h1', class_='defaultColor_a595eb heading-md/semibold_dc00ef defaultColor_e42ec6 title_fc4f04').text.split(": ")[1]
 
         # Trova tutti i messaggi
         messages = soup.find_all('div', class_='contents_f9f2ca')
