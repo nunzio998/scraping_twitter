@@ -125,7 +125,7 @@ def discord_scraper():
 
         # Carico i cookies e faccio il refresh del driver
         load_cookies(driver)
-        # driver.refresh()
+        driver.refresh()
 
         # Ripeto la procedura di login
         discord_login(driver, logging, credentials)
