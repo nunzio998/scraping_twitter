@@ -92,6 +92,45 @@ def discord_login(driver, logging, credentials):
             exit(-1)
 
 
+def check_captcha(driver, logging, credentials):
+    """
+    Funzione che effettua un check sulla presenza di test captcha dopo che lo script ha tentato la procedura di login. Inizialmente se la presenza
+    di un captcha viene rilevata la funzione tenta di caricare nel driver di Firefox i cookies di una sessione in cui l'accesso è andato a buon fine.
+    Questo è possibile con l'esecuzione dello script 'extract_cookies.py'. Nel caso in cui questo approccio non dovesse bastare la funzione permette
+    all'utente di risolvere manualmente il test per poi procedere con l'estrazione dei dati.\n
+    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l'html della pagina.\n
+    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull'andamento del processo.\n
+    :param credentials: struttura dati che contiene le credenziali dell'utente per l'accesso al proprio profilo Discord.\n
+    :return: None\n
+    """
+    # Cerco la presenza del captcha, se presente cerco di bypassarlo.
+    try:
+        captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
+        logging.exception("Captcha presente, carico cookies..")
+
+        # Carico i cookies e faccio il refresh del driver
+        load_cookies(driver)
+        driver.refresh()
+
+        # Ripeto la procedura di login
+        discord_login(driver, logging, credentials)
+        time.sleep(1)
+    except NoSuchElementException:
+        logging.info("Captcha non presente..")
+
+    # Se il captcha è ancora presente vuol dire che non sono riuscito a bypassarlo, quindi lo faccio risolvere all'utente.
+    try:
+        captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
+        logging.exception("Captcha presente, carico cookies..")
+
+        input("Premi ENTER dopo aver risolto il captcha..")
+
+        discord_login(driver, logging, credentials)
+        time.sleep(1)
+    except NoSuchElementException:
+        logging.info("Captcha non presente, procedura di login terminata..")
+
+
 def discord_scraper():
     """
     Funzione che definisce la metodologia di lavoro dello script. Dopo aver inizializzato il driver selenium per il controllo del browser
@@ -118,22 +157,8 @@ def discord_scraper():
 
     time.sleep(1)
 
-    # Cerco la presenza del captcha, se presente lo aggiro.
-    try:
-        captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
-        logging.exception("Captcha presente, carico cookies..")
-
-        # Carico i cookies e faccio il refresh del driver
-        load_cookies(driver)
-        driver.refresh()
-
-        # Ripeto la procedura di login
-        discord_login(driver, logging, credentials)
-        time.sleep(2)
-    except NoSuchElementException:
-        logging.info("Captcha non presente..")
-
-    time.sleep(1)
+    # Cerco la presenza di captcha, se ci sono provo a bypassarli.
+    check_captcha(driver, logging, credentials)
 
     # Mi connetto al database
     client = connect_to_mongo()
