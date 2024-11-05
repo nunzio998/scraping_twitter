@@ -33,6 +33,7 @@ project-root/
 │   │   │   └── geckodriver                   # Driver per Firefox 
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
 │   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
+│   │   │   ├── cookies.json                  # file dei cookies di una sessione Firefox in cui si è effettuato il login
 │   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script         
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
 │   │   ├── discord_app_scraper.py            # Script che utilizza un bot per fare scraping su Discord
