@@ -81,7 +81,7 @@
 <span class="sd">Autore: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">time</span>
-
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
@@ -143,13 +143,14 @@
     <span class="c1"># Effettuo il login a X</span>
     <span class="n">x_login</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
 
+    <span class="c1"># Imposto la data odierna e ottengo l&#39;ultima data di aggiornamento</span>
     <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">coll</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;last_update&quot;</span><span class="p">)</span>
 
     <span class="n">last_update</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;01&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_update&quot;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Killnet&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2"> in lavorazione..&quot;</span><span class="p">)</span>
 
