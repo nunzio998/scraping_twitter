@@ -40,7 +40,7 @@ def connect_to_mongo():
     # Provo a connettermi al database
     try:
         client.admin.command('ping')
-        logging.info("Connesso al database: ", client.server_info()["version"])
+        logging.info(f"Connesso al database: {client.server_info()['version']}")
     except Exception as e:
         logging.exception(e)
 
@@ -53,7 +53,7 @@ def disconnect_to_mongo(client):
     :param client: oggetto che rappresenta la connessione al database\n
     :return: None
     """
-    logging.info("Disconnesso dal database: ", client.server_info()["version"])
+    logging.info(f"Disconnesso dal database: {client.server_info()['version']}")
     client.close()
 
 
@@ -70,9 +70,9 @@ def connect_to_mongo_collection(client, collection_name):
     if collection_name not in db.list_collection_names():
         # Se la collezione non esiste, creala
         db.create_collection(collection_name)
-        logging.info("Creata la collezione:", collection_name)
+        logging.info(f"Creata la collezione:{collection_name}")
     else:
-        logging.info("La collezione esiste già:", collection_name)
+        logging.info(f"La collezione esiste già: {collection_name}")
 
     return db.get_collection(collection_name)
 
@@ -85,4 +85,4 @@ def save_to_mongo(data, collection):
     :return: None
     """
     collection.insert_one(data)
-    logging.info("Salvato nel database: ", data['id'])
+    logging.info(f"Salvato nel database:{data['id']}")
