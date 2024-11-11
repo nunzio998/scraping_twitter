@@ -8,25 +8,8 @@ Autore: Francesco Pinsone
 """
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
-
+import logging
 from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
-
-# # credenziali API
-#
-# credentials = read_json("utils/credentials.json")
-#
-# api_id = credentials["api_id"]
-# api_hash = credentials["api_hash"]
-# phone = credentials["phone"]
-#
-# # Nome del canale da cui fare scraping
-# channels_username = ['MinisteroSalute', 'VoodooHardware']
-#
-# # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
-# keywords = ['salute', 'sanità', 'hardware']
-#
-# # Creare il client
-# client = TelegramClient('telegram_scraper', api_id, api_hash)
 
 
 async def telegram_scraper(m_client, channel_group):
@@ -78,27 +61,22 @@ async def telegram_scraper(m_client, channel_group):
 
     # Stampo i messaggi
     for message in all_messages:
-        print(message.to_dict())
+        logging.info(message.to_dict())
         message_data = message.to_dict()
         # Rimuovi i campi indesiderati
         fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned', 'noforwards', 'invert_media', 'offline', 'from_id', 'from_boosts_applied', 'saved_peer_id', 'fwd_from', 'via_bot_id', 'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period', 'quick_reply_shortcut_id', 'effect', 'factcheck']
         # TODO: Studio di significatività dei campi da rimuovere più approfondito
         for field in fields_to_remove:
             message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
-        print(message_data)
+        logging.info(message_data)
         save_to_mongo(message_data, collection)
 
-# mongo_client = connect_to_mongo()
-
-# with client:
-#     for channel in channels_username:
-#         client.loop.run_until_complete(telegram_scraper(mongo_client, channel))
-#
-# disconnect_to_mongo(mongo_client)
-
 if __name__ == "__main__":
-    # credenziali API
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
+    # credenziali API
     credentials = read_json("utils/credentials.json")
 
     api_id = credentials["api_id"]
@@ -106,10 +84,10 @@ if __name__ == "__main__":
     phone = credentials["phone"]
 
     # Nome del canale da cui fare scraping
-    channels_username = ['MinisteroSalute', 'VoodooHardware']
+    channels_username = ['noname05716', 'true_secator', 'itarmyofukraine2022', 'androidMalware', 'BugCrowd']
 
     # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
-    keywords = ['salute', 'sanità', 'hardware']
+    keywords = ['cyber', 'attack', 'energy']
 
     # Creare il client
     client = TelegramClient('telegram_scraper', api_id, api_hash)
