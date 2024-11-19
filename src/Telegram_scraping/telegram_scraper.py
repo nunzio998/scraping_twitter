@@ -85,7 +85,7 @@ if __name__ == "__main__":
     phone = credentials["phone"]
 
     # Nome del canale da cui fare scraping
-    channels_username = ['BugCrowd']
+    channels_username = ['BugCrowd', 'androidMalware', 'itarmyofukraine2022', 'noname05716', 'true_secator']
 
     # Creare il client
     client = TelegramClient('telegram_scraper', api_id, api_hash)
