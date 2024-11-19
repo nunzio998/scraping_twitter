@@ -34,7 +34,7 @@ async def telegram_scraper(m_client, channel_group):
 
     # Richiedere la cronologia dei messaggi
     offset_id = 0
-    limit = 500  # Numero di messaggi da scaricare per ogni richiesta
+    limit = 100  # Numero di messaggi da scaricare per ogni richiesta
     all_messages = []
 
     while True:
