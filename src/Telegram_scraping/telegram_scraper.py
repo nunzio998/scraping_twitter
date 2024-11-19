@@ -68,7 +68,6 @@ async def telegram_scraper(m_client, channel_group):
         for field in fields_to_remove:
             message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
         logging.info(message_data)
-        print(message_data)
 
         save_to_mongo(message_data, collection)
 
