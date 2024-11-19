@@ -34,7 +34,7 @@ async def telegram_scraper(m_client, channel_group):
 
     # Richiedere la cronologia dei messaggi
     offset_id = 0
-    limit = 100  # Numero di messaggi da scaricare per ogni richiesta
+    limit = 500  # Numero di messaggi da scaricare per ogni richiesta
     all_messages = []
 
     while True:
@@ -64,11 +64,13 @@ async def telegram_scraper(m_client, channel_group):
         logging.info(message.to_dict())
         message_data = message.to_dict()
         # Rimuovi i campi indesiderati
-        fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned', 'noforwards', 'invert_media', 'offline', 'from_id', 'from_boosts_applied', 'saved_peer_id', 'fwd_from', 'via_bot_id', 'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period', 'quick_reply_shortcut_id', 'effect', 'factcheck']
+        fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned', 'noforwards', 'invert_media', 'offline', 'from_boosts_applied', 'via_bot_id', 'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period', 'quick_reply_shortcut_id', 'effect', 'factcheck']
         # TODO: Studio di significatività dei campi da rimuovere più approfondito
         for field in fields_to_remove:
             message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
         logging.info(message_data)
+        print(message_data)
+
         save_to_mongo(message_data, collection)
 
 if __name__ == "__main__":
@@ -84,7 +86,7 @@ if __name__ == "__main__":
     phone = credentials["phone"]
 
     # Nome del canale da cui fare scraping
-    channels_username = ['noname05716', 'true_secator', 'itarmyofukraine2022', 'androidMalware', 'BugCrowd']
+    channels_username = ['BugCrowd']
 
     # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
     keywords = ['cyber', 'attack', 'energy']
