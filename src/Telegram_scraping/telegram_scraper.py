@@ -55,8 +55,7 @@ async def telegram_scraper(m_client, channel_group):
         messages = history.messages
 
         # Filtro i messaggi in modo che vengano selezionati solo quelli che contengono una delle parole chiave specificate
-        filtered_messages = [msg for msg in messages if msg.message and any(keyword.lower() in msg.message.lower() for keyword in keywords)]
-        all_messages.extend(filtered_messages)
+        all_messages.extend(messages)
         offset_id = messages[-1].id
 
     # Stampo i messaggi
@@ -87,9 +86,6 @@ if __name__ == "__main__":
 
     # Nome del canale da cui fare scraping
     channels_username = ['BugCrowd']
-
-    # Definisco una lista di parole chiave in base alle quali i messaggi verranno filtrati dai canali specificati
-    keywords = ['cyber', 'attack', 'energy']
 
     # Creare il client
     client = TelegramClient('telegram_scraper', api_id, api_hash)
