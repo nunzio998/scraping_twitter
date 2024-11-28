@@ -14,6 +14,7 @@ from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from src.X_scraping.firefox.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, \
@@ -43,11 +44,15 @@ def scrape_tweets():
 
     # TODO valutare modifica alla modalità di ricerca tramite gruppi target
 
+    # Configura opzioni del browser
+    firefox_options = Options()
+    firefox_options.add_argument("--headless")
+
     # Geckodriver
     service = Service('driver/geckodriver')
 
     # Inizializzo driver  Firefox
-    driver = webdriver.Firefox(service=service)
+    driver = webdriver.Firefox(service=service, options=firefox_options)
     # driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
 
     # Loggarsi manualmente su Twitter
