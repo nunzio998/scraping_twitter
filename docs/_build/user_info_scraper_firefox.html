@@ -54,10 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_firefox.html">drop_data_collection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="related_user_finder_firefox.html">related_user_finder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tweet_scraper_firefox.html">tweet_scraper</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">user_info_scraper</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.firefox.user_info_scraper.scrape_user_info"><code class="docutils literal notranslate"><span class="pre">scrape_user_info()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">user_info_scraper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_firefox.html">beautifulsoup_analisys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html">utils</a></li>
 </ul>
@@ -92,26 +89,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-src.X_scraping.firefox.user_info_scraper">
-<span id="user-info-scraper"></span><h1>user_info_scraper<a class="headerlink" href="#module-src.X_scraping.firefox.user_info_scraper" title="Link to this heading"></a></h1>
-<p>Script che ha la funzione di estrarre le informazioni principali di uno o più utenti X.</p>
-<p>Gli utenti da sottoporre a questo processo vengono estratti dalle varie collection, ovvero dai dati
-relativi ai tweet raccolti fino a quel momento. Si considerano quindi tutti gli autori dei tweet salvati.</p>
-<p>Autore: Francesco Pinsone.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="src.X_scraping.firefox.user_info_scraper.scrape_user_info">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.user_info_scraper.</span></span><span class="sig-name descname"><span class="pre">scrape_user_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/user_info_scraper.html#scrape_user_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.user_info_scraper.scrape_user_info" title="Link to this definition"></a></dt>
-<dd><p>Funzione che racchiude l’intero funzionamento dello script.</p>
-<p>Dopo aver effettuato la connessione al db estrae una lista di utenti target da tutte le collection che contengono
-dati relativi ai tweet salvati. Effettua poi la procedura di login ad X e in seguito inizia lo scraping delle info
-per ognuno degli utenti presenti nella lista dei target. Ad ogni iterazione le informazioni raccolte vengono salvate
-a db nella collection ‘users_info’.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return None<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-</dd></dl>
-
+  <section id="user-info-scraper">
+<h1>user_info_scraper<a class="headerlink" href="#user-info-scraper" title="Link to this heading"></a></h1>
 </section>
 
 

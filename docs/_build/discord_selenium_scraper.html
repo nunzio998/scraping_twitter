@@ -47,13 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="DarkWeb_scraper.html">DarkWeb</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="Discord_scraper.html">Discord</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="discord_app_scraper.html">discord_app_scraper</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">discord_selenium_scraper</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.check_captcha"><code class="docutils literal notranslate"><span class="pre">check_captcha()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.discord_login"><code class="docutils literal notranslate"><span class="pre">discord_login()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.discord_scraper"><code class="docutils literal notranslate"><span class="pre">discord_scraper()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.load_cookies"><code class="docutils literal notranslate"><span class="pre">load_cookies()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">discord_selenium_scraper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="discord_scraper_ai.html">discord_scraper_ai</a></li>
 <li class="toctree-l2"><a class="reference internal" href="drop_data_collection_discord.html">drop_data_collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_to_csv_discord.html">db_to_csv</a></li>
@@ -89,82 +83,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-src.Discord_scraping.discord_selenium_scraper">
-<span id="discord-selenium-scraper"></span><h1>discord_selenium_scraper<a class="headerlink" href="#module-src.Discord_scraping.discord_selenium_scraper" title="Link to this heading"></a></h1>
-<p>Questo script ha il compito di fare scraping sulla versione web di Discord utilizzando quindi la libreria Python
-Selenium. I contenuti estratti vengono poi sottoposti ad un processo di parsing tramite l’utilizzo di BeautifulSoup ed infine salvati su db.</p>
-<p>Autore: Francesco Pinsone.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.check_captcha">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_selenium_scraper.</span></span><span class="sig-name descname"><span class="pre">check_captcha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_selenium_scraper.html#check_captcha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_selenium_scraper.check_captcha" title="Link to this definition"></a></dt>
-<dd><p>Funzione che effettua un check sulla presenza di test captcha dopo che lo script ha tentato la procedura di login. Inizialmente se la presenza
-di un captcha viene rilevata la funzione tenta di caricare nel driver di Firefox i cookies di una sessione in cui l’accesso è andato a buon fine.
-Questo è possibile con l’esecuzione dello script ‘extract_cookies.py’. Nel caso in cui questo approccio non dovesse bastare la funzione permette
-all’utente di risolvere manualmente il test per poi procedere con l’estrazione dei dati.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
-<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.discord_login">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_selenium_scraper.</span></span><span class="sig-name descname"><span class="pre">discord_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_selenium_scraper.html#discord_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_selenium_scraper.discord_login" title="Link to this definition"></a></dt>
-<dd><p>Funzione che automatizza la procedura di login a Discord.
-:param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
-<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.discord_scraper">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_selenium_scraper.</span></span><span class="sig-name descname"><span class="pre">discord_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_selenium_scraper.html#discord_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_selenium_scraper.discord_scraper" title="Link to this definition"></a></dt>
-<dd><p>Funzione che definisce la metodologia di lavoro dello script. Dopo aver inizializzato il driver selenium per il controllo del browser
-si effettua l’accesso a Discord web. Una volta eseguito il login, per ognuno dei canali e server specificati, si
-scaricano i messaggi presenti e si effettua il parsing con la funzione ‘beautifulsoup_analisys’ che
-restituisce una lista di messaggi in formato json, il nome del server e il nome del canale da cui sono stati estratti.
-infine i messaggi estratti vengono salvati su un db.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.load_cookies">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_selenium_scraper.</span></span><span class="sig-name descname"><span class="pre">load_cookies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utils/cookies.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_selenium_scraper.html#load_cookies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_selenium_scraper.load_cookies" title="Link to this definition"></a></dt>
-<dd><p>Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>cookies_path</strong> – path del file json che contiene i cookies di sessione per superare il captcha.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="discord-selenium-scraper">
+<h1>discord_selenium_scraper<a class="headerlink" href="#discord-selenium-scraper" title="Link to this heading"></a></h1>
 </section>
 
 

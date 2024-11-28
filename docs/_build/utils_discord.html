@@ -51,16 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="discord_scraper_ai.html">discord_scraper_ai</a></li>
 <li class="toctree-l2"><a class="reference internal" href="drop_data_collection_discord.html">drop_data_collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_to_csv_discord.html">db_to_csv</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">utils</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.beautifulsoup_analisys"><code class="docutils literal notranslate"><span class="pre">beautifulsoup_analisys()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.connect_to_mongo"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.scroll_up"><code class="docutils literal notranslate"><span class="pre">scroll_up()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Telegram_scraper.html">Telegram</a></li>
@@ -92,126 +83,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-src.Discord_scraping.utils.utils">
-<span id="utils"></span><h1>utils<a class="headerlink" href="#module-src.Discord_scraping.utils.utils" title="Link to this heading"></a></h1>
-<p>Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:</p>
-<ul class="simple">
-<li><p>Gestione interazioni con MongoDB</p></li>
-<li><p>Parsing dei dati estratti</p></li>
-<li><p>Procedure di login</p></li>
-</ul>
-<p>Autore: Francesco Pinsone</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.beautifulsoup_analisys">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scroll_times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#beautifulsoup_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.beautifulsoup_analisys" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>scroll_times</strong> – numero di esecuzioni di scroll up della chat per caricare più messaggi.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>list: lista dei messaggi.</p>
-<p>str: nome del server.</p>
-<p>str: nome del canale.</p>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.connect_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi al database MongoDB.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>client, oggetto che rappresenta la connessione al database</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.connect_to_mongo_collection">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p></li>
-<li><p><strong>collection_name</strong> – stringa, nome della collezione</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>collection, oggetto che rappresenta la collezione</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.disconnect_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di disconnettersi dal database MongoDB.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.read_json">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
-<dd><p>Funzione per la lettura di file JSON.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> – percorso del file JSON</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict, contenuto del file JSON</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.save_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione per il salvataggio di dati nel database MongoDB.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – dict, dati da salvare</p></li>
-<li><p><strong>collection</strong> – oggetto che rappresenta la collezione</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.scroll_up">
-<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">scroll_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#scroll_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.scroll_up" title="Link to this definition"></a></dt>
-<dd><p>Funzione per scorrere verso l’alto e caricare più messaggi.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>times</strong> – numero di esecuzioni di scroll up della chat per caricare più messaggi.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="utils">
+<h1>utils<a class="headerlink" href="#utils" title="Link to this heading"></a></h1>
 </section>
 
 
