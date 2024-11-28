@@ -37,7 +37,7 @@ def read_json(path):
         return json.load(file)
 
 
-config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi Vigimare/python_workspace/src/X_scraping/chrome/utils/mongo_utils.json')
+config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/X_scraping/chrome/utils/mongo_utils.json')
 
 
 def x_login(credentials_access, driver_access):
