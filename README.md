@@ -359,4 +359,10 @@ pip install -r requirements.txt
 ## **Documentazione Dettagliata**
 Aprendo il link che segue è possibile trovare la documentazione dettagliata del codice nella quale script e funzioni 
 vengono esposti e trattati più nel dettaglio:
-[Documentazione](https://docs-tesi.netlify.app)
+[Documentazione](https://docs-tesi.netlify.app)<br>
+
+La documentazione del progetto è stata realizzata tramite l'uso del tool Sphinx. Per la generazione e l'aggiornamento il comando utilizzato è il seguente:<br>
+
+```bash
+sphinx-build -b html . _build 
+```
