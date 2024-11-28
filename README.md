@@ -366,3 +366,5 @@ La documentazione del progetto è stata realizzata tramite l'uso del tool Sphinx
 ```bash
 sphinx-build -b html . _build 
 ```
+<br>
+Tale comando va chiaramente utilizzato nella cartella 'docs' del progetto.
