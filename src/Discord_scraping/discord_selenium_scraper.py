@@ -121,7 +121,7 @@ def check_captcha(driver, logging, credentials):
     # Se il captcha è ancora presente vuol dire che non sono riuscito a bypassarlo, quindi lo faccio risolvere all'utente.
     try:
         captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
-        logging.exception("Captcha presente, carico cookies..")
+        logging.exception("Captcha ancora presente, risolvere manualmente..")
 
         input("Premi ENTER dopo aver risolto il captcha..")
 
