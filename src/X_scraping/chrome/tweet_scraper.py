@@ -16,7 +16,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-
 from src.X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, \
     connect_to_mongo_collection, disconnect_to_mongo, parse_and_save, x_login
 from src.X_scraping.chrome.beautifulsoup_analisys import analisys_with_beautifulsoup
@@ -44,7 +43,12 @@ def scrape_tweets():
 
     # TODO valutare modifica alla modalità di ricerca tramite gruppi target
 
+    # Configura opzioni del browser
     chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Avvia in modalità headless
+    chrome_options.add_argument("--disable-gpu")  # Opzione per migliorare la compatibilità
+    chrome_options.add_argument("--no-sandbox")  # Utile per ambienti server
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Migliora la gestione della memoria
 
     # Gestore del driver per semplificare la gestione del driver Chrome
     # service = Service(ChromeDriverManager().install()) # Decommentare per scaricare il driver all'avvio del programma

@@ -32,7 +32,12 @@ def find_related_users():
     # Leggo file con credenziali
     credentials = read_json("utils/credentials.json")
 
+    # Configura opzioni del browser
     chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Avvia in modalità headless
+    chrome_options.add_argument("--disable-gpu")  # Opzione per migliorare la compatibilità
+    chrome_options.add_argument("--no-sandbox")  # Utile per ambienti server
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Migliora la gestione della memoria
 
     # Gestore del driver per semplificare la gestione del driver Chrome
     # N.B: Scaricare chromedriver e cambiare executable_path con il path del driver scaricato
