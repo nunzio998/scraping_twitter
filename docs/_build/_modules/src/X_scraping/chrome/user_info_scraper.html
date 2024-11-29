@@ -131,7 +131,12 @@
 
     <span class="c1"># 1) Eseguo l&#39;accesso a X:</span>
 
+    <span class="c1"># Configura opzioni del browser</span>
     <span class="n">chrome_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+    <span class="n">chrome_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--headless&quot;</span><span class="p">)</span>  <span class="c1"># Avvia in modalità headless</span>
+    <span class="n">chrome_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--disable-gpu&quot;</span><span class="p">)</span>  <span class="c1"># Opzione per migliorare la compatibilità</span>
+    <span class="n">chrome_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--no-sandbox&quot;</span><span class="p">)</span>  <span class="c1"># Utile per ambienti server</span>
+    <span class="n">chrome_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--disable-dev-shm-usage&quot;</span><span class="p">)</span>  <span class="c1"># Migliora la gestione della memoria</span>
 
     <span class="c1"># Gestore del driver per semplificare la gestione del driver Chrome</span>
     <span class="c1"># service = Service(ChromeDriverManager().install()) # Decommentare per scaricare il driver all&#39;avvio del programma</span>

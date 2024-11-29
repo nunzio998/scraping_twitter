@@ -203,7 +203,7 @@
     <span class="c1"># Se il captcha è ancora presente vuol dire che non sono riuscito a bypassarlo, quindi lo faccio risolvere all&#39;utente.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">captcha</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s2">&quot;/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe&quot;</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Captcha presente, carico cookies..&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Captcha ancora presente, risolvere manualmente..&quot;</span><span class="p">)</span>
 
         <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Premi ENTER dopo aver risolto il captcha..&quot;</span><span class="p">)</span>
 

@@ -53,7 +53,10 @@
 <li class="toctree-l3"><a class="reference internal" href="db_to_csv_x_firefox.html">db_to_csv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_firefox.html">drop_data_collection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="related_user_finder_firefox.html">related_user_finder</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tweet_scraper</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tweet_scraper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.firefox.tweet_scraper.scrape_tweets"><code class="docutils literal notranslate"><span class="pre">scrape_tweets()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="user_info_scraper_firefox.html">user_info_scraper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_firefox.html">beautifulsoup_analisys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html">utils</a></li>
@@ -89,8 +92,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tweet-scraper">
-<h1>tweet_scraper<a class="headerlink" href="#tweet-scraper" title="Link to this heading"></a></h1>
+  <section id="module-src.X_scraping.firefox.tweet_scraper">
+<span id="tweet-scraper"></span><h1>tweet_scraper<a class="headerlink" href="#module-src.X_scraping.firefox.tweet_scraper" title="Link to this heading"></a></h1>
+<p>Lo script ha il compito di effettuare un’attività di scraping su X andando a fare ricerca dei tweet per parole chiave.
+Sulla base di un report sulla cybersecurity del 2024 sono stati scelti i nomi di una serie di gruppi hacker come target list
+iniziale sulla quale far lavorare lo script. Ad ogni esecuzione lo script effettua una ricerca su X ed estrae i tweet che ne risultano.
+Per ogni tweet vengono salvate diverse informazioni: autore, contenuto, url, gruppo hacker di riferimento, immagini e video contenuti.</p>
+<p>Autore: Francesco Pinsone.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.X_scraping.firefox.tweet_scraper.scrape_tweets">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.tweet_scraper.</span></span><span class="sig-name descname"><span class="pre">scrape_tweets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/tweet_scraper.html#scrape_tweets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.tweet_scraper.scrape_tweets" title="Link to this definition"></a></dt>
+<dd><p>Funzione che racchiude l’intero funzionamento dello script.</p>
+<p>Dopo aver effettuato la connessione a MondoDB e inizializzato il driver selenium per l’automazione del browser effettua il
+login ad X. Subito dopo per ogni target effettua la ricerca e filtra il contenuto della pagina html che ottiene al fine di
+ottenere una lista di elementi relativi a tutti i tweet trovati. Questo insieme di informazioni viene dapprima diviso, per
+differenziare i vari elementi, e poi parsato per ottenere i tweet nel giusto formato da poter poi salvare nel db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return None<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

@@ -83,6 +83,7 @@
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.service</span> <span class="kn">import</span> <span class="n">Service</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
 <span class="kn">from</span> <span class="nn">src.X_scraping.firefox.beautifulsoup_analisys</span> <span class="kn">import</span> <span class="n">find_related_user</span><span class="p">,</span> <span class="n">beautifulsoup_user_analisys</span>
@@ -108,11 +109,15 @@
     <span class="c1"># Leggo file con credenziali</span>
     <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Configura opzioni del browser</span>
+    <span class="n">firefox_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+    <span class="n">firefox_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--headless&quot;</span><span class="p">)</span>
+
     <span class="c1"># Geckodriver</span>
     <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="s1">&#39;driver/geckodriver&#39;</span><span class="p">)</span>
 
     <span class="c1"># Inizializzo driver  Firefox</span>
-    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">firefox_options</span><span class="p">)</span>
     <span class="c1"># driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))</span>
 
     <span class="c1"># 1) Estrapolo la lista dei target sui quali far partire la ricerca dalla collection &#39;users_info&#39;.</span>

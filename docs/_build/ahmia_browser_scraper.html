@@ -45,7 +45,10 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="DarkWeb_scraper.html">DarkWeb</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ahmia_browser_scraper</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ahmia_browser_scraper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia"><code class="docutils literal notranslate"><span class="pre">search_ahmia()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ahmia_scraper_ai.html">ahmia_scraper_ai</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_to_csv_darkweb.html">db_to_csv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="drop_data_collection_darkweb.html">drop_data_collection</a></li>
@@ -83,8 +86,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ahmia-browser-scraper">
-<h1>ahmia_browser_scraper<a class="headerlink" href="#ahmia-browser-scraper" title="Link to this heading"></a></h1>
+  <section id="module-src.DarkWeb_scraping.ahmia_browser_scraper">
+<span id="ahmia-browser-scraper"></span><h1>ahmia_browser_scraper<a class="headerlink" href="#module-src.DarkWeb_scraping.ahmia_browser_scraper" title="Link to this heading"></a></h1>
+<p>Questo script permette di fare scraping del motore di ricerca Ahmia, uno dei motori di ricerca per il dark web. La ricerca viene effettuata per parole chiave e i risultati che produce vengono
+salvati in un database MongoDB. Per fare scraping di Ahmia è necessario utilizzare Tor, quindi è necessario avere un server Tor in esecuzione sul proprio computer. Inoltre, è necessario avere
+installato il browser Tor e configurare il proxy per le richieste HTTP.</p>
+<p>Autore: Francesco Pinsone</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia">
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia" title="Link to this definition"></a></dt>
+<dd><p>Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
+lista di dizionari, dove ogni dizionario rappresenta un risultato.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> – stringa, query di ricerca</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list, lista di dizionari, dove ogni dizionario rappresenta un risultato</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

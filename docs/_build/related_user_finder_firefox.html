@@ -52,7 +52,10 @@
 <li class="toctree-l2 current"><a class="reference internal" href="Firefox.html">Firefox</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="db_to_csv_x_firefox.html">db_to_csv</a></li>
 <li class="toctree-l3"><a class="reference internal" href="drop_data_collection_x_firefox.html">drop_data_collection</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">related_user_finder</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">related_user_finder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.X_scraping.firefox.related_user_finder.find_related_users"><code class="docutils literal notranslate"><span class="pre">find_related_users()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="tweet_scraper_firefox.html">tweet_scraper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_info_scraper_firefox.html">user_info_scraper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_firefox.html">beautifulsoup_analisys</a></li>
@@ -89,8 +92,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="related-user-finder">
-<h1>related_user_finder<a class="headerlink" href="#related-user-finder" title="Link to this heading"></a></h1>
+  <section id="module-src.X_scraping.firefox.related_user_finder">
+<span id="related-user-finder"></span><h1>related_user_finder<a class="headerlink" href="#module-src.X_scraping.firefox.related_user_finder" title="Link to this heading"></a></h1>
+<p>Questo script ha lo scopo di trovare gli utenti correlati, per ognuno degli utenti di cui abbiamo già fatto scraping, ed estrane le informazioni.</p>
+<p>Gli utenti di cui abbiamo già estratto le info si trovano nella collection ‘users_info’. Per ognuno di questi si cercano i correlati
+e per ogni utente correlato trovato si effettua lo scraping e si salvano i risultati a db in ‘user_info’.</p>
+<p>Autore: Francesco Pinsone.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.X_scraping.firefox.related_user_finder.find_related_users">
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.related_user_finder.</span></span><span class="sig-name descname"><span class="pre">find_related_users</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/related_user_finder.html#find_related_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.related_user_finder.find_related_users" title="Link to this definition"></a></dt>
+<dd><p>Funzione che racchiude il funzionamento dello script per intero.</p>
+<p>Dopo aver effettuato la connesione al db e aver instaziato il driver selenium (che permette l’automazione del browser)
+lo script estrapola una lista di utenti target (di cui cercare i correlati) dalla collection ‘users_info’ del db.</p>
+<p>Dopo aver completato la procedura di login lo script inizia la ricerca dei correlati per ognuno dei target presenti nella lista.
+Per ogni utente se ne verifica l’effettiva esistenza e si effettua un check per verificare che non sia temporaneamente limitato
+dalla piattaforma. Dopo questi check le info possono essere estratte e salvate a db.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
