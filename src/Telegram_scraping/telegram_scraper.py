@@ -62,11 +62,26 @@ async def telegram_scraper(m_client, channel_group):
     for message in all_messages:
         logging.info(message.to_dict())
         message_data = message.to_dict()
+
+        # Ottieni informazioni sul mittente
+        sender = None
+        if message.from_id:  # Verifica se il messaggio ha un mittente
+            try:
+                sender = await client.get_entity(message.from_id)
+                sender_name = f"{sender.first_name or ''} {sender.last_name or ''}".strip()  # Nome e cognome
+                sender_username = sender.username  # Username, se disponibile
+                message_data['sender_name'] = sender_name
+                message_data['sender_username'] = sender_username
+            except Exception as e:
+                logging.error(f"Errore nell'ottenere informazioni sul mittente: {e}")
+
         # Rimuovi i campi indesiderati
         fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned', 'noforwards', 'invert_media', 'offline', 'from_boosts_applied', 'via_bot_id', 'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period', 'quick_reply_shortcut_id', 'effect', 'factcheck']
         # TODO: Studio di significatività dei campi da rimuovere più approfondito
         for field in fields_to_remove:
             message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
+
+
         logging.info(message_data)
 
         save_to_mongo(message_data, collection)
