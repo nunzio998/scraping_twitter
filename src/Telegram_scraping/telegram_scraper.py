@@ -59,6 +59,8 @@ async def telegram_scraper(m_client, channel_group):
         offset_id = messages[-1].id
 
     # Stampo i messaggi
+    limit = 1000
+    counter_messages = 0
     for message in all_messages:
         logging.info(message.to_dict())
         message_data = message.to_dict()
@@ -85,6 +87,11 @@ async def telegram_scraper(m_client, channel_group):
         logging.info(message_data)
 
         save_to_mongo(message_data, collection)
+
+        # Incremento il contatore dei messaggi e controllo se ho raggiunto il limite
+        counter_messages += 1
+        if counter_messages >= limit:
+            break
 
 if __name__ == "__main__":
     # Configuro il logger
