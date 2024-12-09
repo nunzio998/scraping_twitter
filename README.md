@@ -274,16 +274,23 @@ Il database contiene le seguenti collection:
         "id": "int",
         "peer_id": "object",
         "date": "datetime",
+        "message": "string",
         "mentioned": "boolean",
         "post": "boolean",
-        "reply_to": "string",
+        "from_id": "object",
+        "saved_peer_id": "string",
+        "fwd_from": "object",
+        "reply_to": "object",
         "media": "object",
         "entities": "array",
         "views": "int",
-        "replies": "int",
+        "forwards": "string",
+        "replies": "object",
         "edit_date": "datetime",
         "post_author": "string",
-        "reactions": "int"
+        "reactions": "int",
+        "sender_name": "string",
+        "sender_username": "string"
     }
     ```
   
