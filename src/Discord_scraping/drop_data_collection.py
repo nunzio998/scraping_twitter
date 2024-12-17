@@ -23,6 +23,9 @@ def drop_data():
     collection_list = client.get_database(config_data['database']).list_collection_names()
 
     for collection in collection_list:
+        # Salto la lista dei target
+        if collection == "discord_target":
+            continue
         data_coll = connect_to_mongo_collection(client, collection)
         result = data_coll.delete_many({})
         logging.info(f"Eliminati {result.deleted_count} documenti per la collection {collection}")
