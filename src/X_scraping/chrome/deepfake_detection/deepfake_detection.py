@@ -20,7 +20,7 @@ def read_json(path):
     return json.load(file)
 
 
-credentials_api = read_json("utils/credentials_api.json")
+credentials_api = read_json("/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/X_scraping/chrome/deepfake_detection/utils/credentials_api.json")
 
 
 def detect_image(image_url) -> bool:
