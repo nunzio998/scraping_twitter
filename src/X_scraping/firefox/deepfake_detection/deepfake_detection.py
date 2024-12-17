@@ -23,7 +23,7 @@ def read_json(path):
 credentials_api = read_json("utils/credentials_api.json")
 
 
-def detect_deepfake(image_url) -> bool:
+def detect_image(image_url) -> bool:
   """
   Questa funzione ha lo scopo di effettuare un check su un immagine di cui si possiede l'url per verificare se quest'ultima sia reale o sia AI Generated.
   Ritorna quindi True se l'immagine è un deepfake o False se non lo è.\n
