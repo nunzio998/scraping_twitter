@@ -105,14 +105,18 @@ if __name__ == "__main__":
     api_hash = credentials["api_hash"]
     phone = credentials["phone"]
 
-    # Nome del canale da cui fare scraping
-    channels_username = ['BugCrowd', 'androidMalware', 'itarmyofukraine2022', 'noname05716', 'true_secator']
-
     # Creare il client
     client = TelegramClient('telegram_scraper', api_id, api_hash)
 
     mongo_client = connect_to_mongo()
 
+    # Ottengo la lista dei target (canali/gruppi) aggiornata nel db
+    targets_collection = connect_to_mongo_collection(mongo_client, "targets")
+    documents = targets_collection.find()
+    target_list = [doc['target_name'] for doc in documents]
+
     with client:
-        for channel in channels_username:
-            client.loop.run_until_complete(telegram_scraper(mongo_client, channel))
+        for target in target_list:
+            client.loop.run_until_complete(telegram_scraper(mongo_client, target))
+
+    disconnect_to_mongo(mongo_client)
