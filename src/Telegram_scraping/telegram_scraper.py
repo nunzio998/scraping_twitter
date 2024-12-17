@@ -1,16 +1,22 @@
 """
 Questo script ha il compito di effettuare lo scraping di dati da Telegram. Tale obbiettivo viene perseguito tramite
 l'apposita libreria Python Telegram, 'telethon'. Questa permette all'utente di utilizzare le api della piattaforma e di
-avere quindi accesso ai contenuti dei canali ai quali l'utente è iscritto. In questa modalità, quindi, i dati
-vengono facilmente estratti, trattati e infine salvati su un apposito DB.\n
+avere quindi accesso ai contenuti dei canali o dei gruppi che l'utente sceglie si specificare o che sono presenti in una
+lista target che viene mantenuta su MongoDB. In questa modalità, quindi, i dati vengono facilmente estratti, trattati e
+infine salvati su un apposito DB.\n
 
 Autore: Francesco Pinsone
 """
+import argparse
 from telethon import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 import logging
-from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
+from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, \
+    disconnect_to_mongo, save_to_mongo
 
+
+# De-commentare per avviare lo script da riga di comando
+# from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
 
 async def telegram_scraper(m_client, channel_group):
     """
@@ -23,6 +29,7 @@ async def telegram_scraper(m_client, channel_group):
     :param channel_group: nome del canale Telegram\n
     :return: None
     """
+    # TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l'utilizzo del campo date all'interno di ogni messaggio che viene scaricato.
     # Avviare il client
     await client.start()
     print("Client avviato")
@@ -78,11 +85,13 @@ async def telegram_scraper(m_client, channel_group):
                 logging.error(f"Errore nell'ottenere informazioni sul mittente: {e}")
 
         # Rimuovi i campi indesiderati
-        fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned', 'noforwards', 'invert_media', 'offline', 'from_boosts_applied', 'via_bot_id', 'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period', 'quick_reply_shortcut_id', 'effect', 'factcheck']
+        fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned',
+                            'noforwards', 'invert_media', 'offline', 'from_boosts_applied', 'via_bot_id',
+                            'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period',
+                            'quick_reply_shortcut_id', 'effect', 'factcheck']
         # TODO: Studio di significatività dei campi da rimuovere più approfondito
         for field in fields_to_remove:
             message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
-
 
         logging.info(message_data)
 
@@ -92,6 +101,7 @@ async def telegram_scraper(m_client, channel_group):
         counter_messages += 1
         if counter_messages >= limit:
             break
+
 
 if __name__ == "__main__":
     # Configuro il logger
@@ -105,15 +115,38 @@ if __name__ == "__main__":
     api_hash = credentials["api_hash"]
     phone = credentials["phone"]
 
-    # Creare il client
+    # Parser per gli argomenti da linea di comando
+    parser = argparse.ArgumentParser(description="Telegram scraper: estrae i dati dai canali Telegram.")
+    parser.add_argument(
+        "--targets",
+        nargs="*",  # Accetta zero o più argomenti
+        help="Elenco dei canali/gruppi Telegram da cui estrarre i messaggi (separati da spazio)."
+    )
+    args = parser.parse_args()
+
+    # Creare il client Telegram
     client = TelegramClient('telegram_scraper', api_id, api_hash)
 
     mongo_client = connect_to_mongo()
 
-    # Ottengo la lista dei target (canali/gruppi) aggiornata nel db
-    targets_collection = connect_to_mongo_collection(mongo_client, "targets")
-    documents = targets_collection.find()
-    target_list = [doc['target_name'] for doc in documents]
+    # Logica per ottenere i target
+    if args.targets:  # Se l'utente ha specificato target da linea di comando
+        target_list = args.targets
+        logging.info(f"Target specificati dall'utente: {target_list}")
+    else:  # Se non sono stati specificati target, caricali dal DB
+        logging.info("Nessun target specificato, caricamento da MongoDB...")
+        print("NO TARGET")
+        targets_collection = connect_to_mongo_collection(mongo_client, "targets")
+        documents = targets_collection.find()
+        target_list = [doc['target_name'] for doc in documents]
+
+    # Avvio del client Telegram e scraping
+    with client:
+        for target in target_list:
+            client.loop.run_until_complete(telegram_scraper(mongo_client, target))
+
+    # Disconnessione dal DB
+    disconnect_to_mongo(mongo_client)
 
     with client:
         for target in target_list:
