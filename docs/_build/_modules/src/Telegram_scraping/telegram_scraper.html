@@ -135,17 +135,39 @@
         <span class="n">offset_id</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
 
     <span class="c1"># Stampo i messaggi</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">counter_messages</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">all_messages</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
         <span class="n">message_data</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+        <span class="c1"># Ottieni informazioni sul mittente</span>
+        <span class="n">sender</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">from_id</span><span class="p">:</span>  <span class="c1"># Verifica se il messaggio ha un mittente</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sender</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">from_id</span><span class="p">)</span>
+                <span class="n">sender_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sender</span><span class="o">.</span><span class="n">first_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sender</span><span class="o">.</span><span class="n">last_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Nome e cognome</span>
+                <span class="n">sender_username</span> <span class="o">=</span> <span class="n">sender</span><span class="o">.</span><span class="n">username</span>  <span class="c1"># Username, se disponibile</span>
+                <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;sender_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_name</span>
+                <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;sender_username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_username</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Errore nell&#39;ottenere informazioni sul mittente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="c1"># Rimuovi i campi indesiderati</span>
         <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;media_unread&#39;</span><span class="p">,</span> <span class="s1">&#39;silent&#39;</span><span class="p">,</span> <span class="s1">&#39;from_scheduled&#39;</span><span class="p">,</span> <span class="s1">&#39;legacy&#39;</span><span class="p">,</span> <span class="s1">&#39;edit_hide&#39;</span><span class="p">,</span> <span class="s1">&#39;pinned&#39;</span><span class="p">,</span> <span class="s1">&#39;noforwards&#39;</span><span class="p">,</span> <span class="s1">&#39;invert_media&#39;</span><span class="p">,</span> <span class="s1">&#39;offline&#39;</span><span class="p">,</span> <span class="s1">&#39;from_boosts_applied&#39;</span><span class="p">,</span> <span class="s1">&#39;via_bot_id&#39;</span><span class="p">,</span> <span class="s1">&#39;via_business_bot_id&#39;</span><span class="p">,</span> <span class="s1">&#39;reply_markup&#39;</span><span class="p">,</span> <span class="s1">&#39;grouped_id&#39;</span><span class="p">,</span> <span class="s1">&#39;restriction_reason&#39;</span><span class="p">,</span> <span class="s1">&#39;ttl_period&#39;</span><span class="p">,</span> <span class="s1">&#39;quick_reply_shortcut_id&#39;</span><span class="p">,</span> <span class="s1">&#39;effect&#39;</span><span class="p">,</span> <span class="s1">&#39;factcheck&#39;</span><span class="p">]</span>
         <span class="c1"># TODO: Studio di significatività dei campi da rimuovere più approfondito</span>
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">:</span>
             <span class="n">message_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># Usa pop per rimuovere il campo, se esiste</span>
+
+
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message_data</span><span class="p">)</span>
 
-        <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">message_data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span></div>
+        <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">message_data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
+
+        <span class="c1"># Incremento il contatore dei messaggi e controllo se ho raggiunto il limite</span>
+        <span class="n">counter_messages</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">counter_messages</span> <span class="o">&gt;=</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="k">break</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

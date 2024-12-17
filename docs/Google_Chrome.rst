@@ -13,3 +13,4 @@ Versione che consente lo scraping utilizzando Google Chrome come browser.
    user_info_scraper_chrome
    beautifulsoup_analisys_chrome
    utils_x_chrome
+   deepfake_detection_chrome

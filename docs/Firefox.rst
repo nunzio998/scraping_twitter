@@ -14,3 +14,4 @@ Versione che consente lo scraping utilizzando Firefox come browser.
    user_info_scraper_firefox
    beautifulsoup_analisys_firefox
    utils_x_firefox
+   deepfake_detection_firefox
