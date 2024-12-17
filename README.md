@@ -50,7 +50,8 @@ project-root/
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
 │   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
-│   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script         
+│   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script 
+│   │   ├── __init__.py                       # Script per contrassegnare la directory come modulo              
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
 │   │   ├── drop_data_collection.py           # Script che cancella i tutti i dati
 │   │   └── telegram_scraper.py               # Script che esegue lo scraping su Telegram utilizzando la libreria Telethon
@@ -371,7 +372,7 @@ Le principali dipendenze del progetto includono:
 
 - `selenium` per l'automazione del browser
 - `pymongo` per l'interazione con MongoDB
-- `requests` e `beautifulsoup4` per scraping basato su richieste HTTP (se applicabile)
+- `requests` per scraping basato su richieste HTTP (se applicabile)
 - `webdriver-manager` per la gestione dei driver di Chrome e Firefox
 - `telethon` per l'interazione con l'API di Telegram
 - `bs4` per l'analisi dell'html con beautifulsoup
