@@ -19,8 +19,10 @@ project-root/
 ├── src/
 │   ├── DarkWeb_scraping/                     # Script per scraping sul dark web
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
+│   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
 │   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script
+│   │   ├── __init__.py                       # Script per contrassegnare la directory come modulo
 │   │   ├── ahmia_browser_scraper.py          # Script per scraping
 │   │   ├── ahmia_scraper_ai.py               # Script per scraping con LLM per il parsing dei dati
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
@@ -32,17 +34,21 @@ project-root/
 │   │   ├── driver/
 │   │   │   └── geckodriver                   # Driver per Firefox 
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
+│   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
 │   │   │   ├── cookies.json                  # file dei cookies di una sessione Firefox in cui si è effettuato il login
-│   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script         
+│   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script
+│   │   ├── __init__.py                       # Script per contrassegnare la directory come modulo         
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
 │   │   ├── discord_app_scraper.py            # Script che utilizza un bot per fare scraping su Discord
 │   │   ├── discord_scraper_ai.py             # Script per scraping su Discord con LLM per il parsing dei dati
 │   │   ├── discord_selenium_scraper.py       # Script per fare scraping su Discord
-│   │   └── drop_data_collection.py           # Script che cancella i tutti i dati
+│   │   ├── drop_data_collection.py           # Script che cancella i tutti i dati
+│   │   └── extract_cookies.py                # Script che consente di estrarre i cookies di sessione per superare i test captcha
 │   │
 │   ├── Telegram_scraping/                    # Script per scraping su Telegram
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
+│   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
 │   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script         
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
@@ -51,9 +57,16 @@ project-root/
 │   │
 │   ├── X_scraping/                           # Script per scraping su Twitter (X)
 │   │   ├── chrome/                           # Versione con Chrome
+│   │   │   ├── deepfake_detection/           # directory relativa al task di deepfake detection
+│   │   │   │   ├── utils/                    # Utility connessione API
+│   │   │   │   │   └── credentials.json      # file che contiene le credenziali per l'accesso all'API
+│   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
+│   │   │   │   └── deepfake_detection.py     # Script per il rilevamento di deepfake nei contenuti multimediali estrapolati
 │   │   │   ├── utils/                        # Utility (connessione DB, accesso)
+│   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
 │   │   │   │   ├── credentials.json          # file che contiene le credenziali per l'accesso al DB
 │   │   │   │   └── utils.py                  # Script che contiene le funzioni utilizzate dagli altri script 
+│   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── beautifulsoup_analisys.py     # Script che contiene le funzioni per l'analisi dei dell'html raccolto
 │   │   │   ├── db_to_csv.py                  # Script che esporta i dati dal DB in un file csv
 │   │   │   ├── drop_data_collection.py       # Script che cancella i tutti i dati
@@ -62,11 +75,18 @@ project-root/
 │   │   │   ├── tweet_scraper.py              # Script che esegue lo scraping dei tweet
 │   │   │   └── user_info_scraper.py          # Script che esegue lo scraping delle informazioni degli utenti
 │   │   ├── firefox/                          # Versione con Firefox
+│   │   │   ├── deepfake_detection/           # directory relativa al task di deepfake detection
+│   │   │   │   ├── utils/                    # Utility connessione API
+│   │   │   │   │   └── credentials.json      # file che contiene le credenziali per l'accesso all'API
+│   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
+│   │   │   │   └── deepfake_detection.py     # Script per il rilevamento di deepfake nei contenuti multimediali estrapolati
 │   │   │   ├── driver/
 │   │   │   │   └── geckodriver               # Driver per Firefox 
 │   │   │   ├── utils/                        # Utility (connessione DB, accesso)
+│   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
 │   │   │   │   ├── credentials.json          # file che contiene le credenziali per l'accesso al DB
 │   │   │   │   └── utils.py                  # Script che contiene le funzioni utilizzate dagli altri script 
+│   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── beautifulsoup_analisys.py     # Script che contiene le funzioni per l'analisi dei dell'html raccolto
 │   │   │   ├── db_to_csv.py                  # Script che esporta i dati dal DB in un file csv
 │   │   │   ├── drop_data_collection.py       # Script che cancella i tutti i dati
