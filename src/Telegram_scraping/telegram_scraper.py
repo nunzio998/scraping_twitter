@@ -32,7 +32,7 @@ async def telegram_scraper(m_client, channel_group):
     # TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l'utilizzo del campo date all'interno di ogni messaggio che viene scaricato.
     # Avviare il client
     await client.start()
-    print("Client avviato")
+    logging.info("Client avviato")
 
     collection = connect_to_mongo_collection(m_client, channel_group)
 
@@ -41,7 +41,7 @@ async def telegram_scraper(m_client, channel_group):
 
     # Richiedere la cronologia dei messaggi
     offset_id = 0
-    limit = 100  # Numero di messaggi da scaricare per ogni richiesta
+    limit = 5  # Numero di messaggi da scaricare per ogni richiesta
     all_messages = []
 
     while True:
@@ -82,7 +82,8 @@ async def telegram_scraper(m_client, channel_group):
                 message_data['sender_name'] = sender_name
                 message_data['sender_username'] = sender_username
             except Exception as e:
-                logging.error(f"Errore nell'ottenere informazioni sul mittente: {e}")
+                message_data['canale'] = sender.title
+                logging.error(f"Errore nell'ottenere informazioni sul mittente: {e}.\n Probabilmente si tratta di un canale e non di un gruppo.\n")
 
         # Rimuovi i campi indesiderati
         fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned',
@@ -135,7 +136,6 @@ if __name__ == "__main__":
         logging.info(f"Target specificati dall'utente: {target_list}")
     else:  # Se non sono stati specificati target, caricali dal DB
         logging.info("Nessun target specificato, caricamento da MongoDB...")
-        print("NO TARGET")
         targets_collection = connect_to_mongo_collection(mongo_client, "targets")
         documents = targets_collection.find()
         target_list = [doc['target_name'] for doc in documents]
