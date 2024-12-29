@@ -173,8 +173,6 @@ if __name__ == "__main__":
     # Avvio del client Telegram e scraping
     with client:
         for target in target_list:
-            if target == "BugCrowd":
-                continue
             client.loop.run_until_complete(telegram_scraper(mongo_client, target, limit_date))
 
     # Disconnessione dal DB
