@@ -13,12 +13,43 @@ from telethon.tl.functions.messages import GetHistoryRequest
 import logging
 from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, \
     disconnect_to_mongo, save_to_mongo
-
+from datetime import datetime, timezone
 
 # De-commentare per avviare lo script da riga di comando
 # from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
 
-async def telegram_scraper(m_client, channel_group):
+
+def check_date(date, limit_date):
+    """
+    Funzione per controllare se la data di un messaggio è più vecchia di una certa data limite.\n
+    :param date: data del messaggio\n
+    :param limit_date: data limite\n
+    :return: True se la data è più vecchia, False altrimenti
+    """
+    # print(f"Date: {date}, Limit date: {limit_date}")
+    # print(f"Date type: {type(date)}, Limit date type: {type(limit_date)}")
+    # Se 'date' è offset-naive, lo converti in offset-aware (UTC)
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=timezone.utc)
+
+    if not isinstance(date, datetime):
+        # Converto la data ISO in un oggetto datetime
+        date = datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")  # Ignora la parte "+00:00"
+
+    if not isinstance(limit_date, datetime):
+        # Converto la data specificata in un oggetto datetime
+        limit_date = datetime.strptime(limit_date, "%d-%m-%Y")
+
+    # Rendi 'limit_date' offset-aware
+    limit_date = limit_date.replace(tzinfo=timezone.utc)
+
+    # print("-----------------------------------------------------")
+    # print(f"Date: {date}, Limit date: {limit_date}")
+    # print(f"Date type: {type(date)}, Limit date type: {type(limit_date)}")
+
+    return date < limit_date
+
+async def telegram_scraper(m_client, channel_group, limit_date):
     """
     Funzione principale per il recupero dei messaggi da un canale Telegram.\n
     Una volta avviato il client Telegram viene acquisita una cronologia dei messaggi del canale d'interesse.
@@ -66,9 +97,12 @@ async def telegram_scraper(m_client, channel_group):
         offset_id = messages[-1].id
 
     # Stampo i messaggi
-    limit = 1000
     counter_messages = 0
     for message in all_messages:
+        # Controllo se il messaggio è più vecchio di una certa data specificata
+        if check_date(message.date, limit_date):
+            break
+
         logging.info(message.to_dict())
         message_data = message.to_dict()
 
@@ -98,11 +132,6 @@ async def telegram_scraper(m_client, channel_group):
 
         save_to_mongo(message_data, collection)
 
-        # Incremento il contatore dei messaggi e controllo se ho raggiunto il limite
-        counter_messages += 1
-        if counter_messages >= limit:
-            break
-
 
 if __name__ == "__main__":
     # Configuro il logger
@@ -110,11 +139,12 @@ if __name__ == "__main__":
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
     # credenziali API
-    credentials = read_json("utils/credentials.json")
+    credentials = read_json("utils/conf.json")
 
     api_id = credentials["api_id"]
     api_hash = credentials["api_hash"]
     phone = credentials["phone"]
+    limit_date = credentials["limit_date"]
 
     # Parser per gli argomenti da linea di comando
     parser = argparse.ArgumentParser(description="Telegram scraper: estrae i dati dai canali Telegram.")
@@ -143,13 +173,9 @@ if __name__ == "__main__":
     # Avvio del client Telegram e scraping
     with client:
         for target in target_list:
-            client.loop.run_until_complete(telegram_scraper(mongo_client, target))
+            if target == "BugCrowd":
+                continue
+            client.loop.run_until_complete(telegram_scraper(mongo_client, target, limit_date))
 
     # Disconnessione dal DB
-    disconnect_to_mongo(mongo_client)
-
-    with client:
-        for target in target_list:
-            client.loop.run_until_complete(telegram_scraper(mongo_client, target))
-
     disconnect_to_mongo(mongo_client)
