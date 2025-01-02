@@ -8,15 +8,38 @@ infine salvati su un apposito DB.\n
 Autore: Francesco Pinsone
 """
 import argparse
-from telethon import TelegramClient
+import asyncio
+
+from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 import logging
-from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, \
-    disconnect_to_mongo, save_to_mongo
+from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
+from telethon.errors.rpcerrorlist import UsernameInvalidError, UsernameNotOccupiedError
 from datetime import datetime, timezone
 
 # De-commentare per avviare lo script da riga di comando
 # from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
+
+
+async def check_username_existence(client, username):
+    """
+    Verifica se un username esiste su Telegram.
+    :param client: L'istanza del client Telethon.
+    :param username: Lo username o il link da verificare.
+    :return: True se esiste, False altrimenti.
+    """
+    try:
+        # Controllo formattazione username
+        if not username.startswith("@"):
+            username = f"@{username}"  # Aggiunge '@' se mancante
+
+        # Verifico l'esistenza dell'entità
+        entity = await client.get_entity(username)
+        # print(f"Username valido: {entity.title if hasattr(entity, 'title') else entity.username}")
+        return True
+    except (UsernameInvalidError, UsernameNotOccupiedError):
+        # print(f"Errore: lo username '{username}' non esiste o non è valido.")
+        return False
 
 
 def check_date(date, limit_date):
@@ -49,7 +72,8 @@ def check_date(date, limit_date):
 
     return date < limit_date
 
-async def telegram_scraper(m_client, channel_group, limit_date):
+
+async def telegram_scraper(m_client, channel_group, limit_date, max_retries = 5):
     """
     Funzione principale per il recupero dei messaggi da un canale Telegram.\n
     Una volta avviato il client Telegram viene acquisita una cronologia dei messaggi del canale d'interesse.
@@ -60,77 +84,91 @@ async def telegram_scraper(m_client, channel_group, limit_date):
     :param channel_group: nome del canale Telegram\n
     :return: None
     """
-    # TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l'utilizzo del campo date all'interno di ogni messaggio che viene scaricato.
-    # Avviare il client
-    await client.start()
-    logging.info("Client avviato")
+    retries = 0
 
-    collection = connect_to_mongo_collection(m_client, channel_group)
+    while retries < max_retries:
+        try:
+            # TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l'utilizzo del campo date all'interno di ogni messaggio che viene scaricato.
+            # Avviare il client
+            await client.start()
+            logging.info("Client avviato")
 
-    # Ottenere l'entità del canale
-    channel = await client.get_entity(channel_group)
+            collection = connect_to_mongo_collection(m_client, channel_group)
 
-    # Richiedere la cronologia dei messaggi
-    offset_id = 0
-    limit = 5  # Numero di messaggi da scaricare per ogni richiesta
-    all_messages = []
+            # Ottenere l'entità del canale
+            channel = await client.get_entity(channel_group)
 
-    while True:
-        history = await client(GetHistoryRequest(
-            peer=channel,
-            offset_id=offset_id,
-            offset_date=None,
-            add_offset=0,
-            limit=limit,
-            max_id=0,
-            min_id=0,
-            hash=0
-        ))
+            # Richiedere la cronologia dei messaggi
+            offset_id = 0
+            limit = 5  # Numero di messaggi da scaricare per ogni richiesta
+            all_messages = []
 
-        if not history.messages:
+            while True:
+                history = await client(GetHistoryRequest(
+                    peer=channel,
+                    offset_id=offset_id,
+                    offset_date=None,
+                    add_offset=0,
+                    limit=limit,
+                    max_id=0,
+                    min_id=0,
+                    hash=0
+                ))
+
+                if not history.messages:
+                    break
+
+                messages = history.messages
+
+                # Filtro i messaggi in modo che vengano selezionati solo quelli che contengono una delle parole chiave specificate
+                all_messages.extend(messages)
+                offset_id = messages[-1].id
+
+            # Stampo i messaggi
+            counter_messages = 0
+            for message in all_messages:
+                # Controllo se il messaggio è più vecchio di una certa data specificata
+                if check_date(message.date, limit_date):
+                    break
+
+                logging.info(message.to_dict())
+                message_data = message.to_dict()
+
+                # Ottieni informazioni sul mittente
+                sender = None
+                if message.from_id:  # Verifica se il messaggio ha un mittente
+                    try:
+                        sender = await client.get_entity(message.from_id)
+                        sender_name = f"{sender.first_name or ''} {sender.last_name or ''}".strip()  # Nome e cognome
+                        sender_username = sender.username  # Username, se disponibile
+                        message_data['sender_name'] = sender_name
+                        message_data['sender_username'] = sender_username
+                        message_data['channel'] = channel_group
+                    except Exception as e:
+                        message_data['channel'] = channel_group
+                        logging.error(f"Errore nell'ottenere informazioni sul mittente: {e}.\n Probabilmente si tratta di un canale e non di un gruppo.\n")
+
+                # Rimuovi i campi indesiderati
+                fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned',
+                                    'noforwards', 'invert_media', 'offline', 'from_boosts_applied', 'via_bot_id',
+                                    'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason',
+                                    'ttl_period',
+                                    'quick_reply_shortcut_id', 'effect', 'factcheck']
+                # TODO: Studio di significatività dei campi da rimuovere più approfondito
+                for field in fields_to_remove:
+                    message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
+
+                logging.info(message_data)
+
+                save_to_mongo(message_data, collection)
             break
-
-        messages = history.messages
-
-        # Filtro i messaggi in modo che vengano selezionati solo quelli che contengono una delle parole chiave specificate
-        all_messages.extend(messages)
-        offset_id = messages[-1].id
-
-    # Stampo i messaggi
-    counter_messages = 0
-    for message in all_messages:
-        # Controllo se il messaggio è più vecchio di una certa data specificata
-        if check_date(message.date, limit_date):
-            break
-
-        logging.info(message.to_dict())
-        message_data = message.to_dict()
-
-        # Ottieni informazioni sul mittente
-        sender = None
-        if message.from_id:  # Verifica se il messaggio ha un mittente
-            try:
-                sender = await client.get_entity(message.from_id)
-                sender_name = f"{sender.first_name or ''} {sender.last_name or ''}".strip()  # Nome e cognome
-                sender_username = sender.username  # Username, se disponibile
-                message_data['sender_name'] = sender_name
-                message_data['sender_username'] = sender_username
-            except Exception as e:
-                message_data['canale'] = sender.title
-                logging.error(f"Errore nell'ottenere informazioni sul mittente: {e}.\n Probabilmente si tratta di un canale e non di un gruppo.\n")
-
-        # Rimuovi i campi indesiderati
-        fields_to_remove = ['out', 'media_unread', 'silent', 'from_scheduled', 'legacy', 'edit_hide', 'pinned',
-                            'noforwards', 'invert_media', 'offline', 'from_boosts_applied', 'via_bot_id',
-                            'via_business_bot_id', 'reply_markup', 'grouped_id', 'restriction_reason', 'ttl_period',
-                            'quick_reply_shortcut_id', 'effect', 'factcheck']
-        # TODO: Studio di significatività dei campi da rimuovere più approfondito
-        for field in fields_to_remove:
-            message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
-
-        logging.info(message_data)
-
-        save_to_mongo(message_data, collection)
+        except ConnectionError as e:
+            retries += 1
+            print(f"Errore di connessione. Tentativo {retries}/{max_retries}")
+            if retries < max_retries:
+                await asyncio.sleep(10)  # Attendi prima di ritentare
+            else:
+                raise e  # Rilancia l'errore dopo i tentativi
 
 
 if __name__ == "__main__":
@@ -173,7 +211,11 @@ if __name__ == "__main__":
     # Avvio del client Telegram e scraping
     with client:
         for target in target_list:
-            client.loop.run_until_complete(telegram_scraper(mongo_client, target, limit_date))
+            # Verifica se l'username esiste, se non esiste, passa al prossimo target
+            if not check_username_existence(client, target):
+                logging.error(f"Il target '{target}' non esiste su Telegram.")
+                continue
+            client.loop.run_until_complete(telegram_scraper(mongo_client, target, limit_date, credentials["max_retries"]))
 
     # Disconnessione dal DB
     disconnect_to_mongo(mongo_client)
