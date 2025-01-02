@@ -4,5 +4,6 @@
   "phone": "+393931754460",
   "connection_string" : "mongodb+srv://francescopinsone2:spugna2000@cluster0.fzowqrz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
   "database" : "telegram_scraping",
-  "limit_date": "01-04-2024"
+  "limit_date": "01-04-2024",
+  "max_retries": 5
 }
