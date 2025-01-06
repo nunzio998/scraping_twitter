@@ -34,7 +34,7 @@ def discord_ai_scraper():
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
-    credentials = read_json("utils/credentials.json")
+    credentials = read_json("utils/conf.json")
 
     # Inizializzo il service selenium
     service = Service('driver/geckodriver')

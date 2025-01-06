@@ -144,7 +144,7 @@ def discord_scraper():
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
-    credentials = read_json("utils/credentials.json")
+    conf = read_json("utils/conf.json")
 
     # Inizializzo il service selenium
     service = Service('driver/geckodriver')
@@ -153,12 +153,12 @@ def discord_scraper():
     driver = webdriver.Firefox(service=service)
 
     # Effettuo il login a Discord
-    discord_login(driver, logging, credentials)
+    discord_login(driver, logging, conf)
 
     time.sleep(1)
 
     # Cerco la presenza di captcha, se ci sono provo a bypassarli.
-    check_captcha(driver, logging, credentials)
+    check_captcha(driver, logging, conf)
 
     # Mi connetto al database
     client = connect_to_mongo()
@@ -180,7 +180,7 @@ def discord_scraper():
         search_messages = wait_messages.until(EC.visibility_of_element_located((By.CLASS_NAME, 'panels_a4d4d9')))
 
         # Numero di volte che vuoi scorrere verso l'alto
-        scroll_times = 10
+        scroll_times = conf["scroll_times"]
 
         # Lista per salvare tutti i messaggi, nome del server e nome del canale
         all_messages, server_name, channel_name = beautifulsoup_analisys(driver, scroll_times)

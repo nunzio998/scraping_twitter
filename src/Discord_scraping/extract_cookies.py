@@ -21,7 +21,7 @@ def extract_cookies():
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
-    credentials = read_json("utils/credentials.json")
+    credentials = read_json("utils/conf.json")
 
     # Eseguo il login manualmente, poi salvo i cookies
     driver = webdriver.Firefox()
