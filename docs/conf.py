@@ -9,7 +9,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-project = 'Wall-e Project'
+project = 'Dcomuentazione Tesi'
 copyright = '2024, Francesco Pinsone'
 author = 'Francesco Pinsone'
 release = '1.0.0'
