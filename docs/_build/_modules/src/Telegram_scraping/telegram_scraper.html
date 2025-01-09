@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.Telegram_scraping.telegram_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.Telegram_scraping.telegram_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Wall-e Project</a>
+          <a href="../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -75,20 +75,87 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Questo script ha il compito di effettuare lo scraping di dati da Telegram. Tale obbiettivo viene perseguito tramite</span>
 <span class="sd">l&#39;apposita libreria Python Telegram, &#39;telethon&#39;. Questa permette all&#39;utente di utilizzare le api della piattaforma e di</span>
-<span class="sd">avere quindi accesso ai contenuti dei canali ai quali l&#39;utente è iscritto. In questa modalità, quindi, i dati</span>
-<span class="sd">vengono facilmente estratti, trattati e infine salvati su un apposito DB.\n</span>
+<span class="sd">avere quindi accesso ai contenuti dei canali o dei gruppi che l&#39;utente sceglie si specificare o che sono presenti in una</span>
+<span class="sd">lista target che viene mantenuta su MongoDB. In questa modalità, quindi, i dati vengono facilmente estratti, trattati e</span>
+<span class="sd">infine salvati su un apposito DB.\n</span>
 
 <span class="sd">Autore: Francesco Pinsone</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">telethon</span> <span class="kn">import</span> <span class="n">TelegramClient</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">telethon.sync</span> <span class="kn">import</span> <span class="n">TelegramClient</span>
 <span class="kn">from</span> <span class="nn">telethon.tl.functions.messages</span> <span class="kn">import</span> <span class="n">GetHistoryRequest</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">src.Telegram_scraping.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_to_mongo</span>
+<span class="kn">from</span> <span class="nn">telethon.errors.rpcerrorlist</span> <span class="kn">import</span> <span class="n">UsernameInvalidError</span><span class="p">,</span> <span class="n">UsernameNotOccupiedError</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+
+<span class="c1"># De-commentare per avviare lo script da riga di comando</span>
+<span class="c1"># from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo</span>
+
+
+<div class="viewcode-block" id="check_username_existence">
+<a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.check_username_existence">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check_username_existence</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Verifica se un username esiste su Telegram.</span>
+<span class="sd">    :param client: L&#39;istanza del client Telethon.</span>
+<span class="sd">    :param username: Lo username o il link da verificare.</span>
+<span class="sd">    :return: True se esiste, False altrimenti.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Controllo formattazione username</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># Aggiunge &#39;@&#39; se mancante</span>
+
+        <span class="c1"># Verifico l&#39;esistenza dell&#39;entità</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="c1"># print(f&quot;Username valido: {entity.title if hasattr(entity, &#39;title&#39;) else entity.username}&quot;)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">UsernameInvalidError</span><span class="p">,</span> <span class="n">UsernameNotOccupiedError</span><span class="p">):</span>
+        <span class="c1"># print(f&quot;Errore: lo username &#39;{username}&#39; non esiste o non è valido.&quot;)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="check_date">
+<a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.check_date">[docs]</a>
+<span class="k">def</span> <span class="nf">check_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione per controllare se la data di un messaggio è più vecchia di una certa data limite.\n</span>
+<span class="sd">    :param date: data del messaggio\n</span>
+<span class="sd">    :param limit_date: data limite\n</span>
+<span class="sd">    :return: True se la data è più vecchia, False altrimenti</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print(f&quot;Date: {date}, Limit date: {limit_date}&quot;)</span>
+    <span class="c1"># print(f&quot;Date type: {type(date)}, Limit date type: {type(limit_date)}&quot;)</span>
+    <span class="c1"># Se &#39;date&#39; è offset-naive, lo converti in offset-aware (UTC)</span>
+    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="c1"># Converto la data ISO in un oggetto datetime</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">[:</span><span class="mi">19</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span>  <span class="c1"># Ignora la parte &quot;+00:00&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit_date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="c1"># Converto la data specificata in un oggetto datetime</span>
+        <span class="n">limit_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">limit_date</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Rendi &#39;limit_date&#39; offset-aware</span>
+    <span class="n">limit_date</span> <span class="o">=</span> <span class="n">limit_date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+    <span class="c1"># print(&quot;-----------------------------------------------------&quot;)</span>
+    <span class="c1"># print(f&quot;Date: {date}, Limit date: {limit_date}&quot;)</span>
+    <span class="c1"># print(f&quot;Date type: {type(date)}, Limit date type: {type(limit_date)}&quot;)</span>
+
+    <span class="k">return</span> <span class="n">date</span> <span class="o">&lt;</span> <span class="n">limit_date</span></div>
+
 
 
 <div class="viewcode-block" id="telegram_scraper">
 <a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.telegram_scraper">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">telegram_scraper</span><span class="p">(</span><span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">telegram_scraper</span><span class="p">(</span><span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">,</span> <span class="n">max_retries</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione principale per il recupero dei messaggi da un canale Telegram.\n</span>
 <span class="sd">    Una volta avviato il client Telegram viene acquisita una cronologia dei messaggi del canale d&#39;interesse.</span>
@@ -99,75 +166,92 @@
 <span class="sd">    :param channel_group: nome del canale Telegram\n</span>
 <span class="sd">    :return: None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Avviare il client</span>
-    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Client avviato&quot;</span><span class="p">)</span>
+    <span class="n">retries</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">retries</span> <span class="o">&lt;</span> <span class="n">max_retries</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l&#39;utilizzo del campo date all&#39;interno di ogni messaggio che viene scaricato.</span>
+            <span class="c1"># Avviare il client</span>
+            <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Client avviato&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Ottenere l&#39;entità del canale</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">channel_group</span><span class="p">)</span>
+            <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">)</span>
 
-    <span class="c1"># Richiedere la cronologia dei messaggi</span>
-    <span class="n">offset_id</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Numero di messaggi da scaricare per ogni richiesta</span>
-    <span class="n">all_messages</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># Ottenere l&#39;entità del canale</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">channel_group</span><span class="p">)</span>
 
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">history</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">(</span><span class="n">GetHistoryRequest</span><span class="p">(</span>
-            <span class="n">peer</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
-            <span class="n">offset_id</span><span class="o">=</span><span class="n">offset_id</span><span class="p">,</span>
-            <span class="n">offset_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">add_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
-            <span class="n">max_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">min_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="nb">hash</span><span class="o">=</span><span class="mi">0</span>
-        <span class="p">))</span>
+            <span class="c1"># Richiedere la cronologia dei messaggi</span>
+            <span class="n">offset_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># Numero di messaggi da scaricare per ogni richiesta</span>
+            <span class="n">all_messages</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">history</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">history</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="p">(</span><span class="n">GetHistoryRequest</span><span class="p">(</span>
+                    <span class="n">peer</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                    <span class="n">offset_id</span><span class="o">=</span><span class="n">offset_id</span><span class="p">,</span>
+                    <span class="n">offset_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">add_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                    <span class="n">max_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">min_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="nb">hash</span><span class="o">=</span><span class="mi">0</span>
+                <span class="p">))</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">history</span><span class="o">.</span><span class="n">messages</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">messages</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">messages</span>
+
+                <span class="c1"># Filtro i messaggi in modo che vengano selezionati solo quelli che contengono una delle parole chiave specificate</span>
+                <span class="n">all_messages</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+                <span class="n">offset_id</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="c1"># Stampo i messaggi</span>
+            <span class="n">counter_messages</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">all_messages</span><span class="p">:</span>
+                <span class="c1"># Controllo se il messaggio è più vecchio di una certa data specificata</span>
+                <span class="k">if</span> <span class="n">check_date</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+                <span class="n">message_data</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+
+                <span class="c1"># Ottieni informazioni sul mittente</span>
+                <span class="n">sender</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">from_id</span><span class="p">:</span>  <span class="c1"># Verifica se il messaggio ha un mittente</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sender</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">from_id</span><span class="p">)</span>
+                        <span class="n">sender_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sender</span><span class="o">.</span><span class="n">first_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sender</span><span class="o">.</span><span class="n">last_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Nome e cognome</span>
+                        <span class="n">sender_username</span> <span class="o">=</span> <span class="n">sender</span><span class="o">.</span><span class="n">username</span>  <span class="c1"># Username, se disponibile</span>
+                        <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;sender_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_name</span>
+                        <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;sender_username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_username</span>
+                        <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel_group</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel_group</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Errore nell&#39;ottenere informazioni sul mittente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2"> Probabilmente si tratta di un canale e non di un gruppo.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Rimuovi i campi indesiderati</span>
+                <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;media_unread&#39;</span><span class="p">,</span> <span class="s1">&#39;silent&#39;</span><span class="p">,</span> <span class="s1">&#39;from_scheduled&#39;</span><span class="p">,</span> <span class="s1">&#39;legacy&#39;</span><span class="p">,</span> <span class="s1">&#39;edit_hide&#39;</span><span class="p">,</span> <span class="s1">&#39;pinned&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;noforwards&#39;</span><span class="p">,</span> <span class="s1">&#39;invert_media&#39;</span><span class="p">,</span> <span class="s1">&#39;offline&#39;</span><span class="p">,</span> <span class="s1">&#39;from_boosts_applied&#39;</span><span class="p">,</span> <span class="s1">&#39;via_bot_id&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;via_business_bot_id&#39;</span><span class="p">,</span> <span class="s1">&#39;reply_markup&#39;</span><span class="p">,</span> <span class="s1">&#39;grouped_id&#39;</span><span class="p">,</span> <span class="s1">&#39;restriction_reason&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;ttl_period&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;quick_reply_shortcut_id&#39;</span><span class="p">,</span> <span class="s1">&#39;effect&#39;</span><span class="p">,</span> <span class="s1">&#39;factcheck&#39;</span><span class="p">]</span>
+                <span class="c1"># TODO: Studio di significatività dei campi da rimuovere più approfondito</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">:</span>
+                    <span class="n">message_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># Usa pop per rimuovere il campo, se esiste</span>
+
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message_data</span><span class="p">)</span>
+
+                <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">message_data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
             <span class="k">break</span>
+        <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">retries</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Errore di connessione. Tentativo </span><span class="si">{</span><span class="n">retries</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">max_retries</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">retries</span> <span class="o">&lt;</span> <span class="n">max_retries</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># Attendi prima di ritentare</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>  <span class="c1"># Rilancia l&#39;errore dopo i tentativi</span></div>
 
-        <span class="n">messages</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">messages</span>
-
-        <span class="c1"># Filtro i messaggi in modo che vengano selezionati solo quelli che contengono una delle parole chiave specificate</span>
-        <span class="n">all_messages</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
-        <span class="n">offset_id</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
-
-    <span class="c1"># Stampo i messaggi</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="mi">1000</span>
-    <span class="n">counter_messages</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">all_messages</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="n">message_data</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-
-        <span class="c1"># Ottieni informazioni sul mittente</span>
-        <span class="n">sender</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">from_id</span><span class="p">:</span>  <span class="c1"># Verifica se il messaggio ha un mittente</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">sender</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">from_id</span><span class="p">)</span>
-                <span class="n">sender_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sender</span><span class="o">.</span><span class="n">first_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sender</span><span class="o">.</span><span class="n">last_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Nome e cognome</span>
-                <span class="n">sender_username</span> <span class="o">=</span> <span class="n">sender</span><span class="o">.</span><span class="n">username</span>  <span class="c1"># Username, se disponibile</span>
-                <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;sender_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_name</span>
-                <span class="n">message_data</span><span class="p">[</span><span class="s1">&#39;sender_username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_username</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Errore nell&#39;ottenere informazioni sul mittente: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Rimuovi i campi indesiderati</span>
-        <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="s1">&#39;media_unread&#39;</span><span class="p">,</span> <span class="s1">&#39;silent&#39;</span><span class="p">,</span> <span class="s1">&#39;from_scheduled&#39;</span><span class="p">,</span> <span class="s1">&#39;legacy&#39;</span><span class="p">,</span> <span class="s1">&#39;edit_hide&#39;</span><span class="p">,</span> <span class="s1">&#39;pinned&#39;</span><span class="p">,</span> <span class="s1">&#39;noforwards&#39;</span><span class="p">,</span> <span class="s1">&#39;invert_media&#39;</span><span class="p">,</span> <span class="s1">&#39;offline&#39;</span><span class="p">,</span> <span class="s1">&#39;from_boosts_applied&#39;</span><span class="p">,</span> <span class="s1">&#39;via_bot_id&#39;</span><span class="p">,</span> <span class="s1">&#39;via_business_bot_id&#39;</span><span class="p">,</span> <span class="s1">&#39;reply_markup&#39;</span><span class="p">,</span> <span class="s1">&#39;grouped_id&#39;</span><span class="p">,</span> <span class="s1">&#39;restriction_reason&#39;</span><span class="p">,</span> <span class="s1">&#39;ttl_period&#39;</span><span class="p">,</span> <span class="s1">&#39;quick_reply_shortcut_id&#39;</span><span class="p">,</span> <span class="s1">&#39;effect&#39;</span><span class="p">,</span> <span class="s1">&#39;factcheck&#39;</span><span class="p">]</span>
-        <span class="c1"># TODO: Studio di significatività dei campi da rimuovere più approfondito</span>
-        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">:</span>
-            <span class="n">message_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># Usa pop per rimuovere il campo, se esiste</span>
-
-
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message_data</span><span class="p">)</span>
-
-        <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">message_data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
-
-        <span class="c1"># Incremento il contatore dei messaggi e controllo se ho raggiunto il limite</span>
-        <span class="n">counter_messages</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">counter_messages</span> <span class="o">&gt;=</span> <span class="n">limit</span><span class="p">:</span>
-            <span class="k">break</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -176,23 +260,48 @@
                         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
 
     <span class="c1"># credenziali API</span>
-    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/conf.json&quot;</span><span class="p">)</span>
 
     <span class="n">api_id</span> <span class="o">=</span> <span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;api_id&quot;</span><span class="p">]</span>
     <span class="n">api_hash</span> <span class="o">=</span> <span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;api_hash&quot;</span><span class="p">]</span>
     <span class="n">phone</span> <span class="o">=</span> <span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;phone&quot;</span><span class="p">]</span>
+    <span class="n">limit_date</span> <span class="o">=</span> <span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;limit_date&quot;</span><span class="p">]</span>
 
-    <span class="c1"># Nome del canale da cui fare scraping</span>
-    <span class="n">channels_username</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BugCrowd&#39;</span><span class="p">,</span> <span class="s1">&#39;androidMalware&#39;</span><span class="p">,</span> <span class="s1">&#39;itarmyofukraine2022&#39;</span><span class="p">,</span> <span class="s1">&#39;noname05716&#39;</span><span class="p">,</span> <span class="s1">&#39;true_secator&#39;</span><span class="p">]</span>
+    <span class="c1"># Parser per gli argomenti da linea di comando</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Telegram scraper: estrae i dati dai canali Telegram.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--targets&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>  <span class="c1"># Accetta zero o più argomenti</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Elenco dei canali/gruppi Telegram da cui estrarre i messaggi (separati da spazio).&quot;</span>
+    <span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
-    <span class="c1"># Creare il client</span>
+    <span class="c1"># Creare il client Telegram</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">TelegramClient</span><span class="p">(</span><span class="s1">&#39;telegram_scraper&#39;</span><span class="p">,</span> <span class="n">api_id</span><span class="p">,</span> <span class="n">api_hash</span><span class="p">)</span>
 
     <span class="n">mongo_client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
 
+    <span class="c1"># Logica per ottenere i target</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>  <span class="c1"># Se l&#39;utente ha specificato target da linea di comando</span>
+        <span class="n">target_list</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">targets</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Target specificati dall&#39;utente: </span><span class="si">{</span><span class="n">target_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Se non sono stati specificati target, caricali dal DB</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Nessun target specificato, caricamento da MongoDB...&quot;</span><span class="p">)</span>
+        <span class="n">targets_collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">mongo_client</span><span class="p">,</span> <span class="s2">&quot;targets&quot;</span><span class="p">)</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="n">targets_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+        <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;target_name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
+
+    <span class="c1"># Avvio del client Telegram e scraping</span>
     <span class="k">with</span> <span class="n">client</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels_username</span><span class="p">:</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">telegram_scraper</span><span class="p">(</span><span class="n">mongo_client</span><span class="p">,</span> <span class="n">channel</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
+            <span class="c1"># Verifica se l&#39;username esiste, se non esiste, passa al prossimo target</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">check_username_existence</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Il target &#39;</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&#39; non esiste su Telegram.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">telegram_scraper</span><span class="p">(</span><span class="n">mongo_client</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">,</span> <span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;max_retries&quot;</span><span class="p">]))</span>
+
+    <span class="c1"># Disconnessione dal DB</span>
+    <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">mongo_client</span><span class="p">)</span>
 </pre></div>
 
            </div>

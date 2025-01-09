@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.Discord_scraping.discord_selenium_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.Discord_scraping.discord_selenium_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Wall-e Project</a>
+          <a href="../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -110,6 +110,26 @@
 
 
 
+<div class="viewcode-block" id="login">
+<a class="viewcode-back" href="../../../discord_selenium_scraper.html#src.Discord_scraping.discord_selenium_scraper.login">[docs]</a>
+<span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.</span>
+<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
+<span class="sd">    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull&#39;andamento del processo.\n</span>
+<span class="sd">    :param credentials: struttura dati che contiene le credenziali dell&#39;utente per l&#39;accesso al proprio profilo Discord.\n</span>
+<span class="sd">    :return: None\n</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Effettuo il login a Discord</span>
+    <span class="n">discord_login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Cerco la presenza di captcha, se ci sono provo a bypassarli.</span>
+    <span class="n">check_captcha</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="discord_login">
 <a class="viewcode-back" href="../../../discord_selenium_scraper.html#src.Discord_scraping.discord_selenium_scraper.discord_login">[docs]</a>
 <span class="k">def</span> <span class="nf">discord_login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">):</span>
@@ -120,7 +140,7 @@
 <span class="sd">    :param credentials: struttura dati che contiene le credenziali dell&#39;utente per l&#39;accesso al proprio profilo Discord.\n</span>
 <span class="sd">    :return: None\n</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Loggarsi su Discord</span>
+    <span class="c1"># Caricamento pagina di login discord</span>
     <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://discord.com/login&#39;</span><span class="p">)</span>
 
     <span class="c1"># Imposto un&#39;attesa esplicita di massimo 60 secondi</span>
@@ -131,7 +151,8 @@
     <span class="c1"># Controllo la presenza o meno della schermata che specifica la volontà di accedere a Discord col proprio utente o sceglierne un altro.</span>
     <span class="c1"># La schermata compare solitamente dopo un elevato numero di esecuzioni. Se è presente simulo la pressione del bottone &quot;Accedi&quot;.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">access_button_field</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s2">&quot;/html/body/div[1]/div[2]/div[1]/div[1]/div/div/div/section/div[2]/div[2]/div/div/div[3]/button[1]&quot;</span><span class="p">)</span>
+        <span class="n">access_button_field</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                                  <span class="s2">&quot;/html/body/div[1]/div[2]/div[1]/div[1]/div/div/div/section/div[2]/div[2]/div/div/div[3]/button[1]&quot;</span><span class="p">)</span>
         <span class="n">access_button_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
@@ -149,8 +170,8 @@
             <span class="n">email_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">])</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tentativo 2: Campo email non trovato..&quot;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Impossibile effettuare l&#39;accesso a Discord.&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tentativo 2: Campo email non trovato, Impossibile effettuare l&#39;accesso a Discord..&quot;</span><span class="p">)</span>
+            <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -166,8 +187,8 @@
             <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tentativo 2: Campo password non trovato..&quot;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Impossibile effettuare l&#39;accesso a Discord.&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tentativo 2: Campo password non trovato, Impossibile effettuare l&#39;accesso a Discord..&quot;</span><span class="p">)</span>
+            <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
@@ -187,12 +208,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Cerco la presenza del captcha, se presente cerco di bypassarlo.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">captcha</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s2">&quot;/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe&quot;</span><span class="p">)</span>
+        <span class="n">captcha</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                      <span class="s2">&quot;/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Captcha presente, carico cookies..&quot;</span><span class="p">)</span>
 
         <span class="c1"># Carico i cookies e faccio il refresh del driver</span>
         <span class="n">load_cookies</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
         <span class="n">driver</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+
+        <span class="c1"># Comando con cui si cerca di rimuovere il test captcha dal DOM.</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;document.getElementById(&#39;captcha&#39;).style.display = &#39;none&#39;;&quot;</span><span class="p">)</span>
 
         <span class="c1"># Ripeto la procedura di login</span>
         <span class="n">discord_login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
@@ -202,7 +227,8 @@
 
     <span class="c1"># Se il captcha è ancora presente vuol dire che non sono riuscito a bypassarlo, quindi lo faccio risolvere all&#39;utente.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">captcha</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s2">&quot;/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe&quot;</span><span class="p">)</span>
+        <span class="n">captcha</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
+                                      <span class="s2">&quot;/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Captcha ancora presente, risolvere manualmente..&quot;</span><span class="p">)</span>
 
         <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Premi ENTER dopo aver risolto il captcha..&quot;</span><span class="p">)</span>
@@ -229,7 +255,7 @@
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
                         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
 
-    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/conf.json&quot;</span><span class="p">)</span>
 
     <span class="c1"># Inizializzo il service selenium</span>
     <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="s1">&#39;driver/geckodriver&#39;</span><span class="p">)</span>
@@ -238,12 +264,7 @@
     <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 
     <span class="c1"># Effettuo il login a Discord</span>
-    <span class="n">discord_login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
-
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="c1"># Cerco la presenza di captcha, se ci sono provo a bypassarli.</span>
-    <span class="n">check_captcha</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+    <span class="n">login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">conf</span><span class="p">)</span>
 
     <span class="c1"># Mi connetto al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
@@ -265,7 +286,7 @@
         <span class="n">search_messages</span> <span class="o">=</span> <span class="n">wait_messages</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="s1">&#39;panels_a4d4d9&#39;</span><span class="p">)))</span>
 
         <span class="c1"># Numero di volte che vuoi scorrere verso l&#39;alto</span>
-        <span class="n">scroll_times</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">scroll_times</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;scroll_times&quot;</span><span class="p">]</span>
 
         <span class="c1"># Lista per salvare tutti i messaggi, nome del server e nome del canale</span>
         <span class="n">all_messages</span><span class="p">,</span> <span class="n">server_name</span><span class="p">,</span> <span class="n">channel_name</span> <span class="o">=</span> <span class="n">beautifulsoup_analisys</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">scroll_times</span><span class="p">)</span>
@@ -289,6 +310,7 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">discord_scraper</span><span class="p">()</span>
+    <span class="c1"># TODO: gestire meglio captcha durante l&#39;accesso a Discord web.</span>
 </pre></div>
 
            </div>

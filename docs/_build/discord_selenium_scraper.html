@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>discord_selenium_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>discord_selenium_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -52,6 +52,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.discord_login"><code class="docutils literal notranslate"><span class="pre">discord_login()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.discord_scraper"><code class="docutils literal notranslate"><span class="pre">discord_scraper()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.load_cookies"><code class="docutils literal notranslate"><span class="pre">load_cookies()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.discord_selenium_scraper.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="discord_scraper_ai.html">discord_scraper_ai</a></li>
@@ -70,7 +71,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Wall-e Project</a>
+          <a href="index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -157,6 +158,24 @@ infine i messaggi estratti vengono salvati su un db.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
 <li><p><strong>cookies_path</strong> – path del file json che contiene i cookies di sessione per superare il captcha.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.login">
+<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_selenium_scraper.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_selenium_scraper.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_selenium_scraper.login" title="Link to this definition"></a></dt>
+<dd><p>Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.
+:param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
+<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

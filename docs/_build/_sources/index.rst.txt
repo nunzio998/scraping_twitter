@@ -1,5 +1,5 @@
-Wall-e Project Documentation documentation
-==========================================
+Documentazione progetto di tesi di Francesco Pinsone
+====================================================
 
 Documentazione della repository github 'https://github.com/nunzio998/scraping_twitter' relativa al progetto di tesi di
 Francesco Pinsone.

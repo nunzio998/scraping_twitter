@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>telegram_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>telegram_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -48,6 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Discord_scraper.html">Discord</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="Telegram_scraper.html">Telegram</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">telegram_scraper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.telegram_scraper.check_date"><code class="docutils literal notranslate"><span class="pre">check_date()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.telegram_scraper.check_username_existence"><code class="docutils literal notranslate"><span class="pre">check_username_existence()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.telegram_scraper.telegram_scraper"><code class="docutils literal notranslate"><span class="pre">telegram_scraper()</span></code></a></li>
 </ul>
 </li>
@@ -65,7 +67,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Wall-e Project</a>
+          <a href="index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -88,12 +90,39 @@
 <span id="telegram-scraper"></span><h1>telegram_scraper<a class="headerlink" href="#module-src.Telegram_scraping.telegram_scraper" title="Link to this heading"></a></h1>
 <p>Questo script ha il compito di effettuare lo scraping di dati da Telegram. Tale obbiettivo viene perseguito tramite
 l’apposita libreria Python Telegram, ‘telethon’. Questa permette all’utente di utilizzare le api della piattaforma e di
-avere quindi accesso ai contenuti dei canali ai quali l’utente è iscritto. In questa modalità, quindi, i dati
-vengono facilmente estratti, trattati e infine salvati su un apposito DB.</p>
+avere quindi accesso ai contenuti dei canali o dei gruppi che l’utente sceglie si specificare o che sono presenti in una
+lista target che viene mantenuta su MongoDB. In questa modalità, quindi, i dati vengono facilmente estratti, trattati e
+infine salvati su un apposito DB.</p>
 <p>Autore: Francesco Pinsone</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="src.Telegram_scraping.telegram_scraper.check_date">
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.telegram_scraper.</span></span><span class="sig-name descname"><span class="pre">check_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/telegram_scraper.html#check_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.telegram_scraper.check_date" title="Link to this definition"></a></dt>
+<dd><p>Funzione per controllare se la data di un messaggio è più vecchia di una certa data limite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> – data del messaggio</p></li>
+<li><p><strong>limit_date</strong> – data limite</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True se la data è più vecchia, False altrimenti</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Telegram_scraping.telegram_scraper.check_username_existence">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.telegram_scraper.</span></span><span class="sig-name descname"><span class="pre">check_username_existence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/telegram_scraper.html#check_username_existence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.telegram_scraper.check_username_existence" title="Link to this definition"></a></dt>
+<dd><p>Verifica se un username esiste su Telegram.
+:param client: L’istanza del client Telethon.
+:param username: Lo username o il link da verificare.
+:return: True se esiste, False altrimenti.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.telegram_scraper.telegram_scraper">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.telegram_scraper.</span></span><span class="sig-name descname"><span class="pre">telegram_scraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m_client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/telegram_scraper.html#telegram_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.telegram_scraper.telegram_scraper" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.telegram_scraper.</span></span><span class="sig-name descname"><span class="pre">telegram_scraper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m_client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/telegram_scraper.html#telegram_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.telegram_scraper.telegram_scraper" title="Link to this definition"></a></dt>
 <dd><p>Funzione principale per il recupero dei messaggi da un canale Telegram.</p>
 <p>Una volta avviato il client Telegram viene acquisita una cronologia dei messaggi del canale d’interesse.
 Tali messaggi vengono poi filtrati tramite l’utilizzo di keywords che possono variare di volta in volta in base
