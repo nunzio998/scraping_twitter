@@ -104,6 +104,8 @@ def beautifulsoup_analisys(driver, scroll_times):
             str: nome del canale.
     """
     all_messages = []
+    server_name = None
+    channel_name = None
 
     # Scorri verso l'alto per caricare più messaggi e salva i nuovi messaggi
     for _ in range(scroll_times):
