@@ -32,6 +32,22 @@ def load_cookies(driver, cookies_path="utils/cookies.json"):
     for cookie in cookies:
         driver.add_cookie(cookie)
 
+def login(driver, logging, credentials):
+    """
+    Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.
+    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l'html della pagina.\n
+    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull'andamento del processo.\n
+    :param credentials: struttura dati che contiene le credenziali dell'utente per l'accesso al proprio profilo Discord.\n
+    :return: None\n
+    """
+    # Effettuo il login a Discord
+    discord_login(driver, logging, credentials)
+
+    time.sleep(1)
+
+    # Cerco la presenza di captcha, se ci sono provo a bypassarli.
+    check_captcha(driver, logging, credentials)
+
 
 def discord_login(driver, logging, credentials):
     """
@@ -153,12 +169,7 @@ def discord_scraper():
     driver = webdriver.Firefox(service=service)
 
     # Effettuo il login a Discord
-    discord_login(driver, logging, conf)
-
-    time.sleep(1)
-
-    # Cerco la presenza di captcha, se ci sono provo a bypassarli.
-    check_captcha(driver, logging, conf)
+    login(driver, logging, conf)
 
     # Mi connetto al database
     client = connect_to_mongo()
@@ -203,3 +214,4 @@ def discord_scraper():
 
 if __name__ == "__main__":
     discord_scraper()
+    # TODO: gestire meglio captcha durante l'accesso a Discord web.
