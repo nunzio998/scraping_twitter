@@ -1,15 +1,33 @@
 """
-Questo script permette di eliminare tutti i documenti presenti nelle collezioni del database.
+Questo script permette di eliminare tutti i documenti presenti nelle collezioni di un database MongoDB.
 
-Autore: Francesco Pinsone
+**Funzionalità principali:**
+1. Si connette al database MongoDB utilizzando la stringa di connessione configurata nel file di configurazione.
+2. Recupera la lista delle collezioni presenti nel database.
+3. Per ogni collezione, elimina tutti i documenti in essa contenuti.
+4. Registra un log dettagliato con il numero di documenti eliminati per ciascuna collezione.
+
+L'operazione è irreversibile e rimuove permanentemente tutti i dati dalle collezioni. La funzione è progettata per pulire il database rimuovendo i dati precedentemente raccolti, preparandolo per nuove operazioni o raccolte di dati.
+
+**Autore**: Francesco Pinsone
 """
 from src.Telegram_scraping.utils.utils import *
 
 
 def drop_data():
     """
-    Funzione per eliminare tutti i documenti presenti nelle collezioni del database.\n
-    :return: None
+    Funzione che elimina tutti i documenti presenti nelle collezioni del database MongoDB.
+
+    La funzione esegue i seguenti passaggi:\n
+    1. Si connette al database MongoDB utilizzando la stringa di connessione configurata.\n
+    2. Recupera la lista delle collezioni presenti nel database.\n
+    3. Per ogni collezione, elimina tutti i documenti presenti.\n
+    4. Registra un log con il numero di documenti eliminati per ciascuna collezione.\n
+
+    L'operazione è irreversibile e rimuove permanentemente tutti i dati dalle collezioni selezionate,
+    che viene esclusa per evitare la perdita dei dati target.\n
+
+    :return: Nessun valore restituito. La funzione si occupa di gestire l'eliminazione e il logging.
     """
     # Mi connetto al database
     client = connect_to_mongo()
