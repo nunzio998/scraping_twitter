@@ -22,66 +22,11 @@ import asyncio
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 import logging
-from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, \
-    disconnect_to_mongo, save_to_mongo
-from telethon.errors.rpcerrorlist import UsernameInvalidError, UsernameNotOccupiedError
-from datetime import datetime, timezone
+from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo, check_date, check_username_existence
 
 
 # De-commentare per avviare lo script da riga di comando
 # from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
-
-
-async def check_username_existence(client, username):
-    """
-    Verifica se un username esiste su Telegram.
-    :param client: L'istanza del client Telethon.
-    :param username: Lo username o il link da verificare.
-    :return: True se esiste, False altrimenti.
-    """
-    try:
-        # Controllo formattazione username
-        if not username.startswith("@"):
-            username = f"@{username}"  # Aggiunge '@' se mancante
-
-        # Verifico l'esistenza dell'entità
-        entity = await client.get_entity(username)
-        # print(f"Username valido: {entity.title if hasattr(entity, 'title') else entity.username}")
-        return True
-    except (UsernameInvalidError, UsernameNotOccupiedError):
-        # print(f"Errore: lo username '{username}' non esiste o non è valido.")
-        return False
-
-
-def check_date(date, limit_date):
-    """
-    Funzione per controllare se la data di un messaggio è più vecchia di una certa data limite.\n
-    :param date: data del messaggio\n
-    :param limit_date: data limite\n
-    :return: True se la data è più vecchia, False altrimenti
-    """
-    # print(f"Date: {date}, Limit date: {limit_date}")
-    # print(f"Date type: {type(date)}, Limit date type: {type(limit_date)}")
-    # Se 'date' è offset-naive, lo converti in offset-aware (UTC)
-    if date.tzinfo is None:
-        date = date.replace(tzinfo=timezone.utc)
-
-    if not isinstance(date, datetime):
-        # Converto la data ISO in un oggetto datetime
-        date = datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")  # Ignora la parte "+00:00"
-
-    if not isinstance(limit_date, datetime):
-        # Converto la data specificata in un oggetto datetime
-        limit_date = datetime.strptime(limit_date, "%d-%m-%Y")
-
-    # Rendi 'limit_date' offset-aware
-    limit_date = limit_date.replace(tzinfo=timezone.utc)
-
-    # print("-----------------------------------------------------")
-    # print(f"Date: {date}, Limit date: {limit_date}")
-    # print(f"Date type: {type(date)}, Limit date type: {type(limit_date)}")
-
-    return date < limit_date
 
 
 async def channel_scraper(t_client, m_client, channel_group, limit_date, max_retries=5):
@@ -206,7 +151,7 @@ def telegram_scraper():
     l’estrazione dei messaggi. Alla fine del processo, chiude la connessione al database MongoDB. La funzione utilizza
     un approccio modulare per integrare funzionalità di logging, gestione dei target e connessione ai servizi,
     rendendola flessibile e facilmente adattabile.\n
-    :return:
+    :return: None
     """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
