@@ -12,12 +12,12 @@ from langchain.prompts import PromptTemplate
 
 
 # Funzione per cercare in Ahmia
-def search_ahmia(query):
+def search_ahmia(session, query):
     """
-    Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
-    lista di dizionari, dove ogni dizionario rappresenta un risultato.\n
+    Funzione per cercare in Ahmia. La funzione prende in input una query che utilizza per effettuare la ricerca. Infine
+     la funzione ritorna il testo estratto dal tag 'ol' del contenuto html risultante dalla ricerca effettuata.\n
     :param query: stringa, query di ricerca\n
-    :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
+    :return: testo estratto dal tag 'ol'
     """
     # URL di Ahmia versione onion
     url = f'http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/search/?q={query}'
@@ -33,12 +33,18 @@ def search_ahmia(query):
 
     res = soup.find('ol', class_='searchResults').get_text()
 
-    #res = beautifulsoup_analisys(response, query)
+    # res = beautifulsoup_analisys(response, query)
 
     return res
 
 
-if __name__ == "__main__":
+def darkweb_ollama_scraper():
+    """
+    Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere
+    la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione
+    'search_ahmia()' per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.\n
+    :return:
+    """
     model = OllamaLLM(model='llama3.1')
 
     # Configuro il logger
@@ -57,7 +63,7 @@ if __name__ == "__main__":
 
     # Esempio di ricerca
     query = 'hacker attack energy infrastructure'
-    results = search_ahmia(query)
+    results = search_ahmia(session, query)
 
     print(results)
 
@@ -94,3 +100,7 @@ if __name__ == "__main__":
     #     save_to_mongo(json_result, collection)
 
     # disconnect_to_mongo(db_client)
+
+
+if __name__ == "__main__":
+    darkweb_ollama_scraper()
