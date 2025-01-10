@@ -188,6 +188,10 @@
 <span class="k">def</span> <span class="nf">beautifulsoup_analisys</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.\n</span>
+<span class="sd">    A partire dall&#39;html estrae:\n</span>
+<span class="sd">    - il titolo che descrive la pagina web\n</span>
+<span class="sd">    - lo snippet, un piccolo estratto che descrivere la pagina web\n</span>
+<span class="sd">    In più salva le keywords con cui è composta la query di ricerca utilizzata per ottenere il risultato.\n</span>
 <span class="sd">    :param response: HTML che rappresenta la risposta della richiesta HTTP\n</span>
 <span class="sd">    :param query: stringa, query di ricerca\n</span>
 <span class="sd">    :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato</span>
