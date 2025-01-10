@@ -1,7 +1,7 @@
 """
 Questo script permette di effettuare un test di connessione al servizio Tor.
 
-Autore: Francesco Pinsone
+**Autore**: Francesco Pinsone
 """
 import requests
 import logging
@@ -10,7 +10,7 @@ import logging
 def test_connection():
     """
     Funzione per effettuare un test di connessione al servizio Tor.\n
-    :return: None
+    :return: Nessun valore restituito.
     """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log

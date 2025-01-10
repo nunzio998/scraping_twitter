@@ -1,9 +1,20 @@
 """
-Questo script permette di fare scraping del motore di ricerca Ahmia, uno dei motori di ricerca per il dark web. La ricerca viene effettuata per parole chiave e i risultati che produce vengono
-salvati in un database MongoDB. Per fare scraping di Ahmia è necessario utilizzare Tor, quindi è necessario avere un server Tor in esecuzione sul proprio computer. Inoltre, è necessario avere
-installato il browser Tor e configurare il proxy per le richieste HTTP.
+Questo script esegue il processo di scraping sul motore di ricerca Ahmia, che è una risorsa per esplorare il dark web. Utilizzando la rete Tor per garantire l'anonimato, la funzione principale
+effettua una ricerca tramite una query di parole chiave e salva i risultati nel database MongoDB. Questo processo permette di raccogliere informazioni provenienti dal dark web in modo sicuro e
+anonimo, archiviandole per ulteriori analisi o monitoraggi.
 
-Autore: Francesco Pinsone
+**Passaggi principali**:
+1. **Connessione a Tor**: Configurazione dei proxy SOCKS5 per permettere la connessione alla rete Tor.
+2. **Connessione a MongoDB**: Connessione al database MongoDB per il salvataggio dei dati estratti.
+3. **Esecuzione della ricerca**: Utilizzo della funzione `search_ahmia()` per inviare una query di ricerca su Ahmia.
+4. **Salvataggio dei risultati**: I risultati vengono analizzati e salvati nel database MongoDB.
+5. **Disconnessione dal database**: La connessione a MongoDB viene chiusa una volta completato il salvataggio dei dati.
+
+**Requisiti**:
+- È necessario avere un server Tor in esecuzione sul computer e configurato correttamente.
+- MongoDB deve essere installato e configurato per l'archiviazione dei risultati.
+
+**Autore**: Francesco Pinsone
 """
 
 import requests
@@ -14,8 +25,15 @@ import logging
 # Funzione per cercare in Ahmia
 def search_ahmia(session, query):
     """
-    Funzione per cercare in Ahmia. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
-    lista di dizionari, dove ogni dizionario rappresenta un risultato.\n
+    Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia
+    e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.\n
+
+    **Passaggi principali**:
+    1. **Costruzione dell'URL**: Combina l'URL di Ahmia (versione onion) con la query di ricerca specificata.\n
+    2. **Invio della Richiesta**: Utilizza la sessione configurata con proxy Tor per inviare una richiesta HTTP al motore di ricerca.\n
+    3. **Gestione degli Errori**: Verifica eventuali errori di connessione o nella richiesta e, in caso di problemi, restituisce una lista vuota.\n
+    4. **Analisi dei Risultati**: Utilizza la funzione `beautifulsoup_analisys()` per analizzare la risposta HTML e estrarre i dati rilevanti.\n
+
     :param query: stringa, query di ricerca\n
     :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
     """
@@ -36,10 +54,20 @@ def search_ahmia(session, query):
 
 def darkweb_scraper():
     """
-    Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere
-    la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione
-    'search_ahmia()' per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.\n
-    :return:
+    Questa funzione rappresenta il punto di partenza per eseguire uno scraping sul dark web. Utilizza il proxy Tor
+    per garantire l'anonimato e la navigazione sicura. La funzione include i seguenti passaggi principali:
+
+    1. **Configurazione dei Proxy**: Imposta i proxy SOCKS5 per abilitare la navigazione su Tor.\n
+    2. **Connessione al Database MongoDB**: Stabilisce una connessione al database per archiviare i dati estratti.\n
+    3. **Esecuzione della Ricerca**: Utilizza la funzione 'search_ahmia()' per cercare contenuti specifici sul dark web
+       in base alla query fornita (es. "hacker attack energy infrastructure").\n
+    4. **Salvataggio dei Risultati**: Analizza i risultati della ricerca, li formatta come JSON, e li salva nella collezione
+       appropriata del database.\n
+    5. **Disconnessione dal Database**: Garantisce la chiusura della connessione al database al termine delle operazioni.\n
+
+    Questa funzione è progettata per gestire automaticamente la raccolta e l'archiviazione dei dati provenienti dal dark web,
+    rendendola ideale per progetti di analisi o monitoraggio.
+    :return: Nessun valore restituito.
     """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log

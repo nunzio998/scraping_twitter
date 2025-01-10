@@ -1,7 +1,7 @@
 """
 Questo script permette di eliminare tutti i documenti presenti nelle collezioni del database.
 
-Autore: Francesco Pinsone
+**Autore**: Francesco Pinsone
 """
 from src.DarkWeb_scraping.utils.utils import *
 import logging
@@ -10,7 +10,7 @@ import logging
 def drop_data():
     """
     Funzione per eliminare tutti i documenti presenti nelle collezioni del database.\n
-    :return: None
+    :return: Nessun valore restituito.
     """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log

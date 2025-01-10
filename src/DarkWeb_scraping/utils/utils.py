@@ -1,11 +1,16 @@
 """
-Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:\n
-- Gestione interazioni con MongoDB\n
-- Parsing dei dati estratti\n
-- Procedure di login
+Questo script fornisce una serie di funzioni utili per la gestione di operazioni di scraping e archiviazione di dati,
+con particolare focus sull'integrazione con MongoDB e sull'analisi di contenuti web tramite BeautifulSoup.
 
-Autore: Francesco Pinsone
+Le principali funzionalità includono:
+- **Gestione MongoDB**: Connessione al database, creazione e gestione di collezioni, e salvataggio di dati.
+- **Analisi HTML**: Utilizzo di BeautifulSoup per estrarre informazioni rilevanti da pagine web, come titolo, snippet e link.
+- **Utilità generali**: Lettura di file JSON di configurazione e gestione delle credenziali.
+
+Questo script è progettato per essere modulare e integrabile in altri progetti, fornendo un'architettura robusta e flessibile
+per l'elaborazione e l'archiviazione dei dati.
+
+**Autore**: Francesco Pinsone
 """
 
 import json
@@ -15,11 +20,9 @@ import logging
 import re
 from src.DarkWeb_scraping.utils.screenshot_collector import configure_tor_driver, take_screenshot
 
-
 # Configuro il logger
 logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
-
 
 
 def read_json(path):
@@ -32,8 +35,7 @@ def read_json(path):
         return json.load(file)
 
 
-config_data = read_json(
-    '/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/DarkWeb_scraping/utils/credentials.json')
+config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/DarkWeb_scraping/utils/credentials.json')
 
 
 # Funzioni MongoDB:
@@ -89,7 +91,7 @@ def save_to_mongo(data, collection):
     Funzione per il salvataggio di dati nel database MongoDB.\n
     :param data: dict, dati da salvare\n
     :param collection: oggetto che rappresenta la collezione\n
-    :return: None
+    :return: Nessun valore restituito.
     """
     collection.insert_one(data)
 
