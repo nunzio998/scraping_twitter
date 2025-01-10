@@ -12,9 +12,9 @@ import logging
 
 
 # Funzione per cercare in Ahmia
-def search_ahmia(query):
+def search_ahmia(session, query):
     """
-    Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
+    Funzione per cercare in Ahmia. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
     lista di dizionari, dove ogni dizionario rappresenta un risultato.\n
     :param query: stringa, query di ricerca\n
     :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
@@ -34,7 +34,13 @@ def search_ahmia(query):
     return res
 
 
-if __name__ == "__main__":
+def darkweb_scraper():
+    """
+    Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere
+    la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione
+    'search_ahmia()' per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.\n
+    :return:
+    """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
@@ -51,7 +57,7 @@ if __name__ == "__main__":
 
     # Esempio di ricerca
     query = 'hacker attack energy infrastructure'
-    results = search_ahmia(query)
+    results = search_ahmia(session, query)
 
     collection = connect_to_mongo_collection(client, "ahmia_results")
 
@@ -68,3 +74,7 @@ if __name__ == "__main__":
         save_to_mongo(json_result, collection)
 
     disconnect_to_mongo(client)
+
+
+if __name__ == "__main__":
+    darkweb_scraper()
