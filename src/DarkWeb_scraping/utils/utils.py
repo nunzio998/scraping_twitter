@@ -12,10 +12,14 @@ import json
 import pymongo
 from bs4 import BeautifulSoup
 import logging
+import re
+from src.DarkWeb_scraping.utils.screenshot_collector import configure_tor_driver, take_screenshot
+
 
 # Configuro il logger
 logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
 
 
 def read_json(path):
@@ -28,7 +32,8 @@ def read_json(path):
         return json.load(file)
 
 
-config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/DarkWeb_scraping/utils/credentials.json')
+config_data = read_json(
+    '/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/DarkWeb_scraping/utils/credentials.json')
 
 
 # Funzioni MongoDB:
@@ -92,6 +97,10 @@ def save_to_mongo(data, collection):
 def beautifulsoup_analisys(response, query):
     """
     Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.\n
+    A partire dall'html estrae:\n
+    - il titolo che descrive la pagina web\n
+    - lo snippet, un piccolo estratto che descrivere la pagina web\n
+    In più salva le keywords con cui è composta la query di ricerca utilizzata per ottenere il risultato.\n
     :param response: HTML che rappresenta la risposta della richiesta HTTP\n
     :param query: stringa, query di ricerca\n
     :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
@@ -103,9 +112,17 @@ def beautifulsoup_analisys(response, query):
     results = []
     for result in soup.find_all('li', class_='result'):  # scorre la lista degli elementi che risultano dalla ricerca.
         title = result.find('a').text
-        link = result.find('a')['href']
+        # Con l'uso di una regex si estrae il link dalla stringa
+        link = re.search(r'https?://[^\s]+', result.find('a')['href']).group(0)
         snippet = result.find('p').text
+        # driver = configure_tor_driver()
+        # try:
+        #     screenshot = take_screenshot(link, driver)
+        # except Exception as e:
+        #     # logging.exception(e)
+        #     screenshot = None
         search_keywords = query.split(' ')
+        # results.append({'title': title, 'link': link, 'snippet': snippet, 'screenshot': screenshot,
+        #                 'search_keywords': search_keywords})
         results.append({'title': title, 'link': link, 'snippet': snippet, 'search_keywords': search_keywords})
-
     return results
