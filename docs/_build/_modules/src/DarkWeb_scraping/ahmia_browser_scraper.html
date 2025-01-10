@@ -88,9 +88,9 @@
 <span class="c1"># Funzione per cercare in Ahmia</span>
 <div class="viewcode-block" id="search_ahmia">
 <a class="viewcode-back" href="../../../ahmia_browser_scraper.html#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia">[docs]</a>
-<span class="k">def</span> <span class="nf">search_ahmia</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_ahmia</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di</span>
+<span class="sd">    Funzione per cercare in Ahmia. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di</span>
 <span class="sd">    lista di dizionari, dove ogni dizionario rappresenta un risultato.\n</span>
 <span class="sd">    :param query: stringa, query di ricerca\n</span>
 <span class="sd">    :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato</span>
@@ -111,7 +111,15 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="darkweb_scraper">
+<a class="viewcode-back" href="../../../ahmia_browser_scraper.html#src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper">[docs]</a>
+<span class="k">def</span> <span class="nf">darkweb_scraper</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere</span>
+<span class="sd">    la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione</span>
+<span class="sd">    &#39;search_ahmia()&#39; per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.\n</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Configuro il logger</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
                         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
@@ -128,7 +136,7 @@
 
     <span class="c1"># Esempio di ricerca</span>
     <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;hacker attack energy infrastructure&#39;</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">search_ahmia</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">search_ahmia</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
 
     <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;ahmia_results&quot;</span><span class="p">)</span>
 
@@ -144,7 +152,12 @@
         <span class="p">}</span>
         <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">json_result</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
 
-    <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">darkweb_scraper</span><span class="p">()</span>
 </pre></div>
 
            </div>

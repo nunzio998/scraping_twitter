@@ -47,6 +47,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="DarkWeb_scraper.html">DarkWeb</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ahmia_browser_scraper.html">ahmia_browser_scraper</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ahmia_scraper_ai</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper"><code class="docutils literal notranslate"><span class="pre">darkweb_ollama_scraper()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia"><code class="docutils literal notranslate"><span class="pre">search_ahmia()</span></code></a></li>
 </ul>
 </li>
@@ -92,16 +93,31 @@
 viene parsato avvalendosi di un LLM (Large Language Model) per estrarre informazioni utili dai risultati ottenuti.</p>
 <p>Autore: Francesco Pinsone</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper">
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">darkweb_ollama_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#darkweb_ollama_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper" title="Link to this definition"></a></dt>
+<dd><p>Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere
+la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione
+‘search_ahmia()’ per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia" title="Link to this definition"></a></dt>
-<dd><p>Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
-lista di dizionari, dove ogni dizionario rappresenta un risultato.</p>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Funzione per cercare in Ahmia. La funzione prende in input una query che utilizza per effettuare la ricerca. Infine</dt><dd><p>la funzione ritorna il testo estratto dal tag ‘ol’ del contenuto html risultante dalla ricerca effettuata.</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>query</strong> – stringa, query di ricerca</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list, lista di dizionari, dove ogni dizionario rappresenta un risultato</p>
+<dd class="field-even"><p>testo estratto dal tag ‘ol’</p>
 </dd>
 </dl>
 </dd></dl>

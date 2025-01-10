@@ -46,6 +46,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="DarkWeb_scraper.html">DarkWeb</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ahmia_browser_scraper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper"><code class="docutils literal notranslate"><span class="pre">darkweb_scraper()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia"><code class="docutils literal notranslate"><span class="pre">search_ahmia()</span></code></a></li>
 </ul>
 </li>
@@ -93,9 +94,22 @@ salvati in un database MongoDB. Per fare scraping di Ahmia è necessario utilizz
 installato il browser Tor e configurare il proxy per le richieste HTTP.</p>
 <p>Autore: Francesco Pinsone</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper">
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">darkweb_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#darkweb_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper" title="Link to this definition"></a></dt>
+<dd><p>Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere
+la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione
+‘search_ahmia()’ per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia" title="Link to this definition"></a></dt>
-<dd><p>Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia" title="Link to this definition"></a></dt>
+<dd><p>Funzione per cercare in Ahmia. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
 lista di dizionari, dove ogni dizionario rappresenta un risultato.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

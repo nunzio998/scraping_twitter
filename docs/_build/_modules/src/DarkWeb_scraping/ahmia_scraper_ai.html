@@ -88,12 +88,12 @@
 <span class="c1"># Funzione per cercare in Ahmia</span>
 <div class="viewcode-block" id="search_ahmia">
 <a class="viewcode-back" href="../../../ahmia_scraper_ai.html#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia">[docs]</a>
-<span class="k">def</span> <span class="nf">search_ahmia</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_ahmia</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per cercare in Ahmia, uno dei motori di ricerca per il dark web. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di</span>
-<span class="sd">    lista di dizionari, dove ogni dizionario rappresenta un risultato.\n</span>
+<span class="sd">    Funzione per cercare in Ahmia. La funzione prende in input una query che utilizza per effettuare la ricerca. Infine</span>
+<span class="sd">     la funzione ritorna il testo estratto dal tag &#39;ol&#39; del contenuto html risultante dalla ricerca effettuata.\n</span>
 <span class="sd">    :param query: stringa, query di ricerca\n</span>
-<span class="sd">    :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato</span>
+<span class="sd">    :return: testo estratto dal tag &#39;ol&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># URL di Ahmia versione onion</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/search/?q=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -109,13 +109,21 @@
 
     <span class="n">res</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ol&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;searchResults&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
 
-    <span class="c1">#res = beautifulsoup_analisys(response, query)</span>
+    <span class="c1"># res = beautifulsoup_analisys(response, query)</span>
 
     <span class="k">return</span> <span class="n">res</span></div>
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<div class="viewcode-block" id="darkweb_ollama_scraper">
+<a class="viewcode-back" href="../../../ahmia_scraper_ai.html#src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper">[docs]</a>
+<span class="k">def</span> <span class="nf">darkweb_ollama_scraper</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere</span>
+<span class="sd">    la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione</span>
+<span class="sd">    &#39;search_ahmia()&#39; per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.\n</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">OllamaLLM</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;llama3.1&#39;</span><span class="p">)</span>
 
     <span class="c1"># Configuro il logger</span>
@@ -134,7 +142,7 @@
 
     <span class="c1"># Esempio di ricerca</span>
     <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;hacker attack energy infrastructure&#39;</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">search_ahmia</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">search_ahmia</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
@@ -154,7 +162,8 @@
     <span class="c1"># Stampa dei risultati</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
-    <span class="n">exit</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span></div>
+
 
     <span class="c1"># collection = connect_to_mongo_collection(db_client, &quot;ahmia_results&quot;)</span>
     <span class="c1">#</span>
@@ -171,6 +180,10 @@
     <span class="c1">#     save_to_mongo(json_result, collection)</span>
 
     <span class="c1"># disconnect_to_mongo(db_client)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">darkweb_ollama_scraper</span><span class="p">()</span>
 </pre></div>
 
            </div>
