@@ -32,6 +32,7 @@ def load_cookies(driver, cookies_path="utils/cookies.json"):
     for cookie in cookies:
         driver.add_cookie(cookie)
 
+
 def login(driver, logging, credentials):
     """
     Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.
@@ -57,7 +58,7 @@ def discord_login(driver, logging, credentials):
     :param credentials: struttura dati che contiene le credenziali dell'utente per l'accesso al proprio profilo Discord.\n
     :return: None\n
     """
-    # Loggarsi su Discord
+    # Caricamento pagina di login discord
     driver.get('https://discord.com/login')
 
     # Imposto un'attesa esplicita di massimo 60 secondi
@@ -68,7 +69,8 @@ def discord_login(driver, logging, credentials):
     # Controllo la presenza o meno della schermata che specifica la volontà di accedere a Discord col proprio utente o sceglierne un altro.
     # La schermata compare solitamente dopo un elevato numero di esecuzioni. Se è presente simulo la pressione del bottone "Accedi".
     try:
-        access_button_field = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div[1]/div[1]/div/div/div/section/div[2]/div[2]/div/div/div[3]/button[1]")
+        access_button_field = driver.find_element(By.XPATH,
+                                                  "/html/body/div[1]/div[2]/div[1]/div[1]/div/div/div/section/div[2]/div[2]/div/div/div[3]/button[1]")
         access_button_field.send_keys(Keys.RETURN)
         time.sleep(2)
     except NoSuchElementException:
@@ -86,8 +88,8 @@ def discord_login(driver, logging, credentials):
             email_field.send_keys(credentials["email"])
             time.sleep(2)
         except NoSuchElementException:
-            logging.info("Tentativo 2: Campo email non trovato..")
-            logging.info("Impossibile effettuare l'accesso a Discord.")
+            logging.info("Tentativo 2: Campo email non trovato, Impossibile effettuare l'accesso a Discord..")
+            driver.quit()
             exit(-1)
 
     try:
@@ -103,8 +105,8 @@ def discord_login(driver, logging, credentials):
             password_field.send_keys(Keys.RETURN)
             time.sleep(2)
         except NoSuchElementException:
-            logging.info("Tentativo 2: Campo password non trovato..")
-            logging.info("Impossibile effettuare l'accesso a Discord.")
+            logging.info("Tentativo 2: Campo password non trovato, Impossibile effettuare l'accesso a Discord..")
+            driver.quit()
             exit(-1)
 
 
@@ -121,12 +123,16 @@ def check_captcha(driver, logging, credentials):
     """
     # Cerco la presenza del captcha, se presente cerco di bypassarlo.
     try:
-        captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
+        captcha = driver.find_element(By.XPATH,
+                                      "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
         logging.exception("Captcha presente, carico cookies..")
 
         # Carico i cookies e faccio il refresh del driver
         load_cookies(driver)
         driver.refresh()
+
+        # Comando con cui si cerca di rimuovere il test captcha dal DOM.
+        driver.execute_script("document.getElementById('captcha').style.display = 'none';")
 
         # Ripeto la procedura di login
         discord_login(driver, logging, credentials)
@@ -136,7 +142,8 @@ def check_captcha(driver, logging, credentials):
 
     # Se il captcha è ancora presente vuol dire che non sono riuscito a bypassarlo, quindi lo faccio risolvere all'utente.
     try:
-        captcha = driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
+        captcha = driver.find_element(By.XPATH,
+                                      "/html/body/div[2]/div[2]/div[1]/div[5]/div[2]/div/div/div/div[1]/div[4]/div/iframe")
         logging.exception("Captcha ancora presente, risolvere manualmente..")
 
         input("Premi ENTER dopo aver risolto il captcha..")
