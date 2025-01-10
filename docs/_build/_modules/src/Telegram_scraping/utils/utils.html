@@ -73,17 +73,21 @@
              
   <h1>Source code for src.Telegram_scraping.utils.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.</span>
-<span class="sd">Alcuni esempi sono:\n</span>
-<span class="sd">- Gestione interazioni con MongoDB\n</span>
-<span class="sd">- Parsing dei dati estratti\n</span>
-<span class="sd">- Procedure di login</span>
+<span class="sd">Questo script definisce e ospita una serie di funzioni utili per l&#39;integrazione e la gestione di operazioni su Telegram e MongoDB.</span>
+<span class="sd">Le funzionalità incluse sono modulari e possono essere richiamate da altri script. Ecco una panoramica delle principali funzioni:</span>
+
+<span class="sd">- **Gestione MongoDB**: Connessione, creazione di collezioni, salvataggio e disconnessione dal database.</span>
+<span class="sd">- **Interazioni con Telegram**: Verifica dell&#39;esistenza di username/canali/gruppi.</span>
+<span class="sd">- **Gestione e parsing dei dati**: Controllo delle date e formattazione dei dati in ingresso.</span>
+<span class="sd">- **Utilità generali**: Lettura di file JSON di configurazione.</span>
 
 <span class="sd">Autore: Francesco Pinsone</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">pymongo</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">telethon.errors.rpcerrorlist</span> <span class="kn">import</span> <span class="n">UsernameInvalidError</span><span class="p">,</span> <span class="n">UsernameNotOccupiedError</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
 
 <span class="c1"># Configuro il logger</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
@@ -174,6 +178,75 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel database:</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="check_username_existence">
+<a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.check_username_existence">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check_username_existence</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    La funzione check_username_existence verifica se uno username specificato esiste su Telegram. Si occupa di gestire</span>
+<span class="sd">    automaticamente la formattazione dello username, aggiungendo il carattere &#39;@&#39; se assente. Utilizzando il metodo</span>
+<span class="sd">    get_entity del client Telethon, tenta di recuperare l&#39;entità associata allo username. In caso di successo, conferma</span>
+<span class="sd">    l&#39;esistenza dello username restituendo True. Se lo username è invalido o non è occupato, gestisce l&#39;eccezione e</span>
+<span class="sd">    restituisce False. È utile per controllare la validità di canali o gruppi prima di procedere con ulteriori</span>
+<span class="sd">    operazioni.\n</span>
+
+<span class="sd">    :param client: Istanza del client Telethon da utilizzare per la verifica.\n</span>
+<span class="sd">    :param username: Username o link del canale/gruppo Telegram da verificare.\n</span>
+<span class="sd">    :return: True se lo username esiste su Telegram, False altrimenti.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Controllo formattazione username</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># Aggiunge &#39;@&#39; se mancante</span>
+
+        <span class="c1"># Verifico l&#39;esistenza dell&#39;entità</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+        <span class="c1"># print(f&quot;Username valido: {entity.title if hasattr(entity, &#39;title&#39;) else entity.username}&quot;)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">UsernameInvalidError</span><span class="p">,</span> <span class="n">UsernameNotOccupiedError</span><span class="p">):</span>
+        <span class="c1"># print(f&quot;Errore: lo username &#39;{username}&#39; non esiste o non è valido.&quot;)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="check_date">
+<a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.check_date">[docs]</a>
+<span class="k">def</span> <span class="nf">check_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    La funzione check_date confronta la data di un messaggio con una data limite per determinare se il messaggio è stato</span>
+<span class="sd">    inviato prima della data specificata. Gestisce formati di data diversi e converte eventuali date senza fuso orario</span>
+<span class="sd">    (offset-naive) in date con fuso orario (offset-aware) in formato UTC. Se le date non sono già in formato datetime,</span>
+<span class="sd">    le converte da stringhe nei rispettivi formati. Restituisce True se la data del messaggio è antecedente alla data limite,</span>
+<span class="sd">    altrimenti restituisce False.\n</span>
+
+<span class="sd">    :param date: Data del messaggio, che può essere un oggetto datetime o una stringa ISO.\n</span>
+<span class="sd">    :param limit_date: Data limite per il confronto, che può essere un oggetto datetime o una stringa nel formato &quot;dd-mm-YYYY&quot;.\n</span>
+<span class="sd">    :return: True se la data del messaggio è precedente alla data limite, False altrimenti.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print(f&quot;Date: {date}, Limit date: {limit_date}&quot;)</span>
+    <span class="c1"># print(f&quot;Date type: {type(date)}, Limit date type: {type(limit_date)}&quot;)</span>
+    <span class="c1"># Se &#39;date&#39; è offset-naive, lo converti in offset-aware (UTC)</span>
+    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="c1"># Converto la data ISO in un oggetto datetime</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">[:</span><span class="mi">19</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span>  <span class="c1"># Ignora la parte &quot;+00:00&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit_date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="c1"># Converto la data specificata in un oggetto datetime</span>
+        <span class="n">limit_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">limit_date</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Rendi &#39;limit_date&#39; offset-aware</span>
+    <span class="n">limit_date</span> <span class="o">=</span> <span class="n">limit_date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+    <span class="c1"># print(&quot;-----------------------------------------------------&quot;)</span>
+    <span class="c1"># print(f&quot;Date: {date}, Limit date: {limit_date}&quot;)</span>
+    <span class="c1"># print(f&quot;Date type: {type(date)}, Limit date type: {type(limit_date)}&quot;)</span>
+
+    <span class="k">return</span> <span class="n">date</span> <span class="o">&lt;</span> <span class="n">limit_date</span></div>
 
 </pre></div>
 

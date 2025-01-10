@@ -96,72 +96,11 @@
 <span class="kn">from</span> <span class="nn">telethon.sync</span> <span class="kn">import</span> <span class="n">TelegramClient</span>
 <span class="kn">from</span> <span class="nn">telethon.tl.functions.messages</span> <span class="kn">import</span> <span class="n">GetHistoryRequest</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">src.Telegram_scraping.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> \
-    <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_to_mongo</span>
-<span class="kn">from</span> <span class="nn">telethon.errors.rpcerrorlist</span> <span class="kn">import</span> <span class="n">UsernameInvalidError</span><span class="p">,</span> <span class="n">UsernameNotOccupiedError</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">src.Telegram_scraping.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_to_mongo</span><span class="p">,</span> <span class="n">check_date</span><span class="p">,</span> <span class="n">check_username_existence</span>
 
 
 <span class="c1"># De-commentare per avviare lo script da riga di comando</span>
 <span class="c1"># from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo</span>
-
-
-<div class="viewcode-block" id="check_username_existence">
-<a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.check_username_existence">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">check_username_existence</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Verifica se un username esiste su Telegram.</span>
-<span class="sd">    :param client: L&#39;istanza del client Telethon.</span>
-<span class="sd">    :param username: Lo username o il link da verificare.</span>
-<span class="sd">    :return: True se esiste, False altrimenti.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Controllo formattazione username</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
-            <span class="n">username</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># Aggiunge &#39;@&#39; se mancante</span>
-
-        <span class="c1"># Verifico l&#39;esistenza dell&#39;entità</span>
-        <span class="n">entity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
-        <span class="c1"># print(f&quot;Username valido: {entity.title if hasattr(entity, &#39;title&#39;) else entity.username}&quot;)</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">except</span> <span class="p">(</span><span class="n">UsernameInvalidError</span><span class="p">,</span> <span class="n">UsernameNotOccupiedError</span><span class="p">):</span>
-        <span class="c1"># print(f&quot;Errore: lo username &#39;{username}&#39; non esiste o non è valido.&quot;)</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
-
-
-
-<div class="viewcode-block" id="check_date">
-<a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.check_date">[docs]</a>
-<span class="k">def</span> <span class="nf">check_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per controllare se la data di un messaggio è più vecchia di una certa data limite.\n</span>
-<span class="sd">    :param date: data del messaggio\n</span>
-<span class="sd">    :param limit_date: data limite\n</span>
-<span class="sd">    :return: True se la data è più vecchia, False altrimenti</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># print(f&quot;Date: {date}, Limit date: {limit_date}&quot;)</span>
-    <span class="c1"># print(f&quot;Date type: {type(date)}, Limit date type: {type(limit_date)}&quot;)</span>
-    <span class="c1"># Se &#39;date&#39; è offset-naive, lo converti in offset-aware (UTC)</span>
-    <span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
-        <span class="c1"># Converto la data ISO in un oggetto datetime</span>
-        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">date</span><span class="p">[:</span><span class="mi">19</span><span class="p">],</span> <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span>  <span class="c1"># Ignora la parte &quot;+00:00&quot;</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">limit_date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
-        <span class="c1"># Converto la data specificata in un oggetto datetime</span>
-        <span class="n">limit_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">limit_date</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%m-%Y&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Rendi &#39;limit_date&#39; offset-aware</span>
-    <span class="n">limit_date</span> <span class="o">=</span> <span class="n">limit_date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
-
-    <span class="c1"># print(&quot;-----------------------------------------------------&quot;)</span>
-    <span class="c1"># print(f&quot;Date: {date}, Limit date: {limit_date}&quot;)</span>
-    <span class="c1"># print(f&quot;Date type: {type(date)}, Limit date type: {type(limit_date)}&quot;)</span>
-
-    <span class="k">return</span> <span class="n">date</span> <span class="o">&lt;</span> <span class="n">limit_date</span></div>
-
 
 
 <div class="viewcode-block" id="channel_scraper">
@@ -291,7 +230,7 @@
 <span class="sd">    l’estrazione dei messaggi. Alla fine del processo, chiude la connessione al database MongoDB. La funzione utilizza</span>
 <span class="sd">    un approccio modulare per integrare funzionalità di logging, gestione dei target e connessione ai servizi,</span>
 <span class="sd">    rendendola flessibile e facilmente adattabile.\n</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :return: None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Configuro il logger</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>

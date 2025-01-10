@@ -51,6 +51,8 @@
 <li class="toctree-l2"><a class="reference internal" href="db_to_csv_telegram.html">db_to_csv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="drop_data_collection_telegram.html">drop_data_collection</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.check_date"><code class="docutils literal notranslate"><span class="pre">check_date()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.check_username_existence"><code class="docutils literal notranslate"><span class="pre">check_username_existence()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.connect_to_mongo"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
@@ -90,14 +92,58 @@
              
   <section id="module-src.Telegram_scraping.utils.utils">
 <span id="utils"></span><h1>utils<a class="headerlink" href="#module-src.Telegram_scraping.utils.utils" title="Link to this heading"></a></h1>
-<p>Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:</p>
+<p>Questo script definisce e ospita una serie di funzioni utili per l’integrazione e la gestione di operazioni su Telegram e MongoDB.
+Le funzionalità incluse sono modulari e possono essere richiamate da altri script. Ecco una panoramica delle principali funzioni:</p>
 <ul class="simple">
-<li><p>Gestione interazioni con MongoDB</p></li>
-<li><p>Parsing dei dati estratti</p></li>
-<li><p>Procedure di login</p></li>
+<li><p><strong>Gestione MongoDB</strong>: Connessione, creazione di collezioni, salvataggio e disconnessione dal database.</p></li>
+<li><p><strong>Interazioni con Telegram</strong>: Verifica dell’esistenza di username/canali/gruppi.</p></li>
+<li><p><strong>Gestione e parsing dei dati</strong>: Controllo delle date e formattazione dei dati in ingresso.</p></li>
+<li><p><strong>Utilità generali</strong>: Lettura di file JSON di configurazione.</p></li>
 </ul>
 <p>Autore: Francesco Pinsone</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.check_date">
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#check_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.check_date" title="Link to this definition"></a></dt>
+<dd><p>La funzione check_date confronta la data di un messaggio con una data limite per determinare se il messaggio è stato
+inviato prima della data specificata. Gestisce formati di data diversi e converte eventuali date senza fuso orario
+(offset-naive) in date con fuso orario (offset-aware) in formato UTC. Se le date non sono già in formato datetime,
+le converte da stringhe nei rispettivi formati. Restituisce True se la data del messaggio è antecedente alla data limite,
+altrimenti restituisce False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>date</strong> – Data del messaggio, che può essere un oggetto datetime o una stringa ISO.</p></li>
+<li><p><strong>limit_date</strong> – Data limite per il confronto, che può essere un oggetto datetime o una stringa nel formato “dd-mm-YYYY”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True se la data del messaggio è precedente alla data limite, False altrimenti.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.check_username_existence">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_username_existence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#check_username_existence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.check_username_existence" title="Link to this definition"></a></dt>
+<dd><p>La funzione check_username_existence verifica se uno username specificato esiste su Telegram. Si occupa di gestire
+automaticamente la formattazione dello username, aggiungendo il carattere ‘&#64;’ se assente. Utilizzando il metodo
+get_entity del client Telethon, tenta di recuperare l’entità associata allo username. In caso di successo, conferma
+l’esistenza dello username restituendo True. Se lo username è invalido o non è occupato, gestisce l’eccezione e
+restituisce False. È utile per controllare la validità di canali o gruppi prima di procedere con ulteriori
+operazioni.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> – Istanza del client Telethon da utilizzare per la verifica.</p></li>
+<li><p><strong>username</strong> – Username o link del canale/gruppo Telegram da verificare.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True se lo username esiste su Telegram, False altrimenti.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.connect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
