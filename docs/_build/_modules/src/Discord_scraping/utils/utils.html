@@ -73,13 +73,52 @@
              
   <h1>Source code for src.Discord_scraping.utils.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.</span>
-<span class="sd">Alcuni esempi sono:\n</span>
-<span class="sd">- Gestione interazioni con MongoDB\n</span>
-<span class="sd">- Parsing dei dati estratti\n</span>
-<span class="sd">- Procedure di login</span>
+<span class="sd">Questo script fornisce una serie di funzioni utili per interagire con il sito web di Discord, eseguire scraping dei messaggi in una chat e interagire con un database MongoDB. Le funzionalità principali incluse in questo script sono:</span>
 
-<span class="sd">Autore: Francesco Pinsone</span>
+<span class="sd">1. **Gestione MongoDB**:</span>
+<span class="sd">   - Connessione a un database MongoDB tramite una stringa di connessione.</span>
+<span class="sd">   - Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.</span>
+<span class="sd">   - Salvataggio dei dati nel database MongoDB.</span>
+
+<span class="sd">2. **Analisi dei dati con BeautifulSoup**:</span>
+<span class="sd">   - Estrazione e parsing dei messaggi da una pagina web tramite il modulo BeautifulSoup.</span>
+<span class="sd">   - Raccolta dei messaggi da una chat di Discord, insieme ai metadati relativi all&#39;autore, alla data e al contenuto del messaggio.</span>
+
+<span class="sd">3. **Interazioni con Discord tramite Selenium**:</span>
+<span class="sd">   - Automazione del login a Discord usando Selenium, includendo la gestione di un possibile captcha.</span>
+<span class="sd">   - Navigazione tra le pagine di Discord per raccogliere messaggi da una chat.</span>
+<span class="sd">   - Scroll della pagina per caricare più messaggi tramite l&#39;interazione con la pagina HTML.</span>
+
+<span class="sd">4. **Gestione delle sessioni con i cookies**:</span>
+<span class="sd">   - Caricamento dei cookies di sessione da un file JSON per superare eventuali sistemi di autenticazione come il captcha.</span>
+
+<span class="sd">5. **Logging**:</span>
+<span class="sd">   - Logging delle operazioni eseguite per monitorare l&#39;avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l&#39;esecuzione dello scraping, il login a Discord, ecc.).</span>
+
+<span class="sd">**Autore**: Francesco Pinsone</span>
+
+<span class="sd">**Descrizione delle principali funzioni**:</span>
+<span class="sd">- `connect_to_mongo()`: si connette al database MongoDB e restituisce il client di connessione.</span>
+<span class="sd">- `disconnect_to_mongo()`: disconnette la sessione dal database MongoDB.</span>
+<span class="sd">- `connect_to_mongo_collection()`: si connette a una collezione specifica di MongoDB o la crea se non esiste.</span>
+<span class="sd">- `save_to_mongo()`: salva i dati in una collezione di MongoDB.</span>
+<span class="sd">- `beautifulsoup_analisys()`: analizza una pagina web di Discord, estrae i messaggi della chat e restituisce un elenco di messaggi con autore, data e contenuto.</span>
+<span class="sd">- `scroll_up()`: simula lo scroll verso l&#39;alto della pagina per caricare più messaggi.</span>
+<span class="sd">- `load_cookies()`: carica i cookies di sessione da un file JSON per evitare un nuovo login.</span>
+<span class="sd">- `login()`: esegue il login a Discord utilizzando Selenium, incluse le credenziali utente.</span>
+<span class="sd">- `discord_login()`: gestisce il login vero e proprio su Discord.</span>
+<span class="sd">- `check_captcha()`: verifica la presenza di un captcha e fornisce istruzioni per risolverlo manualmente se necessario.</span>
+
+<span class="sd">Lo script è progettato per operare in un ambiente automatizzato di scraping di chat Discord, ma include anche la gestione di eventuali ostacoli come il captcha. È inoltre integrato con MongoDB per il salvataggio dei dati raccolti.</span>
+
+<span class="sd">**Prerequisiti**:</span>
+<span class="sd">- Una connessione attiva a un database MongoDB.</span>
+<span class="sd">- I cookies di sessione per evitare il login manuale ripetuto (se necessario).</span>
+<span class="sd">- Un ambiente con Selenium e BeautifulSoup per l&#39;automazione del browser e l&#39;analisi del contenuto delle pagine.</span>
+
+<span class="sd">**Uso**:</span>
+<span class="sd">Lo script può essere utilizzato per raccogliere e analizzare messaggi da una chat di Discord, quindi salvare i dati nel database MongoDB per ulteriori elaborazioni. Le credenziali per il login a Discord devono essere fornite tramite un file di configurazione. Inoltre, lo script gestisce automaticamente il login e la risoluzione di eventuali captcha.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
@@ -103,9 +142,15 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.read_json">[docs]</a>
 <span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per la lettura di file JSON.\n</span>
-<span class="sd">    :param path: percorso del file JSON\n</span>
-<span class="sd">    :return: dict, contenuto del file JSON</span>
+<span class="sd">    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</span>
+
+<span class="sd">    **Funzionamento**:\n</span>
+<span class="sd">    1. **Apertura del file**: Apre il file JSON specificato dal percorso `path` in modalità lettura.\n</span>
+<span class="sd">    2. **Caricamento del contenuto**: Utilizza la funzione `json.load` per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).\n</span>
+<span class="sd">    3. **Restituzione dei dati**: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.\n</span>
+
+<span class="sd">    :param path: str, il percorso del file JSON da leggere.\n</span>
+<span class="sd">    :return: dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
@@ -120,8 +165,16 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.connect_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di connettersi al database MongoDB.\n</span>
-<span class="sd">    :return: client, oggetto che rappresenta la connessione al database</span>
+<span class="sd">    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Connessione al Database**: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.\n</span>
+<span class="sd">    2. **Verifica della Connessione**: Esegue un comando `ping` sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.\n</span>
+<span class="sd">    3. **Gestione degli Errori**: Se si verifica un errore durante il tentativo di connessione, l&#39;errore viene registrato nel log.\n</span>
+
+<span class="sd">    **Nota**: Il client MongoDB viene creato utilizzando la libreria `pymongo`, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.\n</span>
+
+<span class="sd">    :return: client, oggetto che rappresenta la connessione attiva al database MongoDB.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection_string</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;connection_string&#39;</span><span class="p">]</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
@@ -140,9 +193,16 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.disconnect_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB.\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione al database\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Log della Disconnessione**: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.\n</span>
+<span class="sd">    2. **Chiusura della Connessione**: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.\n</span>
+
+<span class="sd">    **Nota**: La funzione utilizza il metodo `server_info()` per recuperare informazioni sul server, come la versione, che verranno incluse nel log.\n</span>
+
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
+<span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;azione di disconnessione dal database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Disconnesso dal database: &quot;</span> <span class="o">+</span> <span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
@@ -153,10 +213,18 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.connect_to_mongo_collection">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione al database\n</span>
-<span class="sd">    :param collection_name: stringa, nome della collezione\n</span>
-<span class="sd">    :return: collection, oggetto che rappresenta la collezione</span>
+<span class="sd">    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Connessione al Database**: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.\n</span>
+<span class="sd">    2. **Verifica e Creazione Collezione**: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.\n</span>
+<span class="sd">    3. **Restituzione della Collezione**: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.\n</span>
+
+<span class="sd">    **Nota**: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio `config_data`).\n</span>
+
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
+<span class="sd">    :param collection_name: Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.\n</span>
+<span class="sd">    :return: Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l&#39;uso (lettura/scrittura).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span>
 
@@ -176,10 +244,17 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.save_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per il salvataggio di dati nel database MongoDB.\n</span>
-<span class="sd">    :param data: dict, dati da salvare\n</span>
-<span class="sd">    :param collection: oggetto che rappresenta la collezione\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Salvataggio dei dati**: I dati vengono passati come un dizionario (`data`) e vengono inseriti nella collezione MongoDB fornita tramite il metodo `insert_one()`.\n</span>
+<span class="sd">    2. **Logging**: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.\n</span>
+
+<span class="sd">    **Nota**: Questa funzione salva i dati in un&#39;unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).\n</span>
+
+<span class="sd">    :param data: dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).\n</span>
+<span class="sd">    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n</span>
+<span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;inserimento dei dati.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel db: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
@@ -190,12 +265,25 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.beautifulsoup_analisys">[docs]</a>
 <span class="k">def</span> <span class="nf">beautifulsoup_analisys</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">scroll_times</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.\n</span>
-<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
-<span class="sd">    :param scroll_times: numero di esecuzioni di scroll up della chat per caricare più messaggi.\n</span>
-<span class="sd">    :return: list: lista dei messaggi.\n</span>
-<span class="sd">            str: nome del server.\n</span>
-<span class="sd">            str: nome del canale.</span>
+<span class="sd">    Funzione che esegue l&#39;analisi di una pagina web contenente messaggi (ad esempio, una chat) utilizzando il modulo BeautifulSoup.</span>
+<span class="sd">    La funzione effettua un numero definito di scroll verso l&#39;alto della pagina per caricare più messaggi, quindi estrae informazioni</span>
+<span class="sd">    come il nome del server, il nome del canale e i dettagli dei messaggi (autore, data e contenuto).</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Scroll verso l&#39;alto**: La funzione esegue il numero di scroll richiesti tramite la funzione `scroll_up`, caricando progressivamente più messaggi.\n</span>
+<span class="sd">    2. **Estrazione del contenuto HTML**: Dopo ogni scroll, la pagina viene analizzata con BeautifulSoup per estrarre il contenuto HTML della pagina.\n</span>
+<span class="sd">    3. **Estrazione delle informazioni del server e del canale**: La funzione cerca nel codice HTML il nome del server e del canale.\n</span>
+<span class="sd">    4. **Estrazione dei messaggi**: Per ogni messaggio presente nella pagina, vengono estratti l&#39;autore, il timestamp e il contenuto del messaggio. I messaggi vuoti vengono ignorati.\n</span>
+<span class="sd">    5. **Restituzione dei risultati**: La funzione restituisce una lista di dizionari contenenti le informazioni sui messaggi, insieme ai nomi del server e del canale.\n</span>
+
+<span class="sd">    **Nota**: La funzione assume che i messaggi siano contenuti all&#39;interno di specifici tag e classi CSS che vengono cercati tramite BeautifulSoup.\n</span>
+
+<span class="sd">    :param driver: Oggetto `webdriver` di Selenium utilizzato per interagire con il browser e estrarre il contenuto HTML della pagina.\n</span>
+<span class="sd">    :param scroll_times: Numero di volte che la funzione deve eseguire lo scroll verso l&#39;alto per caricare più messaggi.\n</span>
+<span class="sd">    :return:</span>
+<span class="sd">        - list: Una lista di dizionari contenente i dettagli dei messaggi (autore, data, contenuto).\n</span>
+<span class="sd">        - str: Nome del server trovato nella pagina.\n</span>
+<span class="sd">        - str: Nome del canale trovato nella pagina.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_messages</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">server_name</span> <span class="o">=</span> <span class="kc">None</span>
@@ -240,10 +328,20 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.scroll_up">[docs]</a>
 <span class="k">def</span> <span class="nf">scroll_up</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">times</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per scorrere verso l&#39;alto e caricare più messaggi.\n</span>
-<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
-<span class="sd">    :param times: numero di esecuzioni di scroll up della chat per caricare più messaggi.\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che simula lo scroll verso l&#39;alto della pagina, permettendo di caricare più messaggi o contenuti all&#39;interno di una chat</span>
+<span class="sd">    o una pagina dinamica. Utilizza il tasto di &quot;Page Up&quot; per spostarsi verso l&#39;alto e consente di caricare progressivamente i messaggi</span>
+<span class="sd">    o gli elementi aggiuntivi presenti nella pagina.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Simulazione dello scroll**: La funzione trova l&#39;elemento principale della pagina (con il tag `&lt;html&gt;`) e invia il comando `Page Up` per simulare lo scroll verso l&#39;alto.\n</span>
+<span class="sd">    2. **Caricamento dei messaggi**: Ogni volta che viene effettuato uno scroll, la pagina potrebbe caricare ulteriori messaggi o contenuti.\n</span>
+<span class="sd">    3. **Attesa tra gli scroll**: Dopo ogni esecuzione dello scroll, la funzione attende 2 secondi per permettere ai messaggi di caricarsi correttamente prima di effettuare un altro scroll.\n</span>
+
+<span class="sd">    **Nota**: Il parametro `times` controlla il numero di volte che viene effettuato lo scroll verso l&#39;alto. Questo è utile quando si vogliono caricare più messaggi in una chat o elementi in una pagina che utilizza il caricamento dinamico.\n</span>
+
+<span class="sd">    :param driver: Oggetto `webdriver` di Selenium utilizzato per interagire con il browser e inviare i comandi di scroll.\n</span>
+<span class="sd">    :param times: Numero di volte che la funzione deve eseguire lo scroll verso l&#39;alto per caricare più contenuti. \n</span>
+<span class="sd">    :return: Nessun valore restituito, la funzione agisce direttamente sul driver Selenium per eseguire lo scroll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
         <span class="n">page</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
@@ -256,10 +354,19 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.load_cookies">[docs]</a>
 <span class="k">def</span> <span class="nf">load_cookies</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">cookies_path</span><span class="o">=</span><span class="s2">&quot;utils/cookies.json&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium.\n</span>
-<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
-<span class="sd">    :param cookies_path: path del file json che contiene i cookies di sessione per superare il captcha.\n</span>
-<span class="sd">    :return: None\n</span>
+<span class="sd">    Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione del driver Selenium. Questo consente di riutilizzare</span>
+<span class="sd">    una sessione precedentemente autenticata per evitare di dover ripetere il processo di login o bypassare un captcha.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Caricamento dei cookies**: La funzione legge il file JSON specificato nel parametro `cookies_path` e carica i cookies salvati in un oggetto Python.\n</span>
+<span class="sd">    2. **Aggiunta dei cookies alla sessione**: I cookies caricati vengono aggiunti alla sessione del driver Selenium, permettendo al browser di simulare un accesso precedentemente effettuato.\n</span>
+<span class="sd">    3. **Riutilizzo della sessione**: L&#39;aggiunta dei cookies permette di mantenere la sessione attiva e di bypassare la necessità di effettuare nuovamente il login o risolvere il captcha, se i cookies contengono informazioni valide.\n</span>
+
+<span class="sd">    **Nota**: Assicurarsi che il file JSON contenente i cookies sia correttamente formattato e che i cookies siano validi per la sessione corrente.\n</span>
+
+<span class="sd">    :param driver: Oggetto `webdriver` di Selenium utilizzato per interagire con il browser e caricare i cookies nella sessione.\n</span>
+<span class="sd">    :param cookies_path: Il percorso del file JSON che contiene i cookies di sessione da caricare. Il percorso predefinito è `&quot;utils/cookies.json&quot;`.\n</span>
+<span class="sd">    :return: Nessun valore restituito, la funzione modifica direttamente la sessione del driver Selenium aggiungendo i cookies.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cookies_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">cookies</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -272,11 +379,21 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.login">[docs]</a>
 <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.</span>
-<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
-<span class="sd">    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull&#39;andamento del processo.\n</span>
-<span class="sd">    :param credentials: struttura dati che contiene le credenziali dell&#39;utente per l&#39;accesso al proprio profilo Discord.\n</span>
-<span class="sd">    :return: None\n</span>
+<span class="sd">    Funzione che avvia la procedura di login a Discord e successivamente verifica la presenza di un captcha. Se viene rilevato un captcha,</span>
+<span class="sd">    la funzione si occupa di gestirlo tramite un controllo e un eventuale bypass. La funzione coordina l&#39;esecuzione delle funzioni</span>
+<span class="sd">    `discord_login` e `check_captcha` per garantire il corretto accesso all&#39;account.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Avvio del login**: La funzione richiama `discord_login` per avviare la procedura di accesso automatizzato a Discord, utilizzando le credenziali fornite nel parametro `credentials`.\n</span>
+<span class="sd">    2. **Verifica del captcha**: Dopo il login, la funzione chiama `check_captcha` per controllare se un captcha è presente. Se rilevato, gestisce la situazione permettendo all&#39;utente di risolverlo manualmente.\n</span>
+<span class="sd">    3. **Gestione dell&#39;accesso**: La funzione garantisce che il login venga completato correttamente prima di eseguire il controllo del captcha. Se il captcha è ancora presente, la funzione invita l&#39;utente a risolverlo.\n</span>
+
+<span class="sd">    **Nota**: Il login e la verifica del captcha vengono effettuati in due fasi distinte, una per l&#39;autenticazione e una per la gestione del captcha, assicurando che entrambi gli aspetti siano gestiti correttamente.\n</span>
+
+<span class="sd">    :param driver: Oggetto `webdriver` di Selenium utilizzato per interagire con il browser, caricare la pagina di login e inviare i dati.\n</span>
+<span class="sd">    :param logging: Oggetto di logging per registrare i dettagli del processo di login e diagnosticare eventuali problemi.\n</span>
+<span class="sd">    :param credentials: Dizionario contenente le credenziali dell&#39;utente (email e password) necessarie per il login su Discord.\n</span>
+<span class="sd">    :return: Nessun valore restituito, la funzione si occupa di eseguire l&#39;intero processo di login, inclusa la gestione del captcha.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Effettuo il login a Discord</span>
     <span class="n">discord_login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
@@ -292,11 +409,23 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.discord_login">[docs]</a>
 <span class="k">def</span> <span class="nf">discord_login</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che automatizza la procedura di login a Discord.</span>
-<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
-<span class="sd">    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull&#39;andamento del processo.\n</span>
-<span class="sd">    :param credentials: struttura dati che contiene le credenziali dell&#39;utente per l&#39;accesso al proprio profilo Discord.\n</span>
-<span class="sd">    :return: None\n</span>
+<span class="sd">    Funzione che automatizza la procedura di login a Discord utilizzando Selenium. La funzione carica la pagina di login di Discord,</span>
+<span class="sd">    inserisce automaticamente le credenziali fornite e gestisce eventuali schermate o problemi durante il processo di autenticazione.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Caricamento della pagina di login**: La funzione apre la pagina di login di Discord utilizzando l&#39;oggetto `driver` di Selenium.\n</span>
+<span class="sd">    2. **Gestione della selezione dell&#39;utente**: Se la schermata di selezione dell&#39;utente appare, la funzione simula la pressione del pulsante &quot;Accedi&quot; per procedere.\n</span>
+<span class="sd">    3. **Inserimento delle credenziali**: La funzione cerca i campi per l&#39;email e la password sulla pagina e inserisce automaticamente i valori forniti nel parametro `credentials`.\n</span>
+<span class="sd">    4. **Gestione degli errori**: Se uno dei campi non viene trovato, la funzione tenta di cercare l&#39;elemento in un secondo tentativo. Se il campo è ancora assente, viene loggata l&#39;errore e il programma si interrompe.\n</span>
+<span class="sd">    5. **Sicurezza**: Dopo l&#39;inserimento delle credenziali, la funzione simula la pressione del tasto &quot;Invio&quot; per inviare i dati di accesso e completare il login.\n</span>
+<span class="sd">    6. **Uscita in caso di errore**: Se i campi non vengono trovati dopo i tentativi, la funzione esegue un&#39;uscita sicura del programma per evitare l&#39;accesso non riuscito.\n</span>
+
+<span class="sd">    **Nota**: L&#39;accesso viene effettuato utilizzando i valori passati nel parametro `credentials`, che contiene l&#39;email e la password dell&#39;utente.\n</span>
+
+<span class="sd">    :param driver: Oggetto `webdriver` di Selenium utilizzato per interagire con il browser, caricare la pagina di login e inviare i dati.\n</span>
+<span class="sd">    :param logging: Oggetto di logging per registrare i dettagli del processo di login e diagnosticare eventuali problemi.\n</span>
+<span class="sd">    :param credentials: Dizionario contenente le credenziali dell&#39;utente (email e password) necessarie per il login su Discord.\n</span>
+<span class="sd">    :return: Nessun valore restituito, la funzione si occupa di effettuare il login automaticamente.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Caricamento pagina di login discord</span>
     <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://discord.com/login&#39;</span><span class="p">)</span>
@@ -355,15 +484,27 @@
 <a class="viewcode-back" href="../../../../utils_discord.html#src.Discord_scraping.utils.utils.check_captcha">[docs]</a>
 <span class="k">def</span> <span class="nf">check_captcha</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">credentials</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che effettua un check sulla presenza di test captcha dopo che lo script ha tentato la procedura di login. Per ora se un captcha viene rilevato si</span>
-<span class="sd">    rimanda all&#39;utente la risoluzione dello stesso prima di continuare.\n</span>
-<span class="sd">    Gl isviluppi futuri prevedono che: inizialmente se la presenza di un captcha viene rilevata la funzione tenta di caricare nel driver di Firefox i cookies di una sessione in cui l&#39;accesso è andato a buon fine.</span>
-<span class="sd">    Questo è possibile con l&#39;esecuzione dello script &#39;extract_cookies.py&#39;. Nel caso in cui questo approccio non dovesse bastare la funzione permette</span>
-<span class="sd">    all&#39;utente di risolvere manualmente il test per poi procedere con l&#39;estrazione dei dati.\n</span>
-<span class="sd">    :param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l&#39;html della pagina.\n</span>
-<span class="sd">    :param logging: oggetto utilizzato per visualizzare a video i log informativi sull&#39;andamento del processo.\n</span>
-<span class="sd">    :param credentials: struttura dati che contiene le credenziali dell&#39;utente per l&#39;accesso al proprio profilo Discord.\n</span>
-<span class="sd">    :return: None\n</span>
+<span class="sd">    Funzione che verifica la presenza di un CAPTCHA durante il processo di login su Discord. La funzione esegue un controllo</span>
+<span class="sd">    sulla pagina per determinare se un CAPTCHA è presente, e in caso positivo, consente all&#39;utente di risolverlo manualmente</span>
+<span class="sd">    prima di procedere con il login.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Ricerca del CAPTCHA**: La funzione cerca la presenza di un iframe che contiene il CAPTCHA nella pagina di login.\n</span>
+<span class="sd">    2. **Gestione del CAPTCHA**: Se viene rilevato un CAPTCHA, l&#39;utente è invitato a risolverlo manualmente. La funzione si sospende</span>
+<span class="sd">       e attende che l&#39;utente prema `ENTER` dopo aver completato il test.\n</span>
+<span class="sd">    3. **Completamento della procedura di login**: Una volta che il CAPTCHA è risolto, la funzione riprende l&#39;esecuzione e tenta di</span>
+<span class="sd">       completare la procedura di login con le credenziali fornite.\n</span>
+<span class="sd">    4. **Gestione degli errori**: Se il CAPTCHA non è presente, la funzione logga un messaggio e termina la procedura di login.\n</span>
+<span class="sd">    5. **Sviluppi futuri**: In futuro, la funzione includerà la possibilità di caricare i cookies da una sessione valida tramite</span>
+<span class="sd">       lo script `extract_cookies.py` per bypassare il CAPTCHA automaticamente, evitando l&#39;intervento manuale.\n</span>
+
+<span class="sd">    **Nota**: Attualmente la funzione prevede l&#39;intervento manuale dell&#39;utente per risolvere il CAPTCHA. Nei futuri sviluppi,</span>
+<span class="sd">    la gestione automatica del CAPTCHA tramite cookies sarà implementata per semplificare il processo.</span>
+
+<span class="sd">    :param driver: Oggetto `webdriver` di Selenium utilizzato per interagire con il browser e caricare la pagina di login.\n</span>
+<span class="sd">    :param logging: Oggetto per il logging delle informazioni durante l&#39;esecuzione dello script, utile per tracciare l&#39;andamento del processo.\n</span>
+<span class="sd">    :param credentials: Dizionario contenente le credenziali dell&#39;utente per il login su Discord.\n</span>
+<span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># # Cerco la presenza del captcha, se presente cerco di bypassarlo.</span>
     <span class="c1"># try:</span>
@@ -405,8 +546,6 @@
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Captcha non presente, procedura di login terminata..&quot;</span><span class="p">)</span></div>
-
-
 
 </pre></div>
 

@@ -86,15 +86,32 @@
              
   <section id="module-src.Telegram_scraping.db_to_csv">
 <span id="db-to-csv"></span><h1>db_to_csv<a class="headerlink" href="#module-src.Telegram_scraping.db_to_csv" title="Link to this heading"></a></h1>
-<p>Questo script permette di esportare i dati presenti nel database in un file csv. I dati vengono estratti da tutte le collezioni presenti nel database e vengono salvati in un unico file csv.</p>
+<p>Questo script estrae tutti i dati presenti nelle collezioni di un database MongoDB e li esporta in un file CSV.</p>
+<p>Il flusso di lavoro include i seguenti passaggi:
+1. Si connette al database MongoDB utilizzando la stringa di connessione configurata.
+2. Recupera l’elenco di tutte le collezioni nel database.
+3. Estrae i dati da ogni collezione e li accumula in un’unica struttura dati.
+4. Utilizza la libreria <cite>pandas</cite> per creare un DataFrame contenente tutti i documenti estratti.
+5. Esporta il DataFrame in un file CSV nella cartella <cite>data_results</cite>, facilitando l’analisi e l’elaborazione dei dati.</p>
+<p>Questa funzionalità è utile per creare un backup dei dati presenti nel database o per analizzare i dati in modo strutturato utilizzando strumenti come Excel, Google Sheets o software di data science come Python o R.</p>
 <p>Autore: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.db_to_csv.export_csv">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.db_to_csv.</span></span><span class="sig-name descname"><span class="pre">export_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/db_to_csv.html#export_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.db_to_csv.export_csv" title="Link to this definition"></a></dt>
-<dd><p>Funzione per esportare i dati presenti nel database in un file csv.</p>
+<dd><p>Funzione per esportare i dati presenti nel database MongoDB in un file CSV.</p>
+<p>La funzione esegue le seguenti operazioni:</p>
+<ol class="arabic simple">
+<li><p>Si connette al database MongoDB utilizzando la stringa di connessione definita nel file di configurazione.</p></li>
+<li><p>Recupera la lista delle collezioni presenti nel database.</p></li>
+<li><p>Per ogni collezione, estrae tutti i documenti e li accumula in una struttura dati.</p></li>
+<li><p>Crea un DataFrame utilizzando la libreria <cite>pandas</cite>, che organizza i dati in formato tabellare.</p></li>
+<li><p>Salva il DataFrame in un file CSV nella cartella <cite>data_results</cite>, rendendo i dati pronti per l’analisi.</p></li>
+</ol>
+<p>La funzione è utile per esportare i dati da MongoDB in un formato facilmente leggibile e analizzabile,
+come CSV, che può essere utilizzato in strumenti di analisi come Excel o software di data science.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
+<dd class="field-odd"><p>Nessun valore ritornato.</p>
 </dd>
 </dl>
 </dd></dl>

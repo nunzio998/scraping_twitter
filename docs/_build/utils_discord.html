@@ -98,29 +98,71 @@
              
   <section id="module-src.Discord_scraping.utils.utils">
 <span id="utils"></span><h1>utils<a class="headerlink" href="#module-src.Discord_scraping.utils.utils" title="Link to this heading"></a></h1>
-<p>Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:</p>
-<ul class="simple">
-<li><p>Gestione interazioni con MongoDB</p></li>
-<li><p>Parsing dei dati estratti</p></li>
-<li><p>Procedure di login</p></li>
-</ul>
-<p>Autore: Francesco Pinsone</p>
+<p>Questo script fornisce una serie di funzioni utili per interagire con il sito web di Discord, eseguire scraping dei messaggi in una chat e interagire con un database MongoDB. Le funzionalità principali incluse in questo script sono:</p>
+<ol class="arabic simple">
+<li><p><strong>Gestione MongoDB</strong>:
+- Connessione a un database MongoDB tramite una stringa di connessione.
+- Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.
+- Salvataggio dei dati nel database MongoDB.</p></li>
+<li><p><strong>Analisi dei dati con BeautifulSoup</strong>:
+- Estrazione e parsing dei messaggi da una pagina web tramite il modulo BeautifulSoup.
+- Raccolta dei messaggi da una chat di Discord, insieme ai metadati relativi all’autore, alla data e al contenuto del messaggio.</p></li>
+<li><p><strong>Interazioni con Discord tramite Selenium</strong>:
+- Automazione del login a Discord usando Selenium, includendo la gestione di un possibile captcha.
+- Navigazione tra le pagine di Discord per raccogliere messaggi da una chat.
+- Scroll della pagina per caricare più messaggi tramite l’interazione con la pagina HTML.</p></li>
+<li><p><strong>Gestione delle sessioni con i cookies</strong>:
+- Caricamento dei cookies di sessione da un file JSON per superare eventuali sistemi di autenticazione come il captcha.</p></li>
+<li><p><strong>Logging</strong>:
+- Logging delle operazioni eseguite per monitorare l’avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l’esecuzione dello scraping, il login a Discord, ecc.).</p></li>
+</ol>
+<p><strong>Autore</strong>: Francesco Pinsone</p>
+<p><strong>Descrizione delle principali funzioni</strong>:
+- <cite>connect_to_mongo()</cite>: si connette al database MongoDB e restituisce il client di connessione.
+- <cite>disconnect_to_mongo()</cite>: disconnette la sessione dal database MongoDB.
+- <cite>connect_to_mongo_collection()</cite>: si connette a una collezione specifica di MongoDB o la crea se non esiste.
+- <cite>save_to_mongo()</cite>: salva i dati in una collezione di MongoDB.
+- <cite>beautifulsoup_analisys()</cite>: analizza una pagina web di Discord, estrae i messaggi della chat e restituisce un elenco di messaggi con autore, data e contenuto.
+- <cite>scroll_up()</cite>: simula lo scroll verso l’alto della pagina per caricare più messaggi.
+- <cite>load_cookies()</cite>: carica i cookies di sessione da un file JSON per evitare un nuovo login.
+- <cite>login()</cite>: esegue il login a Discord utilizzando Selenium, incluse le credenziali utente.
+- <cite>discord_login()</cite>: gestisce il login vero e proprio su Discord.
+- <cite>check_captcha()</cite>: verifica la presenza di un captcha e fornisce istruzioni per risolverlo manualmente se necessario.</p>
+<p>Lo script è progettato per operare in un ambiente automatizzato di scraping di chat Discord, ma include anche la gestione di eventuali ostacoli come il captcha. È inoltre integrato con MongoDB per il salvataggio dei dati raccolti.</p>
+<p><strong>Prerequisiti</strong>:
+- Una connessione attiva a un database MongoDB.
+- I cookies di sessione per evitare il login manuale ripetuto (se necessario).
+- Un ambiente con Selenium e BeautifulSoup per l’automazione del browser e l’analisi del contenuto delle pagine.</p>
+<p><strong>Uso</strong>:
+Lo script può essere utilizzato per raccogliere e analizzare messaggi da una chat di Discord, quindi salvare i dati nel database MongoDB per ulteriori elaborazioni. Le credenziali per il login a Discord devono essere fornite tramite un file di configurazione. Inoltre, lo script gestisce automaticamente il login e la risoluzione di eventuali captcha.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.beautifulsoup_analisys">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scroll_times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#beautifulsoup_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.beautifulsoup_analisys" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di analizzare il contenuto di una pagina web tramite il modulo BeautifulSoup.</p>
+<dd><p>Funzione che esegue l’analisi di una pagina web contenente messaggi (ad esempio, una chat) utilizzando il modulo BeautifulSoup.
+La funzione effettua un numero definito di scroll verso l’alto della pagina per caricare più messaggi, quindi estrae informazioni
+come il nome del server, il nome del canale e i dettagli dei messaggi (autore, data e contenuto).</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Scroll verso l’alto</strong>: La funzione esegue il numero di scroll richiesti tramite la funzione <cite>scroll_up</cite>, caricando progressivamente più messaggi.</p></li>
+<li><p><strong>Estrazione del contenuto HTML</strong>: Dopo ogni scroll, la pagina viene analizzata con BeautifulSoup per estrarre il contenuto HTML della pagina.</p></li>
+<li><p><strong>Estrazione delle informazioni del server e del canale</strong>: La funzione cerca nel codice HTML il nome del server e del canale.</p></li>
+<li><p><strong>Estrazione dei messaggi</strong>: Per ogni messaggio presente nella pagina, vengono estratti l’autore, il timestamp e il contenuto del messaggio. I messaggi vuoti vengono ignorati.</p></li>
+<li><p><strong>Restituzione dei risultati</strong>: La funzione restituisce una lista di dizionari contenenti le informazioni sui messaggi, insieme ai nomi del server e del canale.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione assume che i messaggi siano contenuti all’interno di specifici tag e classi CSS che vengono cercati tramite BeautifulSoup.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>scroll_times</strong> – numero di esecuzioni di scroll up della chat per caricare più messaggi.</p></li>
+<li><p><strong>driver</strong> – Oggetto <cite>webdriver</cite> di Selenium utilizzato per interagire con il browser e estrarre il contenuto HTML della pagina.</p></li>
+<li><p><strong>scroll_times</strong> – Numero di volte che la funzione deve eseguire lo scroll verso l’alto per caricare più messaggi.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>list: lista dei messaggi.</p>
-<p>str: nome del server.</p>
-<p>str: nome del canale.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p>list: Una lista di dizionari contenente i dettagli dei messaggi (autore, data, contenuto).</p></li>
+<li><p>str: Nome del server trovato nella pagina.</p></li>
+<li><p>str: Nome del canale trovato nella pagina.</p></li>
+</ul>
 </p>
 </dd>
 </dl>
@@ -129,21 +171,32 @@ Alcuni esempi sono:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.check_captcha">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_captcha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#check_captcha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.check_captcha" title="Link to this definition"></a></dt>
-<dd><p>Funzione che effettua un check sulla presenza di test captcha dopo che lo script ha tentato la procedura di login. Per ora se un captcha viene rilevato si
-rimanda all’utente la risoluzione dello stesso prima di continuare.</p>
-<p>Gl isviluppi futuri prevedono che: inizialmente se la presenza di un captcha viene rilevata la funzione tenta di caricare nel driver di Firefox i cookies di una sessione in cui l’accesso è andato a buon fine.
-Questo è possibile con l’esecuzione dello script ‘extract_cookies.py’. Nel caso in cui questo approccio non dovesse bastare la funzione permette
-all’utente di risolvere manualmente il test per poi procedere con l’estrazione dei dati.</p>
+<dd><p>Funzione che verifica la presenza di un CAPTCHA durante il processo di login su Discord. La funzione esegue un controllo
+sulla pagina per determinare se un CAPTCHA è presente, e in caso positivo, consente all’utente di risolverlo manualmente
+prima di procedere con il login.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Ricerca del CAPTCHA</strong>: La funzione cerca la presenza di un iframe che contiene il CAPTCHA nella pagina di login.</p></li>
+<li><p><strong>Gestione del CAPTCHA</strong>: Se viene rilevato un CAPTCHA, l’utente è invitato a risolverlo manualmente. La funzione si sospende
+e attende che l’utente prema <cite>ENTER</cite> dopo aver completato il test.</p></li>
+<li><p><strong>Completamento della procedura di login</strong>: Una volta che il CAPTCHA è risolto, la funzione riprende l’esecuzione e tenta di
+completare la procedura di login con le credenziali fornite.</p></li>
+<li><p><strong>Gestione degli errori</strong>: Se il CAPTCHA non è presente, la funzione logga un messaggio e termina la procedura di login.</p></li>
+<li><p><strong>Sviluppi futuri</strong>: In futuro, la funzione includerà la possibilità di caricare i cookies da una sessione valida tramite
+lo script <cite>extract_cookies.py</cite> per bypassare il CAPTCHA automaticamente, evitando l’intervento manuale.</p></li>
+</ol>
+<p><strong>Nota</strong>: Attualmente la funzione prevede l’intervento manuale dell’utente per risolvere il CAPTCHA. Nei futuri sviluppi,
+la gestione automatica del CAPTCHA tramite cookies sarà implementata per semplificare il processo.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
-<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
+<li><p><strong>driver</strong> – Oggetto <cite>webdriver</cite> di Selenium utilizzato per interagire con il browser e caricare la pagina di login.</p></li>
+<li><p><strong>logging</strong> – Oggetto per il logging delle informazioni durante l’esecuzione dello script, utile per tracciare l’andamento del processo.</p></li>
+<li><p><strong>credentials</strong> – Dizionario contenente le credenziali dell’utente per il login su Discord.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -151,10 +204,17 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.connect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi al database MongoDB.</p>
+<dd><p>Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Connessione al Database</strong>: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.</p></li>
+<li><p><strong>Verifica della Connessione</strong>: Esegue un comando <cite>ping</cite> sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.</p></li>
+<li><p><strong>Gestione degli Errori</strong>: Se si verifica un errore durante il tentativo di connessione, l’errore viene registrato nel log.</p></li>
+</ol>
+<p><strong>Nota</strong>: Il client MongoDB viene creato utilizzando la libreria <cite>pymongo</cite>, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>client, oggetto che rappresenta la connessione al database</p>
+<dd class="field-odd"><p>client, oggetto che rappresenta la connessione attiva al database MongoDB.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -162,16 +222,23 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.connect_to_mongo_collection">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.</p>
+<dd><p>Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Connessione al Database</strong>: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.</p></li>
+<li><p><strong>Verifica e Creazione Collezione</strong>: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.</p></li>
+<li><p><strong>Restituzione della Collezione</strong>: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio <cite>config_data</cite>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p></li>
-<li><p><strong>collection_name</strong> – stringa, nome della collezione</p></li>
+<li><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p></li>
+<li><p><strong>collection_name</strong> – Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>collection, oggetto che rappresenta la collezione</p>
+<dd class="field-even"><p>Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l’uso (lettura/scrittura).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,13 +246,19 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.disconnect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di disconnettersi dal database MongoDB.</p>
+<dd><p>Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Log della Disconnessione</strong>: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.</p></li>
+<li><p><strong>Chiusura della Connessione</strong>: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione utilizza il metodo <cite>server_info()</cite> per recuperare informazioni sul server, come la versione, che verranno incluse nel log.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p>
+<dd class="field-odd"><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito. La funzione esegue solo l’azione di disconnessione dal database.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -193,17 +266,28 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.discord_login">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">discord_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#discord_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.discord_login" title="Link to this definition"></a></dt>
-<dd><p>Funzione che automatizza la procedura di login a Discord.
-:param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p>
+<dd><p>Funzione che automatizza la procedura di login a Discord utilizzando Selenium. La funzione carica la pagina di login di Discord,
+inserisce automaticamente le credenziali fornite e gestisce eventuali schermate o problemi durante il processo di autenticazione.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Caricamento della pagina di login</strong>: La funzione apre la pagina di login di Discord utilizzando l’oggetto <cite>driver</cite> di Selenium.</p></li>
+<li><p><strong>Gestione della selezione dell’utente</strong>: Se la schermata di selezione dell’utente appare, la funzione simula la pressione del pulsante “Accedi” per procedere.</p></li>
+<li><p><strong>Inserimento delle credenziali</strong>: La funzione cerca i campi per l’email e la password sulla pagina e inserisce automaticamente i valori forniti nel parametro <cite>credentials</cite>.</p></li>
+<li><p><strong>Gestione degli errori</strong>: Se uno dei campi non viene trovato, la funzione tenta di cercare l’elemento in un secondo tentativo. Se il campo è ancora assente, viene loggata l’errore e il programma si interrompe.</p></li>
+<li><p><strong>Sicurezza</strong>: Dopo l’inserimento delle credenziali, la funzione simula la pressione del tasto “Invio” per inviare i dati di accesso e completare il login.</p></li>
+<li><p><strong>Uscita in caso di errore</strong>: Se i campi non vengono trovati dopo i tentativi, la funzione esegue un’uscita sicura del programma per evitare l’accesso non riuscito.</p></li>
+</ol>
+<p><strong>Nota</strong>: L’accesso viene effettuato utilizzando i valori passati nel parametro <cite>credentials</cite>, che contiene l’email e la password dell’utente.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
-<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
+<li><p><strong>driver</strong> – Oggetto <cite>webdriver</cite> di Selenium utilizzato per interagire con il browser, caricare la pagina di login e inviare i dati.</p></li>
+<li><p><strong>logging</strong> – Oggetto di logging per registrare i dettagli del processo di login e diagnosticare eventuali problemi.</p></li>
+<li><p><strong>credentials</strong> – Dizionario contenente le credenziali dell’utente (email e password) necessarie per il login su Discord.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito, la funzione si occupa di effettuare il login automaticamente.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -211,16 +295,24 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.load_cookies">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">load_cookies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utils/cookies.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#load_cookies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.load_cookies" title="Link to this definition"></a></dt>
-<dd><p>Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium.</p>
+<dd><p>Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione del driver Selenium. Questo consente di riutilizzare
+una sessione precedentemente autenticata per evitare di dover ripetere il processo di login o bypassare un captcha.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Caricamento dei cookies</strong>: La funzione legge il file JSON specificato nel parametro <cite>cookies_path</cite> e carica i cookies salvati in un oggetto Python.</p></li>
+<li><p><strong>Aggiunta dei cookies alla sessione</strong>: I cookies caricati vengono aggiunti alla sessione del driver Selenium, permettendo al browser di simulare un accesso precedentemente effettuato.</p></li>
+<li><p><strong>Riutilizzo della sessione</strong>: L’aggiunta dei cookies permette di mantenere la sessione attiva e di bypassare la necessità di effettuare nuovamente il login o risolvere il captcha, se i cookies contengono informazioni valide.</p></li>
+</ol>
+<p><strong>Nota</strong>: Assicurarsi che il file JSON contenente i cookies sia correttamente formattato e che i cookies siano validi per la sessione corrente.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>cookies_path</strong> – path del file json che contiene i cookies di sessione per superare il captcha.</p></li>
+<li><p><strong>driver</strong> – Oggetto <cite>webdriver</cite> di Selenium utilizzato per interagire con il browser e caricare i cookies nella sessione.</p></li>
+<li><p><strong>cookies_path</strong> – Il percorso del file JSON che contiene i cookies di sessione da caricare. Il percorso predefinito è <cite>“utils/cookies.json”</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito, la funzione modifica direttamente la sessione del driver Selenium aggiungendo i cookies.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -228,17 +320,26 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.login">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.login" title="Link to this definition"></a></dt>
-<dd><p>Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.
-:param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p>
+<dd><p>Funzione che avvia la procedura di login a Discord e successivamente verifica la presenza di un captcha. Se viene rilevato un captcha,
+la funzione si occupa di gestirlo tramite un controllo e un eventuale bypass. La funzione coordina l’esecuzione delle funzioni
+<cite>discord_login</cite> e <cite>check_captcha</cite> per garantire il corretto accesso all’account.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Avvio del login</strong>: La funzione richiama <cite>discord_login</cite> per avviare la procedura di accesso automatizzato a Discord, utilizzando le credenziali fornite nel parametro <cite>credentials</cite>.</p></li>
+<li><p><strong>Verifica del captcha</strong>: Dopo il login, la funzione chiama <cite>check_captcha</cite> per controllare se un captcha è presente. Se rilevato, gestisce la situazione permettendo all’utente di risolverlo manualmente.</p></li>
+<li><p><strong>Gestione dell’accesso</strong>: La funzione garantisce che il login venga completato correttamente prima di eseguire il controllo del captcha. Se il captcha è ancora presente, la funzione invita l’utente a risolverlo.</p></li>
+</ol>
+<p><strong>Nota</strong>: Il login e la verifica del captcha vengono effettuati in due fasi distinte, una per l’autenticazione e una per la gestione del captcha, assicurando che entrambi gli aspetti siano gestiti correttamente.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
-<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
+<li><p><strong>driver</strong> – Oggetto <cite>webdriver</cite> di Selenium utilizzato per interagire con il browser, caricare la pagina di login e inviare i dati.</p></li>
+<li><p><strong>logging</strong> – Oggetto di logging per registrare i dettagli del processo di login e diagnosticare eventuali problemi.</p></li>
+<li><p><strong>credentials</strong> – Dizionario contenente le credenziali dell’utente (email e password) necessarie per il login su Discord.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito, la funzione si occupa di eseguire l’intero processo di login, inclusa la gestione del captcha.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,13 +347,19 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.read_json">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
-<dd><p>Funzione per la lettura di file JSON.</p>
+<dd><p>Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</p>
+<p><strong>Funzionamento</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Apertura del file</strong>: Apre il file JSON specificato dal percorso <cite>path</cite> in modalità lettura.</p></li>
+<li><p><strong>Caricamento del contenuto</strong>: Utilizza la funzione <cite>json.load</cite> per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).</p></li>
+<li><p><strong>Restituzione dei dati</strong>: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> – percorso del file JSON</p>
+<dd class="field-odd"><p><strong>path</strong> – str, il percorso del file JSON da leggere.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict, contenuto del file JSON</p>
+<dd class="field-even"><p>dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -260,16 +367,22 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.save_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione per il salvataggio di dati nel database MongoDB.</p>
+<dd><p>Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Salvataggio dei dati</strong>: I dati vengono passati come un dizionario (<cite>data</cite>) e vengono inseriti nella collezione MongoDB fornita tramite il metodo <cite>insert_one()</cite>.</p></li>
+<li><p><strong>Logging</strong>: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.</p></li>
+</ol>
+<p><strong>Nota</strong>: Questa funzione salva i dati in un’unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – dict, dati da salvare</p></li>
-<li><p><strong>collection</strong> – oggetto che rappresenta la collezione</p></li>
+<li><p><strong>data</strong> – dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).</p></li>
+<li><p><strong>collection</strong> – Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito. La funzione esegue solo l’inserimento dei dati.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -277,16 +390,25 @@ all’utente di risolvere manualmente il test per poi procedere con l’estrazio
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.scroll_up">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">scroll_up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#scroll_up"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.scroll_up" title="Link to this definition"></a></dt>
-<dd><p>Funzione per scorrere verso l’alto e caricare più messaggi.</p>
+<dd><p>Funzione che simula lo scroll verso l’alto della pagina, permettendo di caricare più messaggi o contenuti all’interno di una chat
+o una pagina dinamica. Utilizza il tasto di “Page Up” per spostarsi verso l’alto e consente di caricare progressivamente i messaggi
+o gli elementi aggiuntivi presenti nella pagina.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Simulazione dello scroll</strong>: La funzione trova l’elemento principale della pagina (con il tag <cite>&lt;html&gt;</cite>) e invia il comando <cite>Page Up</cite> per simulare lo scroll verso l’alto.</p></li>
+<li><p><strong>Caricamento dei messaggi</strong>: Ogni volta che viene effettuato uno scroll, la pagina potrebbe caricare ulteriori messaggi o contenuti.</p></li>
+<li><p><strong>Attesa tra gli scroll</strong>: Dopo ogni esecuzione dello scroll, la funzione attende 2 secondi per permettere ai messaggi di caricarsi correttamente prima di effettuare un altro scroll.</p></li>
+</ol>
+<p><strong>Nota</strong>: Il parametro <cite>times</cite> controlla il numero di volte che viene effettuato lo scroll verso l’alto. Questo è utile quando si vogliono caricare più messaggi in una chat o elementi in una pagina che utilizza il caricamento dinamico.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
-<li><p><strong>times</strong> – numero di esecuzioni di scroll up della chat per caricare più messaggi.</p></li>
+<li><p><strong>driver</strong> – Oggetto <cite>webdriver</cite> di Selenium utilizzato per interagire con il browser e inviare i comandi di scroll.</p></li>
+<li><p><strong>times</strong> – Numero di volte che la funzione deve eseguire lo scroll verso l’alto per caricare più contenuti.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito, la funzione agisce direttamente sul driver Selenium per eseguire lo scroll.</p>
 </dd>
 </dl>
 </dd></dl>

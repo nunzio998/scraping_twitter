@@ -89,28 +89,50 @@
              
   <section id="module-src.DarkWeb_scraping.ahmia_browser_scraper">
 <span id="ahmia-browser-scraper"></span><h1>ahmia_browser_scraper<a class="headerlink" href="#module-src.DarkWeb_scraping.ahmia_browser_scraper" title="Link to this heading"></a></h1>
-<p>Questo script permette di fare scraping del motore di ricerca Ahmia, uno dei motori di ricerca per il dark web. La ricerca viene effettuata per parole chiave e i risultati che produce vengono
-salvati in un database MongoDB. Per fare scraping di Ahmia è necessario utilizzare Tor, quindi è necessario avere un server Tor in esecuzione sul proprio computer. Inoltre, è necessario avere
-installato il browser Tor e configurare il proxy per le richieste HTTP.</p>
-<p>Autore: Francesco Pinsone</p>
+<p>Questo script esegue il processo di scraping sul motore di ricerca Ahmia, che è una risorsa per esplorare il dark web. Utilizzando la rete Tor per garantire l’anonimato, la funzione principale
+effettua una ricerca tramite una query di parole chiave e salva i risultati nel database MongoDB. Questo processo permette di raccogliere informazioni provenienti dal dark web in modo sicuro e
+anonimo, archiviandole per ulteriori analisi o monitoraggi.</p>
+<p><strong>Passaggi principali</strong>:
+1. <strong>Connessione a Tor</strong>: Configurazione dei proxy SOCKS5 per permettere la connessione alla rete Tor.
+2. <strong>Connessione a MongoDB</strong>: Connessione al database MongoDB per il salvataggio dei dati estratti.
+3. <strong>Esecuzione della ricerca</strong>: Utilizzo della funzione <cite>search_ahmia()</cite> per inviare una query di ricerca su Ahmia.
+4. <strong>Salvataggio dei risultati</strong>: I risultati vengono analizzati e salvati nel database MongoDB.
+5. <strong>Disconnessione dal database</strong>: La connessione a MongoDB viene chiusa una volta completato il salvataggio dei dati.</p>
+<p><strong>Requisiti</strong>:
+- È necessario avere un server Tor in esecuzione sul computer e configurato correttamente.
+- MongoDB deve essere installato e configurato per l’archiviazione dei risultati.</p>
+<p><strong>Autore</strong>: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper">
 <span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">darkweb_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#darkweb_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper" title="Link to this definition"></a></dt>
-<dd><p>Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere
-la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione
-‘search_ahmia()’ per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p>
-</dd>
-</dl>
+<dd><p>Questa funzione rappresenta il punto di partenza per eseguire uno scraping sul dark web. Utilizza il proxy Tor
+per garantire l’anonimato e la navigazione sicura. La funzione include i seguenti passaggi principali:</p>
+<ol class="arabic simple">
+<li><p><strong>Configurazione dei Proxy</strong>: Imposta i proxy SOCKS5 per abilitare la navigazione su Tor.</p></li>
+<li><p><strong>Connessione al Database MongoDB</strong>: Stabilisce una connessione al database per archiviare i dati estratti.</p></li>
+<li><p><strong>Esecuzione della Ricerca</strong>: Utilizza la funzione ‘search_ahmia()’ per cercare contenuti specifici sul dark web
+in base alla query fornita (es. “hacker attack energy infrastructure”).</p></li>
+<li><p><strong>Salvataggio dei Risultati</strong>: Analizza i risultati della ricerca, li formatta come JSON, e li salva nella collezione
+appropriata del database.</p></li>
+<li><p><strong>Disconnessione dal Database</strong>: Garantisce la chiusura della connessione al database al termine delle operazioni.</p></li>
+</ol>
+<p>Questa funzione è progettata per gestire automaticamente la raccolta e l’archiviazione dei dati provenienti dal dark web,
+rendendola ideale per progetti di analisi o monitoraggio.
+:return: Nessun valore restituito.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia">
 <span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia" title="Link to this definition"></a></dt>
-<dd><p>Funzione per cercare in Ahmia. La funzione prende in input una query di ricerca e ritorna i risultati sotto forma di
-lista di dizionari, dove ogni dizionario rappresenta un risultato.</p>
+<dd><p>Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia
+e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.</p>
+<p><strong>Passaggi principali</strong>:
+1. <strong>Costruzione dell’URL</strong>: Combina l’URL di Ahmia (versione onion) con la query di ricerca specificata.</p>
+<ol class="arabic simple" start="2">
+<li><p><strong>Invio della Richiesta</strong>: Utilizza la sessione configurata con proxy Tor per inviare una richiesta HTTP al motore di ricerca.</p></li>
+<li><p><strong>Gestione degli Errori</strong>: Verifica eventuali errori di connessione o nella richiesta e, in caso di problemi, restituisce una lista vuota.</p></li>
+<li><p><strong>Analisi dei Risultati</strong>: Utilizza la funzione <cite>beautifulsoup_analisys()</cite> per analizzare la risposta HTML e estrarre i dati rilevanti.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>query</strong> – stringa, query di ricerca</p>

@@ -73,10 +73,29 @@
              
   <h1>Source code for src.DarkWeb_scraping.ahmia_scraper_ai</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script si occupa di effettuare scraping su Ahmia, uno dei motori di ricerca per il dark web, e di estrarre i risultati ottenuti. In questo caso l&#39;html che viene estratto durante lo scraping</span>
-<span class="sd">viene parsato avvalendosi di un LLM (Large Language Model) per estrarre informazioni utili dai risultati ottenuti.</span>
+<span class="sd">Questo script è progettato per eseguire scraping del motore di ricerca Ahmia, uno dei principali motori di ricerca nel</span>
+<span class="sd">dark web, e integra l&#39;analisi dei risultati tramite un modello di linguaggio avanzato, Ollama. L&#39;obiettivo principale è</span>
+<span class="sd">estrarre e strutturare informazioni rilevanti dai risultati della ricerca di Ahmia, utilizzando il modello Ollama per</span>
+<span class="sd">l&#39;elaborazione semantica dei contenuti.</span>
 
-<span class="sd">Autore: Francesco Pinsone</span>
+<span class="sd">Lo script funziona configurando il proxy Tor per navigare in modo anonimo attraverso la rete Tor, assicurando che le</span>
+<span class="sd">richieste HTTP siano anonimizzate. Successivamente, viene inviata una query al motore di ricerca Ahmia (versione onion)</span>
+<span class="sd">e i risultati vengono estratti dal contenuto HTML, focalizzandosi sul tag `&lt;ol&gt;` che contiene l&#39;elenco dei risultati.</span>
+<span class="sd">Una volta ottenuti i dati grezzi, questi vengono inviati al modello Ollama per un&#39;elaborazione semantica, con</span>
+<span class="sd">l&#39;obiettivo di estrarre informazioni strutturate come il titolo, il link e uno snippet per ogni risultato.</span>
+
+<span class="sd">Al momento, i risultati elaborati vengono stampati nel terminale, ma non vengono ancora salvati nel database. Questa</span>
+<span class="sd">parte dello script è in fase di sviluppo, poiché il sistema è ancora in fase di ottimizzazione per perfezionare il</span>
+<span class="sd">prompt e migliorare la consistenza dei risultati restituiti dal modello Ollama. Il futuro obiettivo è garantire che il</span>
+<span class="sd">modello fornisca risultati consistenti e formattati in modo stabile, con la possibilità di archiviare i dati in un</span>
+<span class="sd">database.</span>
+
+<span class="sd">Il motore di ricerca Ahmia è accessibile attraverso l&#39;indirizzo onion, utilizzando la rete Tor per garantire</span>
+<span class="sd">l&#39;anonimato. I risultati vengono estratti con l&#39;ausilio di BeautifulSoup, una libreria Python per il parsing di HTML.</span>
+<span class="sd">Il modello Ollama è utilizzato per generare risposte strutturate e analizzare i contenuti ottenuti dal motore di</span>
+<span class="sd">ricerca. L&#39;integrazione tra il modello LLM e il codice di scraping avviene tramite langchain_ollama.</span>
+
+<span class="sd">**Autore**: Francesco Pinsone</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -90,10 +109,21 @@
 <a class="viewcode-back" href="../../../ahmia_scraper_ai.html#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia">[docs]</a>
 <span class="k">def</span> <span class="nf">search_ahmia</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per cercare in Ahmia. La funzione prende in input una query che utilizza per effettuare la ricerca. Infine</span>
-<span class="sd">     la funzione ritorna il testo estratto dal tag &#39;ol&#39; del contenuto html risultante dalla ricerca effettuata.\n</span>
-<span class="sd">    :param query: stringa, query di ricerca\n</span>
-<span class="sd">    :return: testo estratto dal tag &#39;ol&#39;</span>
+<span class="sd">    Funzione per eseguire una ricerca nel motore di ricerca Ahmia (dark web) utilizzando una query specificata.</span>
+<span class="sd">    La funzione invia la query ad Ahmia e, una volta ricevuta la risposta, estrae e restituisce il testo dei risultati</span>
+<span class="sd">    dalla pagina web, focalizzandosi sul contenuto del tag &#39;ol&#39; che contiene l&#39;elenco dei risultati della ricerca.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Costruzione dell&#39;URL**: La query di ricerca viene utilizzata per costruire l&#39;URL del motore di ricerca Ahmia, utilizzando la versione onion (buona per la navigazione anonima tramite Tor).\n</span>
+<span class="sd">    2. **Invio della richiesta**: La funzione invia la richiesta HTTP tramite una sessione configurata con Tor per proteggere l&#39;anonimato.\n</span>
+<span class="sd">    3. **Gestione degli errori**: Se si verifica un errore nella connessione o nella risposta, viene restituito un messaggio di errore e una lista vuota.\n</span>
+<span class="sd">    4. **Analisi del contenuto HTML**: La risposta viene analizzata con BeautifulSoup per estrarre il contenuto del tag `&lt;ol&gt;` che contiene l&#39;elenco dei risultati della ricerca.\n</span>
+<span class="sd">    5. **Restituzione dei risultati**: Il testo estratto dal tag &#39;ol&#39; viene restituito come risultato della funzione.\n</span>
+
+<span class="sd">    **Nota**: La funzione assume che i risultati di ricerca siano contenuti all&#39;interno di un tag `&lt;ol&gt;` con una classe chiamata `searchResults`.\n</span>
+
+<span class="sd">    :param query: stringa, la query di ricerca da inviare a Ahmia.\n</span>
+<span class="sd">    :return: stringa, il testo estratto dal tag `&lt;ol&gt;` contenente i risultati della ricerca.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># URL di Ahmia versione onion</span>
     <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/search/?q=</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -119,10 +149,19 @@
 <a class="viewcode-back" href="../../../ahmia_scraper_ai.html#src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper">[docs]</a>
 <span class="k">def</span> <span class="nf">darkweb_ollama_scraper</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che rappresenta il punto di partenza dello scraping su dark web. Per prima di cosa imposta i proxy per permettere</span>
-<span class="sd">    la navigazione su tor e si connette al db per successiva archiviazione dei dati estratti. Si avvale poi della funzione</span>
-<span class="sd">    &#39;search_ahmia()&#39; per far partire la ricerca e infine salva i risultati su db prima di effettuare la disconnessione.\n</span>
-<span class="sd">    :return:</span>
+<span class="sd">    Funzione di scraping per il dark web, che integra la ricerca sul motore Ahmia con l&#39;elaborazione dei risultati tramite il modello Ollama.</span>
+<span class="sd">    Inizialmente, la funzione effettua la configurazione del proxy Tor, esegue la ricerca sul dark web, e successivamente invia i risultati</span>
+<span class="sd">    a Ollama per l&#39;elaborazione e l&#39;estrazione di informazioni strutturate. I risultati non sono ancora salvati nel database, poiché il sistema</span>
+<span class="sd">    è in fase di sviluppo per perfezionare il prompt e i risultati restituiti dal modello.</span>
+
+<span class="sd">    **Passaggi principali**:</span>
+<span class="sd">    1. **Impostazione del Proxy Tor**: Si configurano i proxy per navigare in modo anonimo attraverso Tor.</span>
+<span class="sd">    2. **Ricerca su Ahmia**: La funzione `search_ahmia()` invia una query al motore di ricerca del dark web Ahmia e raccoglie i risultati.</span>
+<span class="sd">    3. **Elaborazione con Ollama**: I risultati vengono inviati al modello Ollama per estrarre informazioni specifiche come il titolo, il link e lo snippet.</span>
+<span class="sd">    4. **Stampa dei Risultati**: I risultati elaborati vengono stampati, ma non sono ancora salvati nel database in quanto il sistema è in fase di ottimizzazione.</span>
+<span class="sd">    5. **Sviluppi futuri**: L&#39;obiettivo è migliorare la consistenza dei risultati e perfezionare il prompt per garantire formati stabili di output.</span>
+
+<span class="sd">    :return: Nessun valore restituito, stampa solo i risultati elaborati.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">OllamaLLM</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;llama3.1&#39;</span><span class="p">)</span>
 

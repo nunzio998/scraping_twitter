@@ -73,9 +73,17 @@
              
   <h1>Source code for src.Discord_scraping.drop_data_collection</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script permette di eliminare tutti i documenti presenti nelle collezioni del database.</span>
+<span class="sd">Questo script permette di eliminare tutti i documenti presenti nelle collezioni di un database MongoDB.</span>
 
-<span class="sd">Autore: Francesco Pinsone</span>
+<span class="sd">**Funzionalità principali:**</span>
+<span class="sd">1. Si connette al database MongoDB utilizzando la stringa di connessione configurata nel file di configurazione.</span>
+<span class="sd">2. Recupera la lista delle collezioni presenti nel database.</span>
+<span class="sd">3. Per ogni collezione, elimina tutti i documenti in essa contenuti.</span>
+<span class="sd">4. Registra un log dettagliato con il numero di documenti eliminati per ciascuna collezione.</span>
+
+<span class="sd">L&#39;operazione è irreversibile e rimuove permanentemente tutti i dati dalle collezioni. La funzione è progettata per pulire il database rimuovendo i dati precedentemente raccolti, preparandolo per nuove operazioni o raccolte di dati.</span>
+
+<span class="sd">**Autore**: Francesco Pinsone</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">src.Discord_scraping.utils.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -85,8 +93,18 @@
 <a class="viewcode-back" href="../../../drop_data_collection_discord.html#src.Discord_scraping.drop_data_collection.drop_data">[docs]</a>
 <span class="k">def</span> <span class="nf">drop_data</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per eliminare tutti i documenti presenti nelle collezioni del database.\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che elimina tutti i documenti presenti nelle collezioni del database MongoDB.</span>
+
+<span class="sd">    La funzione esegue i seguenti passaggi:\n</span>
+<span class="sd">    1. Si connette al database MongoDB utilizzando la stringa di connessione configurata.\n</span>
+<span class="sd">    2. Recupera la lista delle collezioni presenti nel database.\n</span>
+<span class="sd">    3. Per ogni collezione, elimina tutti i documenti presenti.\n</span>
+<span class="sd">    4. Registra un log con il numero di documenti eliminati per ciascuna collezione.\n</span>
+
+<span class="sd">    L&#39;operazione è irreversibile e rimuove permanentemente tutti i dati dalle collezioni selezionate,</span>
+<span class="sd">    che viene esclusa per evitare la perdita dei dati target.\n</span>
+
+<span class="sd">    :return: Nessun valore restituito. La funzione si occupa di gestire l&#39;eliminazione e il logging.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Configuro il logger</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
