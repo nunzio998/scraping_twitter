@@ -53,9 +53,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_to_csv_discord.html">db_to_csv</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">utils</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.beautifulsoup_analisys"><code class="docutils literal notranslate"><span class="pre">beautifulsoup_analisys()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.check_captcha"><code class="docutils literal notranslate"><span class="pre">check_captcha()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.connect_to_mongo"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.discord_login"><code class="docutils literal notranslate"><span class="pre">discord_login()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.load_cookies"><code class="docutils literal notranslate"><span class="pre">load_cookies()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Discord_scraping.utils.utils.scroll_up"><code class="docutils literal notranslate"><span class="pre">scroll_up()</span></code></a></li>
@@ -123,6 +127,28 @@ Alcuni esempi sono:</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.check_captcha">
+<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_captcha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#check_captcha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.check_captcha" title="Link to this definition"></a></dt>
+<dd><p>Funzione che effettua un check sulla presenza di test captcha dopo che lo script ha tentato la procedura di login. Per ora se un captcha viene rilevato si
+rimanda all’utente la risoluzione dello stesso prima di continuare.</p>
+<p>Gl isviluppi futuri prevedono che: inizialmente se la presenza di un captcha viene rilevata la funzione tenta di caricare nel driver di Firefox i cookies di una sessione in cui l’accesso è andato a buon fine.
+Questo è possibile con l’esecuzione dello script ‘extract_cookies.py’. Nel caso in cui questo approccio non dovesse bastare la funzione permette
+all’utente di risolvere manualmente il test per poi procedere con l’estrazione dei dati.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
+<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
+<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.connect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di connettersi al database MongoDB.</p>
@@ -157,6 +183,59 @@ Alcuni esempi sono:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.discord_login">
+<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">discord_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#discord_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.discord_login" title="Link to this definition"></a></dt>
+<dd><p>Funzione che automatizza la procedura di login a Discord.
+:param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
+<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.load_cookies">
+<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">load_cookies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utils/cookies.json'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#load_cookies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.load_cookies" title="Link to this definition"></a></dt>
+<dd><p>Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione Selenium.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>driver</strong> – oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p></li>
+<li><p><strong>cookies_path</strong> – path del file json che contiene i cookies di sessione per superare il captcha.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.login">
+<span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.login" title="Link to this definition"></a></dt>
+<dd><p>Funzione che fa partire la procedura di login e successivamente richiama un check verificare la presenza di captcha.
+:param driver: oggetto instanziato tramite selenium che consente di controllare il browser ed estrarre l’html della pagina.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logging</strong> – oggetto utilizzato per visualizzare a video i log informativi sull’andamento del processo.</p></li>
+<li><p><strong>credentials</strong> – struttura dati che contiene le credenziali dell’utente per l’accesso al proprio profilo Discord.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
