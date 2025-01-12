@@ -1,21 +1,68 @@
 """
-Questo script contiene tutte le funzioni che analizzano e manipolano il contenuto html di una pagina web tramite la libreria BeautifulSoup.
-Ogni funzione in questo script svolge un determinato compito e viene richiamata da uno script preciso.\n
+Questo script fornisce tre funzioni principali che utilizzano la libreria BeautifulSoup per analizzare il contenuto HTML di una pagina web contenente tweet e profili utente. Le funzioni estraggono informazioni rilevanti dai tweet, dagli utenti e dalle connessioni tra utenti, come descritto di seguito:
 
-Autore: Francesco Pinsone.
+1. **Funzione `analisys_with_beautifulsoup(response_html)`**:\n
+   - Analizza il contenuto HTML di una pagina con tweet.\n
+   - Estrae informazioni da ciascun tweet, come:\n
+        - **Autore** (nome e username).\n
+        - **Data di pubblicazione** del tweet.\n
+        - **Contenuto del tweet** (testo del tweet, eventualmente ricondiviso da altri utenti).\n
+        - **Immagini e video** presenti nel tweet.\n
+        - **Interazioni** (numero di like, retweet, commenti).\n
+        - **URL del tweet**.\n
+
+2. **Funzione `beautifulsoup_user_analisys(html_content)`**:\n
+   - Analizza il contenuto HTML di una pagina di un profilo utente.\n
+   - Estrae le informazioni principali dell'utente, come:\n
+        - **Username** e **tag** dell'utente.\n
+        - **Verifica dell'utente** (se l'utente è verificato tramite icona).\n
+        - **Numero di tweet** pubblicati.\n
+        - **Numero di follower** e **numero di following**.\n
+        - **Localizzazione** (se disponibile).\n
+        - **Descrizione professionale** dell'utente.\n
+
+3. **Funzione `find_related_user(html_content)`**:\n
+   - Analizza il contenuto HTML di una pagina utente alla ricerca di **utenti correlati**.\n
+   - Estrae una lista di **utenti suggeriti** o correlati (come nel caso di follower o utenti seguiti) a partire dalle informazioni nel profilo.\n
+   - Restituisce i nomi e gli username degli utenti suggeriti.\n
+
+4. **Gestione delle eccezioni**:\n
+   - Ogni volta che una sezione del contenuto non è presente o non può essere estratta, il codice gestisce l'errore evitando che lo script si interrompa. Vengono stampati messaggi di errore informativi per ogni elemento mancante (ad esempio, se il contenuto del tweet non è presente o se un utente non è verificato).\n
+
+Lo script è pensato per raccogliere e organizzare in modo strutturato i dati dei tweet, degli utenti e delle loro connessioni, rendendoli pronti per un'analisi successiva o per ulteriori elaborazioni.
+
+**Autore**: Francesco Pinsone.
 """
 from bs4 import BeautifulSoup
 
 
 def analisys_with_beautifulsoup(response_html):
     """
-    La funzione ha il compito di analizzare e filtrare il contenuto html che le viene passato come parametro.\n
-    L'obiettivo quindi è quello di estrarre le informazioni utili per il nostro scopo.
-    Per prima cosa cerca tutti i tag div che contengono i tweet e li salva in una lista. Per ogni tweet cerca ed estrae
-    anche l'url, le immagini e i video che contiene e li appende alla lista delle righe. Ritorna infine la lista delle righe
-    che sarà poi soggetta ad una procedura di parsing.\n
-    :param response_html: contenuto html della pagina web.\n
-    :return: filtered_lines: list, lista delle righe filtrate.
+    La funzione `analisys_with_beautifulsoup` analizza il contenuto HTML della pagina web dell'utente su X (Twitter)
+    per estrarre informazioni sui tweet. La funzione esamina i tweet, estraendo i dati principali come l'autore, la data,
+    il contenuto testuale, i media (immagini, video) e i contenuti ricondivisi. Inoltre, raccoglie il numero di interazioni
+    (come like, retweet) e restituisce una lista di righe contenenti tutte le informazioni estratte per ogni tweet.
+
+    **Funzionamento**:\n
+    1. Utilizza BeautifulSoup per effettuare il parsing del contenuto HTML della pagina.\n
+    2. Trova tutti i div che contengono i tweet, identificati da specifiche classi.\n
+    3. Per ogni tweet, estrae:\n
+        - L'autore del tweet (nome utente e tag).\n
+        - La data di pubblicazione.\n
+        - Il contenuto testuale del tweet, se presente.\n
+        - Eventuali tweet ricondivisi (autore e contenuto, se presenti).\n
+        - Le immagini e/o video inclusi nel tweet.\n
+        - Le informazioni sul numero di interazioni (like, retweet, ecc.).\n
+        - L'URL del tweet.\n
+    4. Raccoglie tutte queste informazioni in una lista di righe, con ogni riga contenente i dati di un singolo tweet.\n
+    5. Restituisce la lista delle righe, che può essere successivamente elaborata o analizzata.\n
+
+    **Gestione degli errori**:\n
+    - Se un tweet non contiene alcune delle informazioni richieste (ad esempio, l'autore, il contenuto o i media), la funzione ignora il tweet e prosegue l'elaborazione degli altri.\n
+    - La funzione gestisce i possibili errori dovuti all'assenza di alcuni tag HTML attraverso try-except.\n
+
+    :param response_html: str, il contenuto HTML della pagina web dell'utente X\n
+    :return: **filtered_lines**: list, lista delle righe filtrate contenenti le informazioni estratte per ogni tweet.
     """
 
     soup = BeautifulSoup(response_html, 'html.parser')
@@ -115,21 +162,36 @@ def analisys_with_beautifulsoup(response_html):
 
 def beautifulsoup_user_analisys(html_content):
     """
-    Questa funzione viene richiamata ed utilizzata dallo script 'user_info_scraper.py' che ha quindi il compito di estrarre
-    informazioni relativi agli utenti X. La funzione prende in input il contenuto html della pagina web di un
-    utente X e ne estrae, con l'utilizzo di beautifulsoup, le informazioni chiave. Per ogni utente la funzione estrae:\n
-    - tag username\n
-    - verificato (spunta blu)\n
-    - numero di post pubblicati\n
-    - numero di persone seguite (following)\n
-    - numero di persone che seguono l'utente (follower)\n
-    - lavoro, se presente\n
-    - località, se presente\n
-    - data di iscrizione, se presente\n
-    - data di nascita, se presente\n
-    - sito web, se presente\n
-    :param html_content: contenuto html della pagina web relativa all'utente X\n
-    :return: dict con le informazioni sopra elencate
+    La funzione `beautifulsoup_user_analisys` analizza il contenuto HTML della pagina di un utente su X (Twitter) per estrarre informazioni relative al profilo dell'utente. Queste informazioni vengono restituite sotto forma di dizionario.
+
+    **Informazioni estratte**:\n
+        - Nome utente (tag username)\n
+        - Stato di verifica (spunta blu, se presente)\n
+        - Numero di post pubblicati\n
+        - Numero di persone seguite (following)\n
+        - Numero di follower (followers)\n
+        - Posizione lavorativa (se presente)\n
+        - Località (se presente)\n
+        - Data di iscrizione al servizio (se presente)\n
+        - Data di nascita (se presente)\n
+        - Sito web (se presente)\n
+
+    **Funzionamento**:\n
+    1. Utilizza BeautifulSoup per effettuare il parsing del contenuto HTML della pagina.\n
+    2. Crea un dizionario vuoto per raccogliere le informazioni dell'utente.\n
+    3. Estrae il nome utente cercando il tag `<h1>` con una classe specifica.\n
+    4. Verifica se l'utente è verificato cercando un tag `<span>` che contiene l'indicatore di verifica.\n
+    5. Estrae il numero di post cercando il tag `<span>` corrispondente al conteggio dei post.\n
+    6. Estrae il numero di persone seguite e i followers, analizzando i rispettivi tag `<span>`.\n
+    7. Estrae informazioni sul lavoro, la località, la data di iscrizione e la data di nascita, se disponibili.\n
+    8. Estrae il sito web dell'utente, se presente.\n
+    9. Raccoglie tutte le informazioni in un dizionario.\n
+
+    **Gestione degli errori**:\n
+    - Se uno dei dati richiesti non è presente, la funzione restituisce `None` per quel dato specifico, senza interrompere l'esecuzione.
+
+    :param html_content: str, il contenuto HTML della pagina web dell'utente X\n
+    :return: **user_data**: dict, un dizionario contenente le informazioni estratte dal profilo dell'utente. Se alcune informazioni non sono presenti, saranno indicate come `None`.
     """
     # Salvo gli attributi 'd' dei tag 'path' che definiscono le icone che identificano le info dell'utente nel profilo. Uso quindi le icone per riconoscere i vari elementi e distinguerli
     job_path = 'M19.5 6H17V4.5C17 3.12 15.88 2 14.5 2h-5C8.12 2 7 3.12 7 4.5V6H4.5C3.12 6 2 7.12 2 8.5v10C2 19.88 3.12 21 4.5 21h15c1.38 0 2.5-1.12 2.5-2.5v-10C22 7.12 20.88 6 19.5 6zM9 4.5c0-.28.23-.5.5-.5h5c.28 0 .5.22.5.5V6H9V4.5zm11 14c0 .28-.22.5-.5.5h-15c-.27 0-.5-.22-.5-.5v-3.04c.59.35 1.27.54 2 .54h5v1h2v-1h5c.73 0 1.41-.19 2-.54v3.04zm0-6.49c0 1.1-.9 1.99-2 1.99h-5v-1h-2v1H6c-1.1 0-2-.9-2-2V8.5c0-.28.23-.5.5-.5h15c.28 0 .5.22.5.5v3.51z'
@@ -275,11 +337,20 @@ def beautifulsoup_user_analisys(html_content):
 
 def find_related_user(html_content):
     """
-    La funzione riceve in input l'html della pagina web di un utente di X dal quale estrae gli utenti correlati
-    suggeriti nel menu aside che si trova a destra. Ognuno di questi utenti viene inserito in una lista di utenti
-    correlati che viene infine ritornata.\n
-    :param html_content: il contenuto html della pagina web dell'utente X\n
-    :return related_users: list, lista di utenti correlati.
+    La funzione `find_related_user` analizza l'HTML della pagina di un utente di X (Twitter) per estrarre e restituire una lista di utenti correlati suggeriti. Questi utenti sono visualizzati nella sezione aside presente nel menu laterale della pagina.
+
+    **Funzionamento**:\n
+    1. Utilizza BeautifulSoup per effettuare il parsing dell'HTML della pagina.\n
+    2. Si concentra sul tag `<main>` per individuare la sezione principale contenente il menu laterale.\n
+    3. Cerca il tag `<aside>` che include i suggerimenti degli utenti correlati.\n
+    4. Analizza la lista non ordinata `<ul>` per trovare i nomi degli utenti all'interno dei relativi elementi `<li>`.\n
+    5. Raccoglie i nomi degli utenti correlati e li inserisce in una lista.\n
+
+    **Gestione degli errori**:\n
+    - Se la sezione degli utenti correlati non è presente o non contiene dati, la funzione gestisce l'eccezione con un messaggio informativo e ritorna `None`.\n
+
+    :param html_content: str, il contenuto HTML della pagina web dell'utente X\n
+    :return: **related_users**: list, lista di utenti correlati. Se non presenti, ritorna None.
     """
     related_users = []
 

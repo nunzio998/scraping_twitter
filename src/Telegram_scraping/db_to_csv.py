@@ -1,16 +1,16 @@
 """
 Questo script estrae tutti i dati presenti nelle collezioni di un database MongoDB e li esporta in un file CSV.
 
-Il flusso di lavoro include i seguenti passaggi:
-1. Si connette al database MongoDB utilizzando la stringa di connessione configurata.
-2. Recupera l'elenco di tutte le collezioni nel database.
-3. Estrae i dati da ogni collezione e li accumula in un'unica struttura dati.
-4. Utilizza la libreria `pandas` per creare un DataFrame contenente tutti i documenti estratti.
-5. Esporta il DataFrame in un file CSV nella cartella `data_results`, facilitando l'analisi e l'elaborazione dei dati.
+Il flusso di lavoro include i seguenti passaggi:\n
+1. Si connette al database MongoDB utilizzando la stringa di connessione configurata.\n
+2. Recupera l'elenco di tutte le collezioni nel database.\n
+3. Estrae i dati da ogni collezione e li accumula in un'unica struttura dati.\n
+4. Utilizza la libreria `pandas` per creare un DataFrame contenente tutti i documenti estratti.\n
+5. Esporta il DataFrame in un file CSV nella cartella `data_results`, facilitando l'analisi e l'elaborazione dei dati.\n
 
 Questa funzionalità è utile per creare un backup dei dati presenti nel database o per analizzare i dati in modo strutturato utilizzando strumenti come Excel, Google Sheets o software di data science come Python o R.
 
-Autore: Francesco Pinsone
+**Autore**: Francesco Pinsone
 """
 import pandas as pd
 

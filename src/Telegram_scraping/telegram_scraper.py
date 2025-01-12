@@ -1,20 +1,51 @@
 """
-Questo script consente di effettuare lo scraping di messaggi da canali e gruppi Telegram utilizzando la libreria Telethon.
-È progettato per interfacciarsi con le API di Telegram e un database MongoDB, permettendo di estrarre e salvare in modo
-automatizzato i messaggi in base a determinati criteri di configurazione.
+Questo script permette l'estrazione automatizzata di messaggi da canali e gruppi Telegram e il loro salvataggio in un
+database MongoDB. Utilizza la libreria Telethon per connettersi alle API di Telegram e MongoDB per archiviare i dati,
+offrendo un sistema flessibile, configurabile e resiliente adatto a diversi scenari di utilizzo.
 
-L’utente può specificare i target da cui estrarre i messaggi direttamente da linea di comando oppure utilizzare una lista
-di target mantenuta in una collezione MongoDB. I messaggi vengono scaricati, elaborati per rimuovere campi ridondanti e
-arricchiti con informazioni sul mittente quando disponibili. Inoltre, è possibile impostare una data limite per considerare
-solo i messaggi successivi a essa.
+Caratteristiche principali:\n
+----------------------------
+1. **Connessione a Telegram**:\n
+   - Recupero della cronologia dei messaggi da canali o gruppi specificati.\n
+   - Estrazione di dettagli sui mittenti (nome, cognome, username), se disponibili.\n
+2. **Gestione e archiviazione dei dati**:\n
+   - Salvataggio dei messaggi in collezioni MongoDB organizzate per canale o gruppo.\n
+   - Pulizia e filtraggio dei dati per rimuovere campi ridondanti o non rilevanti.\n
+3. **Configurabilità**:\n
+   - Parametri come credenziali API, data limite (`limit_date`) e numero massimo di tentativi sono configurabili tramite un file JSON.\n
+   - Supporto per specificare target tramite linea di comando oppure caricandoli da una collezione "targets" in MongoDB.\n
+4. **Robustezza e resilienza**:\n
+   - Gestione degli errori di connessione con tentativi di riconnessione configurabili.\n
+   - Logging dettagliato per monitorare l'intero processo e facilitare il debugging.\n
+5. **Esecuzione asincrona**:\n
+   - Utilizzo di funzioni asincrone per garantire efficienza nelle operazioni I/O intensive, come l'interazione con le API di Telegram e il database.\n
+6. **Supporto CLI**:\n
+   - Permette l'inserimento dei target direttamente da linea di comando tramite il parametro `--targets`.\n
+   - Se i target non vengono forniti, vengono automaticamente caricati dal database MongoDB.\n
 
-Il processo utilizza un’architettura modulare per leggere le configurazioni, gestire le connessioni al database, e
-effettuare il controllo e la verifica degli username su Telegram. È resiliente agli errori di rete, prevedendo più tentativi
-di connessione configurabili. Il logger integrato garantisce il tracciamento degli eventi, degli errori e delle operazioni
-effettuate, semplificando il debugging e il monitoraggio del processo. Lo script può essere eseguito direttamente e
-adattato a diversi casi d’uso grazie alla sua flessibilità e configurabilità.
+Flusso di esecuzione:\n
+----------------------
+1. **Configurazione iniziale**:\n
+   - Lettura delle credenziali API e dei parametri di configurazione da un file JSON.\n
+   - Configurazione del logger per monitorare tutte le operazioni.\n
+2. **Identificazione dei target**:\n
+   - Recupero dei target specificati tramite linea di comando o dalla collezione "targets" in MongoDB.\n
+3. **Estrazione dei messaggi**:\n
+   - Connessione ai canali o gruppi specificati.\n
+   - Scaricamento della cronologia dei messaggi e arricchimento con informazioni sui mittenti.\n
+   - Filtraggio dei dati per rispettare eventuali limitazioni temporali (`limit_date`).\n
+4. **Salvataggio dei dati**:\n
+   - Archiviazione dei messaggi estratti in MongoDB, all'interno di collezioni corrispondenti ai canali o gruppi di origine.\n
+5. **Chiusura delle connessioni**:\n
+   - Al termine dell'elaborazione, il client Telegram viene chiuso e la connessione a MongoDB viene terminata.\n
 
-Autore: Francesco Pinsone
+Prerequisiti:\n
+-------------
+- Una configurazione valida delle credenziali API di Telegram (api_id, api_hash, phone).\n
+- Una connessione funzionante al database MongoDB.\n
+- La libreria Telethon installata.\n
+
+**Autore**: Francesco Pinsone.
 """
 import argparse
 import asyncio
@@ -31,22 +62,39 @@ from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, conne
 
 async def channel_scraper(t_client, m_client, channel_group, limit_date, max_retries=5):
     """
-    La funzione channel_scraper estrae, filtra, elabora e memorizza messaggi da un canale o gruppo Telegram in un
-    database MongoDB. Gestisce la connessione al client Telegram (t_client) e alla collezione MongoDB associata al
-    canale di interesse, recuperando la cronologia dei messaggi tramite il metodo GetHistoryRequest. I messaggi possono
-    essere filtrati in base a parole chiave e arricchiti con informazioni aggiuntive, come nome e username del mittente,
-    se disponibili. È possibile definire una data limite (limit_date) per considerare solo i messaggi successivi a essa.
-    La funzione rimuove campi ridondanti dai dati dei messaggi per mantenere solo quelli rilevanti, e li salva nella
-    collezione MongoDB corrispondente. È progettata per essere resiliente, con una gestione dei tentativi di
-    riconnessione configurabile tramite il parametro max_retries. In caso di interruzioni di rete, ritenta la
-    connessione per un numero massimo di volte prima di sollevare un’eccezione. Infine, registra dettagliatamente
-    eventuali errori per agevolare il debugging. Non restituisce alcun valore ma salva i dati nel database.\n
-    :param t_client: client telegram\n
-    :param m_client: client MongoDB\n
-    :param channel_group: nome del canale target\n
-    :param limit_date: data limite per estrazione messaggi\n
-    :param max_retries: numero di tentativi massimi di riconnessione\n
-    :return: None\n
+    La funzione `channel_scraper` estrae, elabora e memorizza i messaggi provenienti da un canale o gruppo Telegram
+    nel database MongoDB. È progettata per gestire una vasta gamma di scenari, come l'estrazione basata su una data limite,
+    il recupero delle informazioni del mittente (se disponibili), e la gestione degli errori e delle riconnessioni in caso
+    di interruzioni.
+
+    **Funzionalità principali**:\n
+    1. **Connessione al Client Telegram e MongoDB**:\n
+        - La funzione stabilisce una connessione asincrona con il client Telegram (`t_client`) e con la collezione MongoDB associata al canale o gruppo target (`channel_group`).\n
+    2. **Recupero dei Messaggi**:\n
+        - Utilizza il metodo `GetHistoryRequest` per scaricare la cronologia dei messaggi dal canale o gruppo specificato.\n
+        - I messaggi vengono raccolti iterativamente, con un limite configurabile sul numero di messaggi per ogni richiesta.\n
+        - Viene implementato un controllo sulla data dei messaggi, escludendo quelli precedenti alla data limite (`limit_date`).\n
+    3. **Elaborazione e Filtraggio dei Messaggi**:\n
+        - I messaggi sono convertiti in formato dizionario e arricchiti con informazioni aggiuntive, come:\n
+            - Nome e cognome del mittente (se disponibili).\n
+            - Username del mittente.\n
+            - Nome del canale o gruppo da cui il messaggio è stato estratto.\n
+        - Sono rimossi campi non essenziali o ridondanti dai dati dei messaggi per mantenere solo quelli rilevanti.\n
+        - La funzione include un elenco predefinito di campi da rimuovere e supporta un'ulteriore analisi della loro utilità.\n
+    4. **Gestione degli Errori e dei Tentativi**:\n
+        - In caso di interruzioni di rete o altri errori di connessione, la funzione tenta automaticamente di ristabilire la connessione fino a un massimo di `max_retries` volte.\n
+        - In caso di superamento del limite di tentativi, l'errore viene sollevato per consentire una gestione esterna.\n
+    5. **Memorizzazione dei Dati**:\n
+        - I dati elaborati vengono salvati nella collezione MongoDB corrispondente al canale o gruppo target, utilizzando la funzione `save_to_mongo`.\n
+    6. **Logging**:\n
+        - La funzione registra dettagliatamente le operazioni effettuate e i dati elaborati, inclusi eventuali errori, per agevolare il debugging.\n
+
+    :param t_client (TelegramClient): Istanza del client Telegram.
+    :param m_client (MongoClient): Istanza del client MongoDB.
+    :param channel_group (str): Nome del canale o gruppo Telegram target.
+    :param limit_date (datetime): Data limite per considerare i messaggi (escludendo quelli più vecchi).
+    :param max_retries (int): Numero massimo di tentativi di riconnessione in caso di errori (predefinito: 5).
+    :return: Nessun valore restituito.\n
     """
     retries = 0
 
@@ -138,20 +186,41 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
 
 def telegram_scraper():
     """
-    La funzione telegram_scraper gestisce il processo di scraping dei messaggi da uno o più canali o gruppi Telegram,
-    utilizzando un client Telegram e un database MongoDB per memorizzare i dati. Configura un logger per registrare
-    informazioni, avvisi ed errori durante l’esecuzione. Carica le credenziali API e altre configurazioni necessarie da
-    un file JSON, tra cui api_id, api_hash, phone, e limit_date. Utilizza un parser di argomenti per permettere
-    all’utente di specificare da linea di comando uno o più target (canali o gruppi Telegram) da cui estrarre i dati.
-    Se non vengono forniti target tramite linea di comando, li recupera automaticamente da una collezione MongoDB
-    chiamata “targets”.\n
-    Crea un’istanza del client Telegram e si connette al database MongoDB. Per ogni target nella lista, verifica
-    l’esistenza dell’username del canale o gruppo su Telegram; in caso di errore o di username inesistente, registra un
-    messaggio di errore e passa al prossimo target. Avvia quindi la funzione asincrona channel_scraper per effettuare
-    l’estrazione dei messaggi. Alla fine del processo, chiude la connessione al database MongoDB. La funzione utilizza
-    un approccio modulare per integrare funzionalità di logging, gestione dei target e connessione ai servizi,
-    rendendola flessibile e facilmente adattabile.\n
-    :return: None
+    La funzione `telegram_scraper` è il punto di ingresso principale per il processo di scraping dei messaggi da uno o più
+    canali o gruppi Telegram. Combina l'utilizzo di un client Telegram (basato sulla libreria `Telethon`) e di un database
+    MongoDB per estrarre, elaborare e memorizzare i dati raccolti. La funzione è progettata per essere modulare, flessibile
+    e configurabile tramite file JSON e argomenti da linea di comando.
+
+    **Funzionalità principali**:\n
+    1. **Configurazione del Logging**:\n
+        - Inizializza un logger per registrare informazioni dettagliate sull'esecuzione, inclusi avvisi ed errori, in un formato leggibile.\n
+
+    2. **Caricamento delle Configurazioni**:\n
+        - Legge le credenziali API e altre impostazioni dal file `utils/conf.json`, incluse:\n
+            - `api_id` e `api_hash` per l'autenticazione con Telegram.\n
+            - `phone` per il login (se necessario).\n
+            - `limit_date` per definire il limite temporale nella raccolta dei messaggi.\n
+            - `max_retries` per il numero massimo di tentativi in caso di errori.\n
+
+    3. **Gestione dei Target**:\n
+        - Utilizza un parser di argomenti (`argparse`) per consentire all'utente di specificare da linea di comando uno o più target (canali o gruppi Telegram).\n
+        - Se non vengono forniti target da linea di comando, li recupera automaticamente dalla collezione MongoDB `targets`.\n
+
+    4. **Creazione e Avvio del Client Telegram**:\n
+        - Crea un'istanza del client Telegram utilizzando le credenziali fornite.\n
+        - Per ogni target nella lista:\n
+            - Verifica l'esistenza dell'username del canale o gruppo su Telegram.\n
+            - In caso di errore o username inesistente, registra un messaggio di errore e passa al prossimo target.\n
+            - Avvia la funzione asincrona `channel_scraper` per eseguire l'estrazione dei messaggi da quel target.\n
+
+    5. **Memorizzazione dei Dati**:\n
+        - I dati estratti da ciascun canale o gruppo vengono elaborati e salvati nella collezione MongoDB corrispondente, mantenendo una struttura coerente.\n
+
+    6. **Gestione delle Connessioni**:\n
+        - Gestisce l'apertura e la chiusura delle connessioni al database MongoDB.\n
+        - Assicura che il client Telegram venga chiuso correttamente al termine dello scraping.\n
+
+    :return: Nessun valore restituito.
     """
     # Configuro il logger
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log

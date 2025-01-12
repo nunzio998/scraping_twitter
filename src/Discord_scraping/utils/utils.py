@@ -21,20 +21,6 @@ Questo script fornisce una serie di funzioni utili per interagire con il sito we
 5. **Logging**:
    - Logging delle operazioni eseguite per monitorare l'avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l'esecuzione dello scraping, il login a Discord, ecc.).
 
-**Autore**: Francesco Pinsone
-
-**Descrizione delle principali funzioni**:
-- `connect_to_mongo()`: si connette al database MongoDB e restituisce il client di connessione.
-- `disconnect_to_mongo()`: disconnette la sessione dal database MongoDB.
-- `connect_to_mongo_collection()`: si connette a una collezione specifica di MongoDB o la crea se non esiste.
-- `save_to_mongo()`: salva i dati in una collezione di MongoDB.
-- `beautifulsoup_analisys()`: analizza una pagina web di Discord, estrae i messaggi della chat e restituisce un elenco di messaggi con autore, data e contenuto.
-- `scroll_up()`: simula lo scroll verso l'alto della pagina per caricare più messaggi.
-- `load_cookies()`: carica i cookies di sessione da un file JSON per evitare un nuovo login.
-- `login()`: esegue il login a Discord utilizzando Selenium, incluse le credenziali utente.
-- `discord_login()`: gestisce il login vero e proprio su Discord.
-- `check_captcha()`: verifica la presenza di un captcha e fornisce istruzioni per risolverlo manualmente se necessario.
-
 Lo script è progettato per operare in un ambiente automatizzato di scraping di chat Discord, ma include anche la gestione di eventuali ostacoli come il captcha. È inoltre integrato con MongoDB per il salvataggio dei dati raccolti.
 
 **Prerequisiti**:
@@ -45,6 +31,7 @@ Lo script è progettato per operare in un ambiente automatizzato di scraping di 
 **Uso**:
 Lo script può essere utilizzato per raccogliere e analizzare messaggi da una chat di Discord, quindi salvare i dati nel database MongoDB per ulteriori elaborazioni. Le credenziali per il login a Discord devono essere fornite tramite un file di configurazione. Inoltre, lo script gestisce automaticamente il login e la risoluzione di eventuali captcha.
 
+**Autore**: Francesco Pinsone.
 """
 
 import json

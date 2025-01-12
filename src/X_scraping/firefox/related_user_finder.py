@@ -1,9 +1,26 @@
 """
-Questo script ha lo scopo di trovare gli utenti correlati, per ognuno degli utenti di cui abbiamo già fatto scraping, ed estrane le informazioni.\n
-Gli utenti di cui abbiamo già estratto le info si trovano nella collection 'users_info'. Per ognuno di questi si cercano i correlati
-e per ogni utente correlato trovato si effettua lo scraping e si salvano i risultati a db in 'user_info'.\n
+Questo script automatizza il processo di ricerca e raccolta delle informazioni sugli utenti correlati su X (precedentemente noto come Twitter), partendo da una lista di utenti di cui sono già state estratte informazioni.
 
-Autore: Francesco Pinsone.\n
+**Funzionamento**:\n
+1. **Estrazione della lista degli utenti target**: Lo script estrae gli utenti per i quali sono già presenti informazioni nella collection `users_info` del database MongoDB. Per ogni utente estratto, il suo nome utente (username) viene utilizzato per trovare utenti correlati.
+
+2. **Automazione del browser**: Utilizzando Selenium con il driver Firefox in modalità "headless" (senza interfaccia grafica), lo script interagisce automaticamente con il sito X, visitando i profili degli utenti e raccogliendo i dati necessari.
+
+3. **Login su X**: Lo script esegue l'accesso su X utilizzando le credenziali archiviate in un file JSON.
+
+4. **Ricerca degli utenti correlati**: Per ogni utente nella lista estratta dal database:\n
+   - Lo script visita il profilo dell'utente su X.\n
+   - Verifica l'esistenza dell'utente e se non è limitato temporaneamente.\n
+   - Esamina il profilo per estrarre una lista di utenti correlati (ad esempio, follower, suggeriti, o correlati dalla piattaforma).\n
+
+5. **Estrazione e salvataggio delle informazioni**: Per ogni utente correlato trovato:\n
+   - Lo script visita il profilo dell'utente correlato.\n
+   - Estrae le informazioni dal profilo tramite analisi del contenuto HTML con BeautifulSoup.\n
+   - Verifica che l'utente non sia già presente nel database. Se non lo è, salva le informazioni raccolte nella collection `users_info`.\n
+
+6. **Gestione degli errori**: Lo script gestisce gli utenti non trovati o temporaneamente limitati, evitando di eseguire operazioni su profili non validi o già presenti nel database.
+
+**Autore**: Francesco Pinsone.
 """
 import time
 from selenium import webdriver
@@ -19,13 +36,31 @@ from src.X_scraping.firefox.utils.utils import read_json, connect_to_mongo, disc
 
 def find_related_users():
     """
-    Funzione che racchiude il funzionamento dello script per intero.\n
-    Dopo aver effettuato la connesione al db e aver instaziato il driver selenium (che permette l'automazione del browser)
-    lo script estrapola una lista di utenti target (di cui cercare i correlati) dalla collection 'users_info' del db.\n
-    Dopo aver completato la procedura di login lo script inizia la ricerca dei correlati per ognuno dei target presenti nella lista.
-    Per ogni utente se ne verifica l'effettiva esistenza e si effettua un check per verificare che non sia temporaneamente limitato
-    dalla piattaforma. Dopo questi check le info possono essere estratte e salvate a db.\n
-    :return: None
+    Questa funzione automatizza il processo di ricerca degli utenti correlati su X (precedentemente noto come Twitter) utilizzando Selenium e MongoDB.
+
+    L'operazione viene eseguita in più fasi:
+
+    1. **Connessione al Database**: La funzione si connette a un database MongoDB per estrarre la lista di utenti target dalla collection 'users_info'. Gli utenti target sono identificati dai loro username.
+
+    2. **Automazione del Browser**: Viene configurato un browser Firefox in modalità "headless" (senza interfaccia grafica) tramite Selenium WebDriver. Questo browser viene utilizzato per interagire automaticamente con il sito X.
+
+    3. **Login su X**: Dopo aver configurato il browser, lo script esegue il login su X (Twitter) utilizzando le credenziali preconfigurate.
+
+    4. **Ricerca degli Utenti Correlati**: Per ciascun utente nella lista di target:\n
+        - Lo script visita il profilo dell'utente su X.\n
+        - Verifica che l'utente esista e non sia temporaneamente limitato dalla piattaforma.\n
+        - Estrae e salva gli utenti correlati (ad esempio, follower o utenti suggeriti) utilizzando una funzione dedicata.\n
+
+    5. **Estrazione e Salvataggio delle Informazioni**: Per ogni utente correlato trovato:\n
+        - Lo script esamina il profilo dell'utente correlato.\n
+        - Estrae i dettagli rilevanti del profilo utilizzando BeautifulSoup.\n
+        - Verifica se l'utente è già presente nel database e, in caso contrario, salva le informazioni nel database MongoDB.\n
+
+    6. **Gestione degli Errori e Continuazione**: La funzione è progettata per saltare gli utenti che non possono essere trovati o che sono limitati. Inoltre, gestisce gli utenti già presenti nel database, evitando duplicazioni.
+
+    Al termine del processo, il driver di Selenium viene chiuso e la connessione al database viene terminata.
+
+    :return: Nessun valore ritornato.
     """
     # Connessione al database
     client = connect_to_mongo()

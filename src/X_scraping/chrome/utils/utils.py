@@ -1,11 +1,30 @@
 """
-Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:\n
-- Gestione interazioni con MongoDB\n
-- Parsing dei dati estratti\n
-- Procedure di login
+Questo script fornisce una serie di funzioni utili per interagire con il sito web di X, eseguire scraping dei messaggi in una chat e interagire con un database MongoDB. Le funzionalità principali incluse in questo script sono:
 
-Autore: Francesco Pinsone
+1. **Gestione MongoDB**:\n
+   - Connessione a un database MongoDB tramite una stringa di connessione.\n
+   - Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.\n
+   - Salvataggio dei dati nel database MongoDB.\n
+
+2. **Analisi dei dati con BeautifulSoup**:\n
+   - Estrazione e parsing dei dati da una pagina web tramite il modulo BeautifulSoup.\n
+
+3. **Interazioni con X tramite Selenium**:\n
+   - Automazione del login a X usando Selenium.\n
+   - Navigazione tra le pagine di X per raccogliere messaggi da una chat.\n
+   - Scroll della pagina per caricare più messaggi tramite l'interazione con la pagina HTML.\n
+
+4. **Check dei dati**:\n
+   - Check dei dati estratti.\n
+
+5. **Logging**:\n
+   - Logging delle operazioni eseguite per monitorare l'avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l'esecuzione dello scraping, il login a X, ecc.).\n
+
+**Prerequisiti**:\n
+- Una connessione attiva a un database MongoDB.\n
+- Un ambiente con Selenium e BeautifulSoup per l'automazione del browser e l'analisi del contenuto delle pagine.\n
+
+**Autore**: Francesco Pinsone.
 """
 import json
 import re
@@ -29,9 +48,15 @@ secondary_keywords = ["italy", "europe", "group", "attack", "threat"]
 
 def read_json(path):
     """
-    Funzione per la lettura di file JSON.\n
-    :param path: percorso del file JSON\n
-    :return: dict, contenuto del file JSON
+    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.
+
+    **Funzionamento**:\n
+    1. **Apertura del file**: Apre il file JSON specificato dal percorso `path` in modalità lettura.\n
+    2. **Caricamento del contenuto**: Utilizza la funzione `json.load` per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).\n
+    3. **Restituzione dei dati**: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.\n
+
+    :param path: str, il percorso del file JSON da leggere.\n
+    :return: dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.
     """
     with open(path, 'r') as file:
         return json.load(file)
@@ -42,13 +67,28 @@ config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II S
 
 def x_login(credentials_access, driver_access):
     """
-    Funzione che automatizza la procedura di accesso ad X. Prende in input le credenziali d'accesso ('credentials.json) e il driver
-    selenium che serve a controllare il browser. Per prima cosa controlla la presenza del campo email, se è presente inserisce
-    l'email specificata in 'credentials.json' e simula la pressione del tasto invio sulla tastiera. Prosegue ripetendo lo stesso
-    procedimento per i campi username e password.
-    :param credentials_access: dict, dizionario di credenziali d'accesso specificate in 'credentials.json'\n
-    :param driver_access: driver selenium per il controllo del browser\n
-    :return: None
+    La funzione `x_login` automatizza la procedura di accesso a X (Twitter) utilizzando il driver Selenium per il controllo del browser.
+    Prende in input un dizionario contenente le credenziali di accesso (email, username e password) e il driver del browser.
+    La funzione interagisce con i campi del modulo di login per inserire i dati necessari e simulare la pressione del tasto Invio.
+
+    **Funzionalità principali**:\n
+    1. **Inserimento dell'email:** La funzione cerca il campo per l'inserimento dell'email tramite il suo percorso XPath. Se il campo è presente, inserisce l'email fornita nelle credenziali e invia il modulo.\n
+    2. **Gestione dello username (se richiesto):** In caso di richieste aggiuntive di sicurezza, come l'inserimento dello username, la funzione identifica il campo corrispondente e procede con l'inserimento e l'invio.\n
+    3. **Inserimento della password:** La funzione individua il campo della password, inserisce il valore fornito nelle credenziali e completa il login simulando la pressione del tasto Invio.\n
+    4. **Gestione degli errori:** Se uno dei campi non viene trovato (ad esempio, se l'interfaccia cambia), la funzione gestisce l'eccezione e stampa un messaggio di errore.\n
+
+    **Comportamento della funzione**:\n
+    1. Controlla e riempie il campo dell'email.\n
+    2. Se richiesto, riempie il campo dello username.\n
+    3. Inserisce la password e completa l'accesso.\n
+    4. Effettua un breve ritardo dopo ogni interazione per garantire il caricamento delle pagine.
+
+    **Utilità:**
+    La funzione è utile per automatizzare l'accesso a X in applicazioni di scraping o altre automazioni, gestendo richieste di sicurezza aggiuntive come l'inserimento dello username.
+
+    :param **credentials_access**: dict contenente le credenziali di accesso
+    :param **driver_access**: oggetto Selenium WebDriver utilizzato per controllare il browser e interagire con l'interfaccia.
+    :return: Nessun valore restituito.
     """
     try:
         email_field = driver_access.find_element(By.XPATH,
@@ -82,8 +122,16 @@ def x_login(credentials_access, driver_access):
 # Funzioni MongoDB:
 def connect_to_mongo():
     """
-    Funzione che consente di connettersi al database MongoDB.\n
-    :return client: oggetto che rappresenta la connessione al database
+    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.
+
+    **Passaggi principali**:\n
+    1. **Connessione al Database**: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.\n
+    2. **Verifica della Connessione**: Esegue un comando `ping` sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.\n
+    3. **Gestione degli Errori**: Se si verifica un errore durante il tentativo di connessione, l'errore viene registrato nel log.\n
+
+    **Nota**: Il client MongoDB viene creato utilizzando la libreria `pymongo`, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.\n
+
+    :return: client, oggetto che rappresenta la connessione attiva al database MongoDB.
     """
     connection_string = config_data['connection_string']
     client = pymongo.MongoClient(connection_string)
@@ -99,9 +147,16 @@ def connect_to_mongo():
 
 def disconnect_to_mongo(client):
     """
-    Funzione che consente di disconnettersi dal database MongoDB.\n
-    :param client: oggetto che rappresenta la connessione a mongoDB\n
-    :return: None
+    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.
+
+    **Passaggi principali**:\n
+    1. **Log della Disconnessione**: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.\n
+    2. **Chiusura della Connessione**: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.\n
+
+    **Nota**: La funzione utilizza il metodo `server_info()` per recuperare informazioni sul server, come la versione, che verranno incluse nel log.\n
+
+    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n
+    :return: Nessun valore restituito. La funzione esegue solo l'azione di disconnessione dal database.
     """
     print("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
@@ -109,19 +164,31 @@ def disconnect_to_mongo(client):
 
 def get_db(client):
     """
-    Funzione che ritorna il database MongoDB.
-    :param client: oggetto che rappresenta la connessione a mongoDB\n
-    :return: oggetto che rappresenta la connessione al db specificato in 'credentials.json'
+    Funzione che restituisce un riferimento al database MongoDB specificato.
+
+    La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file `credentials.json`.
+    È utile per ottenere un'istanza del database e interagire con le sue collezioni.
+
+    :param client: oggetto che rappresenta la connessione a MongoDB.\n
+    :return: oggetto che rappresenta la connessione al database specificato in 'credentials.json'.
     """
     return client.get_database(config_data['database'])
 
 
 def connect_to_mongo_collection(client, collection_name):
     """
-    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n
-    :param client: oggetto che rappresenta la connessione al database\n
-    :param collection_name: stringa, nome della collezione\n
-    :return: collection, oggetto che rappresenta la collezione
+    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.
+
+    **Passaggi principali**:\n
+    1. **Connessione al Database**: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.\n
+    2. **Verifica e Creazione Collezione**: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.\n
+    3. **Restituzione della Collezione**: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.\n
+
+    **Nota**: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio `config_data`).\n
+
+    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n
+    :param collection_name: Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.\n
+    :return: Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l'uso (lettura/scrittura).
     """
     db = client.get_database(config_data['database'])
 
@@ -138,10 +205,17 @@ def connect_to_mongo_collection(client, collection_name):
 
 def save_to_mongo(data, collection):
     """
-    Funzione per il salvataggio di dati nel database MongoDB.\n
-    :param data: dict, dati da salvare\n
-    :param collection: oggetto che rappresenta la collezione\n
-    :return: None
+    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.
+
+    **Passaggi principali**:\n
+    1. **Salvataggio dei dati**: I dati vengono passati come un dizionario (`data`) e vengono inseriti nella collezione MongoDB fornita tramite il metodo `insert_one()`.\n
+    2. **Logging**: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.\n
+
+    **Nota**: Questa funzione salva i dati in un'unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).\n
+
+    :param data: dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).\n
+    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n
+    :return: Nessun valore restituito. La funzione esegue solo l'inserimento dei dati.
     """
     collection.insert_one(data)
     print("Salvato nel database: ", data['url'])
@@ -149,13 +223,16 @@ def save_to_mongo(data, collection):
 
 def save_user_info_to_mongo(data, collection):
     """
-    Funzione che si occupa di il salvataggio di dati, relativi alle info utente, nel database MongoDB.
-    Questa funzione viene richiamata dallo script 'user_info_scraper.py'. In tale script non usiamo la funzione
-    'save_to_mongo' come visto negli altri script in quanto dopo il salvataggio non visualizziamo più l'url di un
-    post salvato ma abbiamo bisogno di visualizzare lo username tag dell'utente di cui stiamo salvando le info nel db.\n
-    :param data: dict, dati da salvare\n
-    :param collection: oggetto che rappresenta la collezione\n
-    :return: None
+    Funzione per salvare informazioni utente nel database MongoDB.
+
+    Questa funzione consente di salvare un documento contenente i dati relativi a un utente in una specifica collezione del database MongoDB.
+    È progettata per essere utilizzata nello script `user_info_scraper.py`, che richiede un approccio diverso rispetto alla funzione generica `save_to_mongo`.
+    In particolare, dopo il salvataggio, l'attenzione è rivolta alla visualizzazione del tag dello username dell'utente, piuttosto che all'URL di un post salvato,
+    rendendo questa funzione specifica per le esigenze dello script.
+
+    :param data: dict, dizionario contenente i dati relativi all'utente da salvare.\n
+    :param collection: oggetto che rappresenta la collezione MongoDB in cui salvare il documento.\n
+    :return: Nessun valore restituito.
     """
     collection.insert_one(data)
     print("Salvato nel database: ", data['username_tag'])
@@ -165,25 +242,33 @@ def save_user_info_to_mongo(data, collection):
 
 def parse_tweet(tweet):
     """
-    Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista
-    di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo
-    opportuno ed estrarne il giusto contenuto informativo. Ogni tweet viene infatti organizzato in un oggetto con la
-    seguente struttura:\n
-    - 'username': username dell'autore del tweet\n
-    - 'tag_username': username_tag dell'autore del tweet\n
-    - 'date': data di pubblicazione\n
-    - 'scrape_date': data in cui il dato è stato estratto ed elaborato dal codice\n
-    - 'content': testo del tweet\n
-    - 'reshared': contenuto di un eventuale post ricondiviso\n
-    - 'images': immagini contenute nel tweet\n
-    - 'videos': video contenuti nel tweet\n
-    - 'comments': numero di commenti\n
-    - 'reposts': numero di repost\n
-    - 'likes': numero di like\n
-    - 'views': numero di visualizzazioni\n
-    - 'url': url del tweet\n
-    :param tweet: list, lista di elementi che che rappresentano il tweet\n
-    :return: oggetto con il formato descritto in precedenza\n
+    Funzione per il parsing di un tweet in formato JSON.
+
+    Questa funzione riceve in input una lista contenente le informazioni grezze di un tweet e restituisce un oggetto JSON ben strutturato,
+    organizzando i dati in campi chiave per facilitarne l'analisi o l'archiviazione. È progettata per filtrare contenuti incompleti e
+    estrarre solo le informazioni rilevanti, riformattandole per un utilizzo più pratico.
+
+    **Struttura dell'oggetto restituito**:\n
+    - `'username'`: Nome utente dell'autore del tweet.\n
+    - `'tag_username'`: Tag dello username dell'autore del tweet (es. @username).\n
+    - `'date'`: Data di pubblicazione del tweet.\n
+    - `'scrape_date'`: Data in cui il tweet è stato estratto e analizzato.\n
+    - `'content'`: Testo contenuto nel tweet.\n
+    - `'reshared'`: Contenuto del post originale in caso di ricondivisione (retweet).\n
+    - `'images'`: Lista di immagini incluse nel tweet.\n
+    - `'videos'`: Lista di video inclusi nel tweet.\n
+    - `'comments'`: Numero di commenti ricevuti.\n
+    - `'reposts'`: Numero di repost o retweet.\n
+    - `'likes'`: Numero di like ricevuti.\n
+    - `'views'`: Numero di visualizzazioni totali.\n
+    - `'url'`: URL diretto al tweet.\n
+
+    **Gestione di eventuali discrepanze**:\n
+    - Se i dati del tweet non contengono tutte le informazioni necessarie (ad esempio mancano valori numerici per i commenti, like, ecc.), i campi corrispondenti vengono riempiti con `None`.\n
+    - I post con meno di 9 elementi vengono scartati automaticamente.\n
+
+    :param tweet: list, lista contenente i dati del tweet in ordine predefinito.\n
+    :return: dict, oggetto JSON contenente i dati strutturati del tweet, oppure `None` se i dati in ingresso sono incompleti.\n
     """
     if len(tweet) < 9:
         return None  # Skip invalid posts
@@ -252,15 +337,21 @@ def parse_tweet(tweet):
 
 def parse_and_save(tweets_to_save, group_name, client):
     """
-    Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script
-    'tweet_scraper.py'. Alla funzione viene passata una lista che contiene tutte le righe dell'html estratto. Righe che quindi
-    rappresentano i vari tweet da estrarre. Per prima cosa con la funzione 'read_posts()' i post vengono raggruppati e divisi
-    in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.
-    A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione 'parse_post()' e poi salvato a db.\n
-    :param tweets_to_save: list, lista che contiene tutte le righe dell'html estratto\n
-    :param group_name: str, nome del gruppo target che sto analizzando\n
-    :param client: oggetto che rappresenta la connessione a mongoDB\n
-    :return: None
+    Funzione per il parsing e il salvataggio di tweet nel database MongoDB.
+
+    Questa funzione è utilizzata nello script `tweet_scraper.py` per elaborare e archiviare i tweet estratti da un file HTML.
+    Riceve in ingresso una lista di righe HTML che rappresentano i vari tweet da processare. La funzione esegue le seguenti operazioni:\n
+
+    1. **Raggruppamento e organizzazione dei tweet**: Utilizza la funzione `read_posts()` per trasformare la lista di righe HTML in una lista di tweet ben definiti.\n
+    2. **Parsing dei tweet**: Ogni tweet viene processato con la funzione `parse_tweet()` per estrarre e organizzare le informazioni rilevanti.\n
+    3. **Salvataggio nel database**: I tweet parsati vengono salvati nella collezione MongoDB corrispondente al nome del gruppo target.\n
+
+    La funzione garantisce che solo i tweet validi vengano salvati nel database, ignorando quelli che risultano incompleti o malformati.
+
+    :param **tweets_to_save** (list): Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.\n
+    :param **group_name** (str): Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.\n
+    :param **client** (object): Oggetto che rappresenta la connessione al database MongoDB.\n
+    :return: Nessun valore restituito.
     """
 
     # Connessione alla collezione dati
@@ -276,8 +367,18 @@ def parse_and_save(tweets_to_save, group_name, client):
 
 def check_user(driver, user):
     """
-    Funzione che effettua un check per verificare l'effettiva esistenza dello specificato utente.\n
-    Se l'utente esiste vado avanti (ritorno True) altrimenti continuo col prossimo utente (ritorno False).\n
+    Funzione che verifica l'esistenza di uno specifico utente su una piattaforma tramite Selenium.
+
+    Questa funzione utilizza il driver Selenium per accedere alla pagina relativa all'utente specificato e verifica la sua esistenza
+    attendendo la visibilità di un elemento indicativo del caricamento corretto della pagina. Se l'elemento viene rilevato entro il
+    tempo limite, l'utente è considerato esistente; altrimenti, viene restituito un valore che indica l'assenza dell'utente.
+
+    **Comportamento della funzione**:\n
+    1. Utilizza `WebDriverWait` per attendere fino a 120 secondi che la pagina utente sia completamente caricata.\n
+    2. Cerca la visibilità di un elemento tramite un selettore XPath per confermare l'esistenza della pagina.\n
+    3. Se l'elemento è visibile, restituisce `True`, indicando che l'utente esiste.\n
+    4. In caso di timeout, cattura una `TimeoutException`, stampa un messaggio e restituisce `False`.\n
+
     :param driver: driver selenium per il controllo del browser\n
     :param user: nome dell'utente di cui devo fare il check\n
     :return bool: valore booleano che indica se l'utente esiste o no
@@ -297,12 +398,20 @@ def check_user(driver, user):
 
 def check_limited_user(driver):
     """
-    Funzione che verifica se l'utente è temporaneamente limitato. In tal caso al caricamento della pagina sarà presente un
-    bottone che deve essere premuto per visualizzare correttamente la pagina X del determinato utente. La funzione quindi
-    effettua un check sull'effettiva presenza di tale bottone e in caso positivo simula la pressione del tasto invio sulla
-    tastiera per premerlo. In caso contrario l'utente non è limitato e si va avanti normalmente.\n
-    :param driver: driver selenium per il controllo del browser
-    :return None:
+    Funzione che verifica se un utente è temporaneamente limitato su una piattaforma.
+
+    Questa funzione utilizza Selenium per controllare se, al caricamento della pagina di un utente, è presente un bottone che indica
+    che l'accesso al profilo è limitato. Se il bottone è presente, simula la pressione del tasto Invio per rimuovere la limitazione
+    e consentire l'accesso al profilo. Se il bottone non è presente, la funzione prosegue senza ulteriori azioni, indicando che
+    l'utente non è limitato.
+
+    **Comportamento della funzione**:\n
+    1. Cerca la presenza di un elemento rappresentante il bottone di limitazione utilizzando un selettore XPath.\n
+    2. Se l'elemento è trovato, simula la pressione del tasto Invio per sbloccare la visualizzazione del profilo.\n
+    3. Se l'elemento non è trovato (`NoSuchElementException`), stampa un messaggio e prosegue, poiché l'utente non è limitato.\n
+
+    :param driver: driver selenium per il controllo del browser\n
+    :return Nessun valore ritornato.
     """
     try:
         show_profile_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button')

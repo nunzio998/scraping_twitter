@@ -1,11 +1,11 @@
 """
 Questo script permette di eliminare tutti i documenti presenti nelle collezioni di un database MongoDB.
 
-**Funzionalità principali:**
-1. Si connette al database MongoDB utilizzando la stringa di connessione configurata nel file di configurazione.
-2. Recupera la lista delle collezioni presenti nel database.
-3. Per ogni collezione, elimina tutti i documenti in essa contenuti.
-4. Registra un log dettagliato con il numero di documenti eliminati per ciascuna collezione.
+**Funzionalità principali:**\n
+1. Si connette al database MongoDB utilizzando la stringa di connessione configurata nel file di configurazione.\n
+2. Recupera la lista delle collezioni presenti nel database.\n
+3. Per ogni collezione, elimina tutti i documenti in essa contenuti.\n
+4. Registra un log dettagliato con il numero di documenti eliminati per ciascuna collezione.\n
 
 L'operazione è irreversibile e rimuove permanentemente tutti i dati dalle collezioni. La funzione è progettata per pulire il database rimuovendo i dati precedentemente raccolti, preparandolo per nuove operazioni o raccolte di dati.
 
