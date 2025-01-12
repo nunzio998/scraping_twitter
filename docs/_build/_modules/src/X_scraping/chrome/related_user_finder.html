@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.chrome.related_user_finder &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.X_scraping.chrome.related_user_finder &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Wall-e Project</a>
+          <a href="../../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -73,11 +73,28 @@
              
   <h1>Source code for src.X_scraping.chrome.related_user_finder</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script ha lo scopo di trovare gli utenti correlati, per ognuno degli utenti di cui abbiamo già fatto scraping, ed estrane le informazioni.\n</span>
-<span class="sd">Gli utenti di cui abbiamo già estratto le info si trovano nella collection &#39;users_info&#39;. Per ognuno di questi si cercano i correlati</span>
-<span class="sd">e per ogni utente correlato trovato si effettua lo scraping e si salvano i risultati a db in &#39;user_info&#39;.\n</span>
+<span class="sd">Questo script automatizza il processo di ricerca e raccolta delle informazioni sugli utenti correlati su X (precedentemente noto come Twitter), partendo da una lista di utenti di cui sono già state estratte informazioni.</span>
 
-<span class="sd">Autore: Francesco Pinsone.\n</span>
+<span class="sd">**Funzionamento**:\n</span>
+<span class="sd">1. **Estrazione della lista degli utenti target**: Lo script estrae gli utenti per i quali sono già presenti informazioni nella collection `users_info` del database MongoDB. Per ogni utente estratto, il suo nome utente (username) viene utilizzato per trovare utenti correlati.</span>
+
+<span class="sd">2. **Automazione del browser**: Utilizzando Selenium con il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), lo script interagisce automaticamente con il sito X, visitando i profili degli utenti e raccogliendo i dati necessari.</span>
+
+<span class="sd">3. **Login su X**: Lo script esegue l&#39;accesso su X utilizzando le credenziali archiviate in un file JSON.</span>
+
+<span class="sd">4. **Ricerca degli utenti correlati**: Per ogni utente nella lista estratta dal database:\n</span>
+<span class="sd">   - Lo script visita il profilo dell&#39;utente su X.\n</span>
+<span class="sd">   - Verifica l&#39;esistenza dell&#39;utente e se non è limitato temporaneamente.\n</span>
+<span class="sd">   - Esamina il profilo per estrarre una lista di utenti correlati (ad esempio, follower, suggeriti, o correlati dalla piattaforma).\n</span>
+
+<span class="sd">5. **Estrazione e salvataggio delle informazioni**: Per ogni utente correlato trovato:\n</span>
+<span class="sd">   - Lo script visita il profilo dell&#39;utente correlato.\n</span>
+<span class="sd">   - Estrae le informazioni dal profilo tramite analisi del contenuto HTML con BeautifulSoup.\n</span>
+<span class="sd">   - Verifica che l&#39;utente non sia già presente nel database. Se non lo è, salva le informazioni raccolte nella collection `users_info`.\n</span>
+
+<span class="sd">6. **Gestione degli errori**: Lo script gestisce gli utenti non trovati o temporaneamente limitati, evitando di eseguire operazioni su profili non validi o già presenti nel database.</span>
+
+<span class="sd">**Autore**: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
@@ -94,13 +111,31 @@
 <a class="viewcode-back" href="../../../../related_user_finder_chrome.html#src.X_scraping.chrome.related_user_finder.find_related_users">[docs]</a>
 <span class="k">def</span> <span class="nf">find_related_users</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che racchiude il funzionamento dello script per intero.\n</span>
-<span class="sd">    Dopo aver effettuato la connesione al db e aver instaziato il driver selenium (che permette l&#39;automazione del browser)</span>
-<span class="sd">    lo script estrapola una lista di utenti target (di cui cercare i correlati) dalla collection &#39;users_info&#39; del db.\n</span>
-<span class="sd">    Dopo aver completato la procedura di login lo script inizia la ricerca dei correlati per ognuno dei target presenti nella lista.</span>
-<span class="sd">    Per ogni utente se ne verifica l&#39;effettiva esistenza e si effettua un check per verificare che non sia temporaneamente limitato</span>
-<span class="sd">    dalla piattaforma. Dopo questi check le info possono essere estratte e salvate a db.\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Questa funzione automatizza il processo di ricerca degli utenti correlati su X (precedentemente noto come Twitter) utilizzando Selenium e MongoDB.</span>
+
+<span class="sd">    L&#39;operazione viene eseguita in più fasi:</span>
+
+<span class="sd">    1. **Connessione al Database**: La funzione si connette a un database MongoDB per estrarre la lista di utenti target dalla collection &#39;users_info&#39;. Gli utenti target sono identificati dai loro username.</span>
+
+<span class="sd">    2. **Automazione del Browser**: Viene configurato un browser Firefox in modalità &quot;headless&quot; (senza interfaccia grafica) tramite Selenium WebDriver. Questo browser viene utilizzato per interagire automaticamente con il sito X.</span>
+
+<span class="sd">    3. **Login su X**: Dopo aver configurato il browser, lo script esegue il login su X (Twitter) utilizzando le credenziali preconfigurate.</span>
+
+<span class="sd">    4. **Ricerca degli Utenti Correlati**: Per ciascun utente nella lista di target:\n</span>
+<span class="sd">        - Lo script visita il profilo dell&#39;utente su X.\n</span>
+<span class="sd">        - Verifica che l&#39;utente esista e non sia temporaneamente limitato dalla piattaforma.\n</span>
+<span class="sd">        - Estrae e salva gli utenti correlati (ad esempio, follower o utenti suggeriti) utilizzando una funzione dedicata.\n</span>
+
+<span class="sd">    5. **Estrazione e Salvataggio delle Informazioni**: Per ogni utente correlato trovato:\n</span>
+<span class="sd">        - Lo script esamina il profilo dell&#39;utente correlato.\n</span>
+<span class="sd">        - Estrae i dettagli rilevanti del profilo utilizzando BeautifulSoup.\n</span>
+<span class="sd">        - Verifica se l&#39;utente è già presente nel database e, in caso contrario, salva le informazioni nel database MongoDB.\n</span>
+
+<span class="sd">    6. **Gestione degli Errori e Continuazione**: La funzione è progettata per saltare gli utenti che non possono essere trovati o che sono limitati. Inoltre, gestisce gli utenti già presenti nel database, evitando duplicazioni.</span>
+
+<span class="sd">    Al termine del processo, il driver di Selenium viene chiuso e la connessione al database viene terminata.</span>
+
+<span class="sd">    :return: Nessun valore ritornato.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Connessione al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>

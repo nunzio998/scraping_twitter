@@ -96,11 +96,13 @@
   <section id="module-src.X_scraping.firefox.drop_data_collection">
 <span id="drop-data-collection"></span><h1>drop_data_collection<a class="headerlink" href="#module-src.X_scraping.firefox.drop_data_collection" title="Link to this heading"></a></h1>
 <p>Questo script permette di eliminare tutti i documenti presenti nelle collezioni di un database MongoDB.</p>
-<p><strong>Funzionalità principali:</strong>
-1. Si connette al database MongoDB utilizzando la stringa di connessione configurata nel file di configurazione.
-2. Recupera la lista delle collezioni presenti nel database.
-3. Per ogni collezione, elimina tutti i documenti in essa contenuti.
-4. Registra un log dettagliato con il numero di documenti eliminati per ciascuna collezione.</p>
+<p><strong>Funzionalità principali:</strong></p>
+<ol class="arabic simple">
+<li><p>Si connette al database MongoDB utilizzando la stringa di connessione configurata nel file di configurazione.</p></li>
+<li><p>Recupera la lista delle collezioni presenti nel database.</p></li>
+<li><p>Per ogni collezione, elimina tutti i documenti in essa contenuti.</p></li>
+<li><p>Registra un log dettagliato con il numero di documenti eliminati per ciascuna collezione.</p></li>
+</ol>
 <p>L’operazione è irreversibile e rimuove permanentemente tutti i dati dalle collezioni. La funzione è progettata per pulire il database rimuovendo i dati precedentemente raccolti, preparandolo per nuove operazioni o raccolte di dati.</p>
 <p><strong>Autore</strong>: Francesco Pinsone</p>
 <dl class="py function">

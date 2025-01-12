@@ -147,10 +147,17 @@ operazioni.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.connect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi al database MongoDB.</p>
+<dd><p>Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Connessione al Database</strong>: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.</p></li>
+<li><p><strong>Verifica della Connessione</strong>: Esegue un comando <cite>ping</cite> sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.</p></li>
+<li><p><strong>Gestione degli Errori</strong>: Se si verifica un errore durante il tentativo di connessione, l’errore viene registrato nel log.</p></li>
+</ol>
+<p><strong>Nota</strong>: Il client MongoDB viene creato utilizzando la libreria <cite>pymongo</cite>, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>client, oggetto che rappresenta la connessione al database</p>
+<dd class="field-odd"><p>client, oggetto che rappresenta la connessione attiva al database MongoDB.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -158,16 +165,23 @@ operazioni.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.connect_to_mongo_collection">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.</p>
+<dd><p>Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Connessione al Database</strong>: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.</p></li>
+<li><p><strong>Verifica e Creazione Collezione</strong>: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.</p></li>
+<li><p><strong>Restituzione della Collezione</strong>: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio <cite>config_data</cite>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p></li>
-<li><p><strong>collection_name</strong> – stringa, nome della collezione</p></li>
+<li><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p></li>
+<li><p><strong>collection_name</strong> – Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>collection, oggetto che rappresenta la collezione</p>
+<dd class="field-even"><p>Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l’uso (lettura/scrittura).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -175,13 +189,19 @@ operazioni.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.disconnect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di disconnettersi dal database MongoDB.</p>
+<dd><p>Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Log della Disconnessione</strong>: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.</p></li>
+<li><p><strong>Chiusura della Connessione</strong>: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione utilizza il metodo <cite>server_info()</cite> per recuperare informazioni sul server, come la versione, che verranno incluse nel log.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p>
+<dd class="field-odd"><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito. La funzione esegue solo l’azione di disconnessione dal database.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -189,13 +209,19 @@ operazioni.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.read_json">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
-<dd><p>Funzione per la lettura di file JSON.</p>
+<dd><p>Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</p>
+<p><strong>Funzionamento</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Apertura del file</strong>: Apre il file JSON specificato dal percorso <cite>path</cite> in modalità lettura.</p></li>
+<li><p><strong>Caricamento del contenuto</strong>: Utilizza la funzione <cite>json.load</cite> per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).</p></li>
+<li><p><strong>Restituzione dei dati</strong>: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> – percorso del file JSON</p>
+<dd class="field-odd"><p><strong>path</strong> – str, il percorso del file JSON da leggere.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict, contenuto del file JSON</p>
+<dd class="field-even"><p>dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -203,16 +229,22 @@ operazioni.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.save_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione per il salvataggio di dati nel database MongoDB.</p>
+<dd><p>Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Salvataggio dei dati</strong>: I dati vengono passati come un dizionario (<cite>data</cite>) e vengono inseriti nella collezione MongoDB fornita tramite il metodo <cite>insert_one()</cite>.</p></li>
+<li><p><strong>Logging</strong>: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.</p></li>
+</ol>
+<p><strong>Nota</strong>: Questa funzione salva i dati in un’unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – dict, dati da salvare</p></li>
-<li><p><strong>collection</strong> – oggetto che rappresenta la collezione</p></li>
+<li><p><strong>data</strong> – dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).</p></li>
+<li><p><strong>collection</strong> – Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito. La funzione esegue solo l’inserimento dei dati.</p>
 </dd>
 </dl>
 </dd></dl>

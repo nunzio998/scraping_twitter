@@ -95,22 +95,58 @@
              
   <section id="module-src.X_scraping.firefox.deepfake_detection.deepfake_detection">
 <span id="deepfake-detection-firefox"></span><h1>deepfake detection firefox<a class="headerlink" href="#module-src.X_scraping.firefox.deepfake_detection.deepfake_detection" title="Link to this heading"></a></h1>
-<p>Il seguente script fornisce la funzione di supporto per effettuare un check sulla presenza di deepfake nelle immagini raccolte durante lo scraping su X.</p>
-<p>Lo script utilizza una delle API della piattaforma Sightengine, alla quale è quindi necessario registrarsi prima di poterlo utilizzare.</p>
-<p>Il link per la registrazione è il seguente: ‘<a class="reference external" href="https://dashboard.sightengine.com/signup">https://dashboard.sightengine.com/signup</a>’. Una volta effettuata la registrazione sarà necessario inserire le
-proprie credenziali api nel file json presente nella cartella ‘utils’.</p>
-<p>Autore: Francesco Pinsone.</p>
+<p>Questo script consente di verificare se un’immagine è stata generata da un’intelligenza artificiale (deepfake) o è una fotografia reale,
+utilizzando il servizio API offerto da Sightengine. È progettato come supporto per analizzare immagini raccolte durante operazioni di scraping su X (Twitter).</p>
+<p><strong>Funzionalità principali:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Lettura delle credenziali API:</strong> Le credenziali necessarie per accedere al servizio Sightengine vengono lette da un file JSON presente nella cartella <cite>utils</cite>.</p></li>
+<li><p><strong>Analisi delle immagini:</strong> Tramite la funzione <cite>detect_image</cite>, lo script invia l’URL di un’immagine all’API e interpreta i risultati per classificare l’immagine come reale o generata da AI.</p></li>
+<li><p><strong>Configurazione semplice:</strong> La funzione <cite>read_json</cite> semplifica l’importazione di credenziali o altre configurazioni memorizzate in formato JSON.</p></li>
+</ol>
+<p><strong>Prerequisiti:</strong></p>
+<ul class="simple">
+<li><p>È necessario registrarsi su Sightengine per ottenere le credenziali API (link per la registrazione: <cite>https://dashboard.sightengine.com/signup</cite>).</p></li>
+<li><p>Salvare le credenziali (<cite>api_user</cite> e <cite>api_secret</cite>) in un file JSON nella posizione indicata (<cite>utils/credentials_api.json</cite>).</p></li>
+</ul>
+<p><strong>Componenti principali:</strong></p>
+<ul class="simple">
+<li><p><strong>`read_json`:</strong> Funzione di supporto per leggere file JSON, utilizzata per caricare le credenziali API.</p></li>
+<li><p><strong>`detect_image`:</strong> Funzione principale che invia una richiesta all’API di Sightengine e restituisce un valore booleano che indica se l’immagine è un deepfake.</p></li>
+</ul>
+<p><strong>Flusso di utilizzo:</strong></p>
+<ol class="arabic simple">
+<li><p>L’utente registra un account su Sightengine e ottiene le credenziali API.</p></li>
+<li><p>Le credenziali vengono salvate nel file JSON configurato.</p></li>
+<li><p>La funzione <cite>detect_image</cite> viene chiamata con l’URL di un’immagine, e lo script restituisce:</p>
+<ul class="simple">
+<li><p><cite>True</cite>: se l’immagine è classificata come deepfake.</p></li>
+<li><p><cite>False</cite>: se l’immagine è reale.</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Autore:</strong> Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.deepfake_detection.deepfake_detection.detect_image">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.deepfake_detection.deepfake_detection.</span></span><span class="sig-name descname"><span class="pre">detect_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_url</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/src/X_scraping/firefox/deepfake_detection/deepfake_detection.html#detect_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.deepfake_detection.deepfake_detection.detect_image" title="Link to this definition"></a></dt>
-<dd><p>Questa funzione ha lo scopo di effettuare un check su un immagine di cui si possiede l’url per verificare se quest’ultima sia reale o sia AI Generated.
-Ritorna quindi True se l’immagine è un deepfake o False se non lo è.</p>
+<dd><p>La funzione <cite>detect_image</cite> verifica se un’immagine, accessibile tramite un URL, è stata generata da un’intelligenza artificiale (deepfake)
+o è una fotografia reale, utilizzando un’API esterna per l’analisi.</p>
+<p><strong>Comportamento della funzione:</strong></p>
+<ol class="arabic simple">
+<li><p>Effettua una richiesta GET all’API specificando i parametri richiesti, come l’URL dell’immagine e le credenziali API.</p></li>
+<li><p>Analizza la risposta dell’API, che fornisce un punteggio per la probabilità che l’immagine sia generata da AI.</p></li>
+<li><p>Confronta il valore del parametro <cite>ai_generated</cite> con una soglia (0.5) per determinare il risultato:</p>
+<ul class="simple">
+<li><p>Se il valore supera 0.5, l’immagine viene classificata come deepfake.</p></li>
+<li><p>Se il valore è inferiore o uguale a 0.5, l’immagine è considerata reale.</p></li>
+</ul>
+</li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>image_url</strong> – string, url dell’immagine che voglio controllare</p>
+<dd class="field-odd"><p><strong>image_url</strong> – string, url dell’immagine da controllare</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>bool</p>
+<dd class="field-even"><p><strong>bool</strong>, True se l’immagine è deepfake, False se è reale</p>
 </dd>
 </dl>
 </dd></dl>

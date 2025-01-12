@@ -97,23 +97,95 @@
              
   <section id="module-src.X_scraping.firefox.beautifulsoup_analisys">
 <span id="beautifulsoup-analisys"></span><h1>beautifulsoup_analisys<a class="headerlink" href="#module-src.X_scraping.firefox.beautifulsoup_analisys" title="Link to this heading"></a></h1>
-<p>Questo script contiene tutte le funzioni che analizzano e manipolano il contenuto html di una pagina web tramite la libreria BeautifulSoup.
-Ogni funzione in questo script svolge un determinato compito e viene richiamata da uno script preciso.</p>
-<p>Autore: Francesco Pinsone.</p>
+<p>Questo script fornisce tre funzioni principali che utilizzano la libreria BeautifulSoup per analizzare il contenuto HTML di una pagina web contenente tweet e profili utente. Le funzioni estraggono informazioni rilevanti dai tweet, dagli utenti e dalle connessioni tra utenti, come descritto di seguito:</p>
+<ol class="arabic">
+<li><p><strong>Funzione `analisys_with_beautifulsoup(response_html)`</strong>:</p>
+<ul>
+<li><p>Analizza il contenuto HTML di una pagina con tweet.</p></li>
+<li><p>Estrae informazioni da ciascun tweet, come:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Autore</strong> (nome e username).</p></li>
+<li><p><strong>Data di pubblicazione</strong> del tweet.</p></li>
+<li><p><strong>Contenuto del tweet</strong> (testo del tweet, eventualmente ricondiviso da altri utenti).</p></li>
+<li><p><strong>Immagini e video</strong> presenti nel tweet.</p></li>
+<li><p><strong>Interazioni</strong> (numero di like, retweet, commenti).</p></li>
+<li><p><strong>URL del tweet</strong>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>Funzione `beautifulsoup_user_analisys(html_content)`</strong>:</p>
+<ul>
+<li><p>Analizza il contenuto HTML di una pagina di un profilo utente.</p></li>
+<li><p>Estrae le informazioni principali dell’utente, come:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Username</strong> e <strong>tag</strong> dell’utente.</p></li>
+<li><p><strong>Verifica dell’utente</strong> (se l’utente è verificato tramite icona).</p></li>
+<li><p><strong>Numero di tweet</strong> pubblicati.</p></li>
+<li><p><strong>Numero di follower</strong> e <strong>numero di following</strong>.</p></li>
+<li><p><strong>Localizzazione</strong> (se disponibile).</p></li>
+<li><p><strong>Descrizione professionale</strong> dell’utente.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>Funzione `find_related_user(html_content)`</strong>:</p>
+<ul class="simple">
+<li><p>Analizza il contenuto HTML di una pagina utente alla ricerca di <strong>utenti correlati</strong>.</p></li>
+<li><p>Estrae una lista di <strong>utenti suggeriti</strong> o correlati (come nel caso di follower o utenti seguiti) a partire dalle informazioni nel profilo.</p></li>
+<li><p>Restituisce i nomi e gli username degli utenti suggeriti.</p></li>
+</ul>
+</li>
+<li><p><strong>Gestione delle eccezioni</strong>:</p>
+<ul class="simple">
+<li><p>Ogni volta che una sezione del contenuto non è presente o non può essere estratta, il codice gestisce l’errore evitando che lo script si interrompa. Vengono stampati messaggi di errore informativi per ogni elemento mancante (ad esempio, se il contenuto del tweet non è presente o se un utente non è verificato).</p></li>
+</ul>
+</li>
+</ol>
+<p>Lo script è pensato per raccogliere e organizzare in modo strutturato i dati dei tweet, degli utenti e delle loro connessioni, rendendoli pronti per un’analisi successiva o per ulteriori elaborazioni.</p>
+<p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.beautifulsoup_analisys.</span></span><span class="sig-name descname"><span class="pre">analisys_with_beautifulsoup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response_html</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/beautifulsoup_analisys.html#analisys_with_beautifulsoup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup" title="Link to this definition"></a></dt>
-<dd><p>La funzione ha il compito di analizzare e filtrare il contenuto html che le viene passato come parametro.</p>
-<p>L’obiettivo quindi è quello di estrarre le informazioni utili per il nostro scopo.
-Per prima cosa cerca tutti i tag div che contengono i tweet e li salva in una lista. Per ogni tweet cerca ed estrae
-anche l’url, le immagini e i video che contiene e li appende alla lista delle righe. Ritorna infine la lista delle righe
-che sarà poi soggetta ad una procedura di parsing.</p>
+<dd><p>La funzione <cite>analisys_with_beautifulsoup</cite> analizza il contenuto HTML della pagina web dell’utente su X (Twitter)
+per estrarre informazioni sui tweet. La funzione esamina i tweet, estraendo i dati principali come l’autore, la data,
+il contenuto testuale, i media (immagini, video) e i contenuti ricondivisi. Inoltre, raccoglie il numero di interazioni
+(come like, retweet) e restituisce una lista di righe contenenti tutte le informazioni estratte per ogni tweet.</p>
+<p><strong>Funzionamento</strong>:</p>
+<ol class="arabic">
+<li><p>Utilizza BeautifulSoup per effettuare il parsing del contenuto HTML della pagina.</p></li>
+<li><p>Trova tutti i div che contengono i tweet, identificati da specifiche classi.</p></li>
+<li><p>Per ogni tweet, estrae:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>L’autore del tweet (nome utente e tag).</p></li>
+<li><p>La data di pubblicazione.</p></li>
+<li><p>Il contenuto testuale del tweet, se presente.</p></li>
+<li><p>Eventuali tweet ricondivisi (autore e contenuto, se presenti).</p></li>
+<li><p>Le immagini e/o video inclusi nel tweet.</p></li>
+<li><p>Le informazioni sul numero di interazioni (like, retweet, ecc.).</p></li>
+<li><p>L’URL del tweet.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Raccoglie tutte queste informazioni in una lista di righe, con ogni riga contenente i dati di un singolo tweet.</p></li>
+<li><p>Restituisce la lista delle righe, che può essere successivamente elaborata o analizzata.</p></li>
+</ol>
+<p><strong>Gestione degli errori</strong>:</p>
+<ul class="simple">
+<li><p>Se un tweet non contiene alcune delle informazioni richieste (ad esempio, l’autore, il contenuto o i media), la funzione ignora il tweet e prosegue l’elaborazione degli altri.</p></li>
+<li><p>La funzione gestisce i possibili errori dovuti all’assenza di alcuni tag HTML attraverso try-except.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>response_html</strong> – contenuto html della pagina web.</p>
+<dd class="field-odd"><p><strong>response_html</strong> – str, il contenuto HTML della pagina web dell’utente X</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>filtered_lines: list, lista delle righe filtrate.</p>
+<dd class="field-even"><p><strong>filtered_lines</strong>: list, lista delle righe filtrate contenenti le informazioni estratte per ogni tweet.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -121,27 +193,44 @@ che sarà poi soggetta ad una procedura di parsing.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.beautifulsoup_analisys.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_user_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/beautifulsoup_analisys.html#beautifulsoup_user_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys" title="Link to this definition"></a></dt>
-<dd><p>Questa funzione viene richiamata ed utilizzata dallo script ‘user_info_scraper.py’ che ha quindi il compito di estrarre
-informazioni relativi agli utenti X. La funzione prende in input il contenuto html della pagina web di un
-utente X e ne estrae, con l’utilizzo di beautifulsoup, le informazioni chiave. Per ogni utente la funzione estrae:</p>
+<dd><p>La funzione <cite>beautifulsoup_user_analisys</cite> analizza il contenuto HTML della pagina di un utente su X (Twitter) per estrarre informazioni relative al profilo dell’utente. Queste informazioni vengono restituite sotto forma di dizionario.</p>
+<p><strong>Informazioni estratte</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Nome utente (tag username)</p></li>
+<li><p>Stato di verifica (spunta blu, se presente)</p></li>
+<li><p>Numero di post pubblicati</p></li>
+<li><p>Numero di persone seguite (following)</p></li>
+<li><p>Numero di follower (followers)</p></li>
+<li><p>Posizione lavorativa (se presente)</p></li>
+<li><p>Località (se presente)</p></li>
+<li><p>Data di iscrizione al servizio (se presente)</p></li>
+<li><p>Data di nascita (se presente)</p></li>
+<li><p>Sito web (se presente)</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Funzionamento</strong>:</p>
+<ol class="arabic simple">
+<li><p>Utilizza BeautifulSoup per effettuare il parsing del contenuto HTML della pagina.</p></li>
+<li><p>Crea un dizionario vuoto per raccogliere le informazioni dell’utente.</p></li>
+<li><p>Estrae il nome utente cercando il tag <cite>&lt;h1&gt;</cite> con una classe specifica.</p></li>
+<li><p>Verifica se l’utente è verificato cercando un tag <cite>&lt;span&gt;</cite> che contiene l’indicatore di verifica.</p></li>
+<li><p>Estrae il numero di post cercando il tag <cite>&lt;span&gt;</cite> corrispondente al conteggio dei post.</p></li>
+<li><p>Estrae il numero di persone seguite e i followers, analizzando i rispettivi tag <cite>&lt;span&gt;</cite>.</p></li>
+<li><p>Estrae informazioni sul lavoro, la località, la data di iscrizione e la data di nascita, se disponibili.</p></li>
+<li><p>Estrae il sito web dell’utente, se presente.</p></li>
+<li><p>Raccoglie tutte le informazioni in un dizionario.</p></li>
+</ol>
+<p><strong>Gestione degli errori</strong>:</p>
 <ul class="simple">
-<li><p>tag username</p></li>
-<li><p>verificato (spunta blu)</p></li>
-<li><p>numero di post pubblicati</p></li>
-<li><p>numero di persone seguite (following)</p></li>
-<li><p>numero di persone che seguono l’utente (follower)</p></li>
-<li><p>lavoro, se presente</p></li>
-<li><p>località, se presente</p></li>
-<li><p>data di iscrizione, se presente</p></li>
-<li><p>data di nascita, se presente</p></li>
-<li><p>sito web, se presente</p></li>
+<li><p>Se uno dei dati richiesti non è presente, la funzione restituisce <cite>None</cite> per quel dato specifico, senza interrompere l’esecuzione.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>html_content</strong> – contenuto html della pagina web relativa all’utente X</p>
+<dd class="field-odd"><p><strong>html_content</strong> – str, il contenuto HTML della pagina web dell’utente X</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict con le informazioni sopra elencate</p>
+<dd class="field-even"><p><strong>user_data</strong>: dict, un dizionario contenente le informazioni estratte dal profilo dell’utente. Se alcune informazioni non sono presenti, saranno indicate come <cite>None</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -149,15 +238,25 @@ utente X e ne estrae, con l’utilizzo di beautifulsoup, le informazioni chiave.
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.beautifulsoup_analisys.find_related_user">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.beautifulsoup_analisys.</span></span><span class="sig-name descname"><span class="pre">find_related_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/beautifulsoup_analisys.html#find_related_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.beautifulsoup_analisys.find_related_user" title="Link to this definition"></a></dt>
-<dd><p>La funzione riceve in input l’html della pagina web di un utente di X dal quale estrae gli utenti correlati
-suggeriti nel menu aside che si trova a destra. Ognuno di questi utenti viene inserito in una lista di utenti
-correlati che viene infine ritornata.</p>
+<dd><p>La funzione <cite>find_related_user</cite> analizza l’HTML della pagina di un utente di X (Twitter) per estrarre e restituire una lista di utenti correlati suggeriti. Questi utenti sono visualizzati nella sezione aside presente nel menu laterale della pagina.</p>
+<p><strong>Funzionamento</strong>:</p>
+<ol class="arabic simple">
+<li><p>Utilizza BeautifulSoup per effettuare il parsing dell’HTML della pagina.</p></li>
+<li><p>Si concentra sul tag <cite>&lt;main&gt;</cite> per individuare la sezione principale contenente il menu laterale.</p></li>
+<li><p>Cerca il tag <cite>&lt;aside&gt;</cite> che include i suggerimenti degli utenti correlati.</p></li>
+<li><p>Analizza la lista non ordinata <cite>&lt;ul&gt;</cite> per trovare i nomi degli utenti all’interno dei relativi elementi <cite>&lt;li&gt;</cite>.</p></li>
+<li><p>Raccoglie i nomi degli utenti correlati e li inserisce in una lista.</p></li>
+</ol>
+<p><strong>Gestione degli errori</strong>:</p>
+<ul class="simple">
+<li><p>Se la sezione degli utenti correlati non è presente o non contiene dati, la funzione gestisce l’eccezione con un messaggio informativo e ritorna <cite>None</cite>.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>html_content</strong> – il contenuto html della pagina web dell’utente X</p>
+<dd class="field-odd"><p><strong>html_content</strong> – str, il contenuto HTML della pagina web dell’utente X</p>
 </dd>
-<dt class="field-even">Return related_users<span class="colon">:</span></dt>
-<dd class="field-even"><p>list, lista di utenti correlati.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>related_users</strong>: list, lista di utenti correlati. Se non presenti, ritorna None.</p>
 </dd>
 </dl>
 </dd></dl>

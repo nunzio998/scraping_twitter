@@ -95,20 +95,6 @@
 <span class="sd">5. **Logging**:</span>
 <span class="sd">   - Logging delle operazioni eseguite per monitorare l&#39;avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l&#39;esecuzione dello scraping, il login a Discord, ecc.).</span>
 
-<span class="sd">**Autore**: Francesco Pinsone</span>
-
-<span class="sd">**Descrizione delle principali funzioni**:</span>
-<span class="sd">- `connect_to_mongo()`: si connette al database MongoDB e restituisce il client di connessione.</span>
-<span class="sd">- `disconnect_to_mongo()`: disconnette la sessione dal database MongoDB.</span>
-<span class="sd">- `connect_to_mongo_collection()`: si connette a una collezione specifica di MongoDB o la crea se non esiste.</span>
-<span class="sd">- `save_to_mongo()`: salva i dati in una collezione di MongoDB.</span>
-<span class="sd">- `beautifulsoup_analisys()`: analizza una pagina web di Discord, estrae i messaggi della chat e restituisce un elenco di messaggi con autore, data e contenuto.</span>
-<span class="sd">- `scroll_up()`: simula lo scroll verso l&#39;alto della pagina per caricare più messaggi.</span>
-<span class="sd">- `load_cookies()`: carica i cookies di sessione da un file JSON per evitare un nuovo login.</span>
-<span class="sd">- `login()`: esegue il login a Discord utilizzando Selenium, incluse le credenziali utente.</span>
-<span class="sd">- `discord_login()`: gestisce il login vero e proprio su Discord.</span>
-<span class="sd">- `check_captcha()`: verifica la presenza di un captcha e fornisce istruzioni per risolverlo manualmente se necessario.</span>
-
 <span class="sd">Lo script è progettato per operare in un ambiente automatizzato di scraping di chat Discord, ma include anche la gestione di eventuali ostacoli come il captcha. È inoltre integrato con MongoDB per il salvataggio dei dati raccolti.</span>
 
 <span class="sd">**Prerequisiti**:</span>
@@ -119,6 +105,7 @@
 <span class="sd">**Uso**:</span>
 <span class="sd">Lo script può essere utilizzato per raccogliere e analizzare messaggi da una chat di Discord, quindi salvare i dati nel database MongoDB per ulteriori elaborazioni. Le credenziali per il login a Discord devono essere fornite tramite un file di configurazione. Inoltre, lo script gestisce automaticamente il login e la risoluzione di eventuali captcha.</span>
 
+<span class="sd">**Autore**: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>

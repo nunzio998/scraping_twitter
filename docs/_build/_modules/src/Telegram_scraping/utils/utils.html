@@ -98,9 +98,15 @@
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.read_json">[docs]</a>
 <span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per la lettura di file JSON.\n</span>
-<span class="sd">    :param path: percorso del file JSON\n</span>
-<span class="sd">    :return: dict, contenuto del file JSON</span>
+<span class="sd">    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</span>
+
+<span class="sd">    **Funzionamento**:\n</span>
+<span class="sd">    1. **Apertura del file**: Apre il file JSON specificato dal percorso `path` in modalità lettura.\n</span>
+<span class="sd">    2. **Caricamento del contenuto**: Utilizza la funzione `json.load` per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).\n</span>
+<span class="sd">    3. **Restituzione dei dati**: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.\n</span>
+
+<span class="sd">    :param path: str, il percorso del file JSON da leggere.\n</span>
+<span class="sd">    :return: dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
@@ -115,8 +121,16 @@
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.connect_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di connettersi al database MongoDB.\n</span>
-<span class="sd">    :return: client, oggetto che rappresenta la connessione al database</span>
+<span class="sd">    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Connessione al Database**: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.\n</span>
+<span class="sd">    2. **Verifica della Connessione**: Esegue un comando `ping` sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.\n</span>
+<span class="sd">    3. **Gestione degli Errori**: Se si verifica un errore durante il tentativo di connessione, l&#39;errore viene registrato nel log.\n</span>
+
+<span class="sd">    **Nota**: Il client MongoDB viene creato utilizzando la libreria `pymongo`, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.\n</span>
+
+<span class="sd">    :return: client, oggetto che rappresenta la connessione attiva al database MongoDB.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection_string</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;connection_string&#39;</span><span class="p">]</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
@@ -135,9 +149,16 @@
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.disconnect_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB.\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione al database\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Log della Disconnessione**: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.\n</span>
+<span class="sd">    2. **Chiusura della Connessione**: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.\n</span>
+
+<span class="sd">    **Nota**: La funzione utilizza il metodo `server_info()` per recuperare informazioni sul server, come la versione, che verranno incluse nel log.\n</span>
+
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
+<span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;azione di disconnessione dal database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disconnesso dal database: </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
@@ -148,10 +169,18 @@
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.connect_to_mongo_collection">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione al database\n</span>
-<span class="sd">    :param collection_name: stringa, nome della collezione\n</span>
-<span class="sd">    :return: collection, oggetto che rappresenta la collezione</span>
+<span class="sd">    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Connessione al Database**: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.\n</span>
+<span class="sd">    2. **Verifica e Creazione Collezione**: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.\n</span>
+<span class="sd">    3. **Restituzione della Collezione**: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.\n</span>
+
+<span class="sd">    **Nota**: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio `config_data`).\n</span>
+
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
+<span class="sd">    :param collection_name: Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.\n</span>
+<span class="sd">    :return: Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l&#39;uso (lettura/scrittura).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span>
 
@@ -171,10 +200,17 @@
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.save_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per il salvataggio di dati nel database MongoDB.\n</span>
-<span class="sd">    :param data: dict, dati da salvare\n</span>
-<span class="sd">    :param collection: oggetto che rappresenta la collezione\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Salvataggio dei dati**: I dati vengono passati come un dizionario (`data`) e vengono inseriti nella collezione MongoDB fornita tramite il metodo `insert_one()`.\n</span>
+<span class="sd">    2. **Logging**: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.\n</span>
+
+<span class="sd">    **Nota**: Questa funzione salva i dati in un&#39;unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).\n</span>
+
+<span class="sd">    :param data: dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).\n</span>
+<span class="sd">    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n</span>
+<span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;inserimento dei dati.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel database:</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>

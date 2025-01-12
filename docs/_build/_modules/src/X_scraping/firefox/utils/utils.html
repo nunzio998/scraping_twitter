@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.firefox.utils.utils &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.X_scraping.firefox.utils.utils &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../../index.html">Wall-e Project</a>
+          <a href="../../../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -73,13 +73,32 @@
              
   <h1>Source code for src.X_scraping.firefox.utils.utils</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.</span>
-<span class="sd">Alcuni esempi sono:\n</span>
-<span class="sd">- Gestione interazioni con MongoDB\n</span>
-<span class="sd">- Parsing dei dati estratti\n</span>
-<span class="sd">- Procedure di login</span>
+<span class="sd">Questo script fornisce una serie di funzioni utili per interagire con il sito web di X, eseguire scraping dei messaggi in una chat e interagire con un database MongoDB. Le funzionalità principali incluse in questo script sono:</span>
 
-<span class="sd">Autore: Francesco Pinsone</span>
+<span class="sd">1. **Gestione MongoDB**:\n</span>
+<span class="sd">   - Connessione a un database MongoDB tramite una stringa di connessione.\n</span>
+<span class="sd">   - Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.\n</span>
+<span class="sd">   - Salvataggio dei dati nel database MongoDB.\n</span>
+
+<span class="sd">2. **Analisi dei dati con BeautifulSoup**:\n</span>
+<span class="sd">   - Estrazione e parsing dei dati da una pagina web tramite il modulo BeautifulSoup.\n</span>
+
+<span class="sd">3. **Interazioni con X tramite Selenium**:\n</span>
+<span class="sd">   - Automazione del login a X usando Selenium.\n</span>
+<span class="sd">   - Navigazione tra le pagine di X per raccogliere messaggi da una chat.\n</span>
+<span class="sd">   - Scroll della pagina per caricare più messaggi tramite l&#39;interazione con la pagina HTML.\n</span>
+
+<span class="sd">4. **Check dei dati**:\n</span>
+<span class="sd">   - Check dei dati estratti.\n</span>
+
+<span class="sd">5. **Logging**:\n</span>
+<span class="sd">   - Logging delle operazioni eseguite per monitorare l&#39;avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l&#39;esecuzione dello scraping, il login a X, ecc.).\n</span>
+
+<span class="sd">**Prerequisiti**:\n</span>
+<span class="sd">- Una connessione attiva a un database MongoDB.\n</span>
+<span class="sd">- Un ambiente con Selenium e BeautifulSoup per l&#39;automazione del browser e l&#39;analisi del contenuto delle pagine.\n</span>
+
+<span class="sd">**Autore**: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -106,9 +125,15 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_json">[docs]</a>
 <span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per la lettura di file JSON.\n</span>
-<span class="sd">    :param path: percorso del file JSON\n</span>
-<span class="sd">    :return: dict, contenuto del file JSON</span>
+<span class="sd">    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</span>
+
+<span class="sd">    **Funzionamento**:\n</span>
+<span class="sd">    1. **Apertura del file**: Apre il file JSON specificato dal percorso `path` in modalità lettura.\n</span>
+<span class="sd">    2. **Caricamento del contenuto**: Utilizza la funzione `json.load` per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).\n</span>
+<span class="sd">    3. **Restituzione dei dati**: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.\n</span>
+
+<span class="sd">    :param path: str, il percorso del file JSON da leggere.\n</span>
+<span class="sd">    :return: dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
@@ -122,13 +147,28 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.x_login">[docs]</a>
 <span class="k">def</span> <span class="nf">x_login</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">,</span> <span class="n">driver_access</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che automatizza la procedura di accesso ad X. Prende in input le credenziali d&#39;accesso (&#39;credentials.json) e il driver</span>
-<span class="sd">    selenium che serve a controllare il browser. Per prima cosa controlla la presenza del campo email, se è presente inserisce</span>
-<span class="sd">    l&#39;email specificata in &#39;credentials.json&#39; e simula la pressione del tasto invio sulla tastiera. Prosegue ripetendo lo stesso</span>
-<span class="sd">    procedimento per i campi username e password.</span>
-<span class="sd">    :param credentials_access: dict, dizionario di credenziali d&#39;accesso specificate in &#39;credentials.json&#39;\n</span>
-<span class="sd">    :param driver_access: driver selenium per il controllo del browser\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    La funzione `x_login` automatizza la procedura di accesso a X (Twitter) utilizzando il driver Selenium per il controllo del browser.</span>
+<span class="sd">    Prende in input un dizionario contenente le credenziali di accesso (email, username e password) e il driver del browser.</span>
+<span class="sd">    La funzione interagisce con i campi del modulo di login per inserire i dati necessari e simulare la pressione del tasto Invio.</span>
+
+<span class="sd">    **Funzionalità principali**:\n</span>
+<span class="sd">    1. **Inserimento dell&#39;email:** La funzione cerca il campo per l&#39;inserimento dell&#39;email tramite il suo percorso XPath. Se il campo è presente, inserisce l&#39;email fornita nelle credenziali e invia il modulo.\n</span>
+<span class="sd">    2. **Gestione dello username (se richiesto):** In caso di richieste aggiuntive di sicurezza, come l&#39;inserimento dello username, la funzione identifica il campo corrispondente e procede con l&#39;inserimento e l&#39;invio.\n</span>
+<span class="sd">    3. **Inserimento della password:** La funzione individua il campo della password, inserisce il valore fornito nelle credenziali e completa il login simulando la pressione del tasto Invio.\n</span>
+<span class="sd">    4. **Gestione degli errori:** Se uno dei campi non viene trovato (ad esempio, se l&#39;interfaccia cambia), la funzione gestisce l&#39;eccezione e stampa un messaggio di errore.\n</span>
+
+<span class="sd">    **Comportamento della funzione**:\n</span>
+<span class="sd">    1. Controlla e riempie il campo dell&#39;email.\n</span>
+<span class="sd">    2. Se richiesto, riempie il campo dello username.\n</span>
+<span class="sd">    3. Inserisce la password e completa l&#39;accesso.\n</span>
+<span class="sd">    4. Effettua un breve ritardo dopo ogni interazione per garantire il caricamento delle pagine.</span>
+
+<span class="sd">    **Utilità:**</span>
+<span class="sd">    La funzione è utile per automatizzare l&#39;accesso a X in applicazioni di scraping o altre automazioni, gestendo richieste di sicurezza aggiuntive come l&#39;inserimento dello username.</span>
+
+<span class="sd">    :param **credentials_access**: dict contenente le credenziali di accesso</span>
+<span class="sd">    :param **driver_access**: oggetto Selenium WebDriver utilizzato per controllare il browser e interagire con l&#39;interfaccia.</span>
+<span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">email_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
@@ -165,8 +205,16 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di connettersi al database MongoDB.\n</span>
-<span class="sd">    :return client: oggetto che rappresenta la connessione al database</span>
+<span class="sd">    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Connessione al Database**: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.\n</span>
+<span class="sd">    2. **Verifica della Connessione**: Esegue un comando `ping` sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.\n</span>
+<span class="sd">    3. **Gestione degli Errori**: Se si verifica un errore durante il tentativo di connessione, l&#39;errore viene registrato nel log.\n</span>
+
+<span class="sd">    **Nota**: Il client MongoDB viene creato utilizzando la libreria `pymongo`, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.\n</span>
+
+<span class="sd">    :return: client, oggetto che rappresenta la connessione attiva al database MongoDB.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection_string</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;connection_string&#39;</span><span class="p">]</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
@@ -185,9 +233,16 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.disconnect_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB.\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Log della Disconnessione**: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.\n</span>
+<span class="sd">    2. **Chiusura della Connessione**: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.\n</span>
+
+<span class="sd">    **Nota**: La funzione utilizza il metodo `server_info()` per recuperare informazioni sul server, come la versione, che verranno incluse nel log.\n</span>
+
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
+<span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;azione di disconnessione dal database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Disconnesso dal database: &quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
@@ -198,9 +253,13 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.get_db">[docs]</a>
 <span class="k">def</span> <span class="nf">get_db</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che ritorna il database MongoDB.</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
-<span class="sd">    :return: oggetto che rappresenta la connessione al db specificato in &#39;credentials.json&#39;</span>
+<span class="sd">    Funzione che restituisce un riferimento al database MongoDB specificato.</span>
+
+<span class="sd">    La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file `credentials.json`.</span>
+<span class="sd">    È utile per ottenere un&#39;istanza del database e interagire con le sue collezioni.</span>
+
+<span class="sd">    :param client: oggetto che rappresenta la connessione a MongoDB.\n</span>
+<span class="sd">    :return: oggetto che rappresenta la connessione al database specificato in &#39;credentials.json&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span></div>
 
@@ -210,10 +269,18 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo_collection">[docs]</a>
 <span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione al database\n</span>
-<span class="sd">    :param collection_name: stringa, nome della collezione\n</span>
-<span class="sd">    :return: collection, oggetto che rappresenta la collezione</span>
+<span class="sd">    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Connessione al Database**: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.\n</span>
+<span class="sd">    2. **Verifica e Creazione Collezione**: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.\n</span>
+<span class="sd">    3. **Restituzione della Collezione**: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.\n</span>
+
+<span class="sd">    **Nota**: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio `config_data`).\n</span>
+
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
+<span class="sd">    :param collection_name: Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.\n</span>
+<span class="sd">    :return: Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l&#39;uso (lettura/scrittura).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span>
 
@@ -233,10 +300,17 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per il salvataggio di dati nel database MongoDB.\n</span>
-<span class="sd">    :param data: dict, dati da salvare\n</span>
-<span class="sd">    :param collection: oggetto che rappresenta la collezione\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Salvataggio dei dati**: I dati vengono passati come un dizionario (`data`) e vengono inseriti nella collezione MongoDB fornita tramite il metodo `insert_one()`.\n</span>
+<span class="sd">    2. **Logging**: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.\n</span>
+
+<span class="sd">    **Nota**: Questa funzione salva i dati in un&#39;unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).\n</span>
+
+<span class="sd">    :param data: dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).\n</span>
+<span class="sd">    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n</span>
+<span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;inserimento dei dati.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Salvato nel database: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span></div>
@@ -247,13 +321,16 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_user_info_to_mongo">[docs]</a>
 <span class="k">def</span> <span class="nf">save_user_info_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che si occupa di il salvataggio di dati, relativi alle info utente, nel database MongoDB.</span>
-<span class="sd">    Questa funzione viene richiamata dallo script &#39;user_info_scraper.py&#39;. In tale script non usiamo la funzione</span>
-<span class="sd">    &#39;save_to_mongo&#39; come visto negli altri script in quanto dopo il salvataggio non visualizziamo più l&#39;url di un</span>
-<span class="sd">    post salvato ma abbiamo bisogno di visualizzare lo username tag dell&#39;utente di cui stiamo salvando le info nel db.\n</span>
-<span class="sd">    :param data: dict, dati da salvare\n</span>
-<span class="sd">    :param collection: oggetto che rappresenta la collezione\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione per salvare informazioni utente nel database MongoDB.</span>
+
+<span class="sd">    Questa funzione consente di salvare un documento contenente i dati relativi a un utente in una specifica collezione del database MongoDB.</span>
+<span class="sd">    È progettata per essere utilizzata nello script `user_info_scraper.py`, che richiede un approccio diverso rispetto alla funzione generica `save_to_mongo`.</span>
+<span class="sd">    In particolare, dopo il salvataggio, l&#39;attenzione è rivolta alla visualizzazione del tag dello username dell&#39;utente, piuttosto che all&#39;URL di un post salvato,</span>
+<span class="sd">    rendendo questa funzione specifica per le esigenze dello script.</span>
+
+<span class="sd">    :param data: dict, dizionario contenente i dati relativi all&#39;utente da salvare.\n</span>
+<span class="sd">    :param collection: oggetto che rappresenta la collezione MongoDB in cui salvare il documento.\n</span>
+<span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Salvato nel database: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">])</span></div>
@@ -266,25 +343,33 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_tweet">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_tweet</span><span class="p">(</span><span class="n">tweet</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista</span>
-<span class="sd">    di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo</span>
-<span class="sd">    opportuno ed estrarne il giusto contenuto informativo. Ogni tweet viene infatti organizzato in un oggetto con la</span>
-<span class="sd">    seguente struttura:\n</span>
-<span class="sd">    - &#39;username&#39;: username dell&#39;autore del tweet\n</span>
-<span class="sd">    - &#39;tag_username&#39;: username_tag dell&#39;autore del tweet\n</span>
-<span class="sd">    - &#39;date&#39;: data di pubblicazione\n</span>
-<span class="sd">    - &#39;scrape_date&#39;: data in cui il dato è stato estratto ed elaborato dal codice\n</span>
-<span class="sd">    - &#39;content&#39;: testo del tweet\n</span>
-<span class="sd">    - &#39;reshared&#39;: contenuto di un eventuale post ricondiviso\n</span>
-<span class="sd">    - &#39;images&#39;: immagini contenute nel tweet\n</span>
-<span class="sd">    - &#39;videos&#39;: video contenuti nel tweet\n</span>
-<span class="sd">    - &#39;comments&#39;: numero di commenti\n</span>
-<span class="sd">    - &#39;reposts&#39;: numero di repost\n</span>
-<span class="sd">    - &#39;likes&#39;: numero di like\n</span>
-<span class="sd">    - &#39;views&#39;: numero di visualizzazioni\n</span>
-<span class="sd">    - &#39;url&#39;: url del tweet\n</span>
-<span class="sd">    :param tweet: list, lista di elementi che che rappresentano il tweet\n</span>
-<span class="sd">    :return: oggetto con il formato descritto in precedenza\n</span>
+<span class="sd">    Funzione per il parsing di un tweet in formato JSON.</span>
+
+<span class="sd">    Questa funzione riceve in input una lista contenente le informazioni grezze di un tweet e restituisce un oggetto JSON ben strutturato,</span>
+<span class="sd">    organizzando i dati in campi chiave per facilitarne l&#39;analisi o l&#39;archiviazione. È progettata per filtrare contenuti incompleti e</span>
+<span class="sd">    estrarre solo le informazioni rilevanti, riformattandole per un utilizzo più pratico.</span>
+
+<span class="sd">    **Struttura dell&#39;oggetto restituito**:\n</span>
+<span class="sd">    - `&#39;username&#39;`: Nome utente dell&#39;autore del tweet.\n</span>
+<span class="sd">    - `&#39;tag_username&#39;`: Tag dello username dell&#39;autore del tweet (es. @username).\n</span>
+<span class="sd">    - `&#39;date&#39;`: Data di pubblicazione del tweet.\n</span>
+<span class="sd">    - `&#39;scrape_date&#39;`: Data in cui il tweet è stato estratto e analizzato.\n</span>
+<span class="sd">    - `&#39;content&#39;`: Testo contenuto nel tweet.\n</span>
+<span class="sd">    - `&#39;reshared&#39;`: Contenuto del post originale in caso di ricondivisione (retweet).\n</span>
+<span class="sd">    - `&#39;images&#39;`: Lista di immagini incluse nel tweet.\n</span>
+<span class="sd">    - `&#39;videos&#39;`: Lista di video inclusi nel tweet.\n</span>
+<span class="sd">    - `&#39;comments&#39;`: Numero di commenti ricevuti.\n</span>
+<span class="sd">    - `&#39;reposts&#39;`: Numero di repost o retweet.\n</span>
+<span class="sd">    - `&#39;likes&#39;`: Numero di like ricevuti.\n</span>
+<span class="sd">    - `&#39;views&#39;`: Numero di visualizzazioni totali.\n</span>
+<span class="sd">    - `&#39;url&#39;`: URL diretto al tweet.\n</span>
+
+<span class="sd">    **Gestione di eventuali discrepanze**:\n</span>
+<span class="sd">    - Se i dati del tweet non contengono tutte le informazioni necessarie (ad esempio mancano valori numerici per i commenti, like, ecc.), i campi corrispondenti vengono riempiti con `None`.\n</span>
+<span class="sd">    - I post con meno di 9 elementi vengono scartati automaticamente.\n</span>
+
+<span class="sd">    :param tweet: list, lista contenente i dati del tweet in ordine predefinito.\n</span>
+<span class="sd">    :return: dict, oggetto JSON contenente i dati strutturati del tweet, oppure `None` se i dati in ingresso sono incompleti.\n</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">9</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Skip invalid posts</span>
@@ -356,15 +441,21 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_and_save">[docs]</a>
 <span class="k">def</span> <span class="nf">parse_and_save</span><span class="p">(</span><span class="n">tweets_to_save</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script</span>
-<span class="sd">    &#39;tweet_scraper.py&#39;. Alla funzione viene passata una lista che contiene tutte le righe dell&#39;html estratto. Righe che quindi</span>
-<span class="sd">    rappresentano i vari tweet da estrarre. Per prima cosa con la funzione &#39;read_posts()&#39; i post vengono raggruppati e divisi</span>
-<span class="sd">    in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.</span>
-<span class="sd">    A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione &#39;parse_post()&#39; e poi salvato a db.\n</span>
-<span class="sd">    :param tweets_to_save: list, lista che contiene tutte le righe dell&#39;html estratto\n</span>
-<span class="sd">    :param group_name: str, nome del gruppo target che sto analizzando\n</span>
-<span class="sd">    :param client: oggetto che rappresenta la connessione a mongoDB\n</span>
-<span class="sd">    :return: None</span>
+<span class="sd">    Funzione per il parsing e il salvataggio di tweet nel database MongoDB.</span>
+
+<span class="sd">    Questa funzione è utilizzata nello script `tweet_scraper.py` per elaborare e archiviare i tweet estratti da un file HTML.</span>
+<span class="sd">    Riceve in ingresso una lista di righe HTML che rappresentano i vari tweet da processare. La funzione esegue le seguenti operazioni:\n</span>
+
+<span class="sd">    1. **Raggruppamento e organizzazione dei tweet**: Utilizza la funzione `read_posts()` per trasformare la lista di righe HTML in una lista di tweet ben definiti.\n</span>
+<span class="sd">    2. **Parsing dei tweet**: Ogni tweet viene processato con la funzione `parse_tweet()` per estrarre e organizzare le informazioni rilevanti.\n</span>
+<span class="sd">    3. **Salvataggio nel database**: I tweet parsati vengono salvati nella collezione MongoDB corrispondente al nome del gruppo target.\n</span>
+
+<span class="sd">    La funzione garantisce che solo i tweet validi vengano salvati nel database, ignorando quelli che risultano incompleti o malformati.</span>
+
+<span class="sd">    :param **tweets_to_save** (list): Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.\n</span>
+<span class="sd">    :param **group_name** (str): Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.\n</span>
+<span class="sd">    :param **client** (object): Oggetto che rappresenta la connessione al database MongoDB.\n</span>
+<span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Connessione alla collezione dati</span>
@@ -383,8 +474,18 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.check_user">[docs]</a>
 <span class="k">def</span> <span class="nf">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che effettua un check per verificare l&#39;effettiva esistenza dello specificato utente.\n</span>
-<span class="sd">    Se l&#39;utente esiste vado avanti (ritorno True) altrimenti continuo col prossimo utente (ritorno False).\n</span>
+<span class="sd">    Funzione che verifica l&#39;esistenza di uno specifico utente su una piattaforma tramite Selenium.</span>
+
+<span class="sd">    Questa funzione utilizza il driver Selenium per accedere alla pagina relativa all&#39;utente specificato e verifica la sua esistenza</span>
+<span class="sd">    attendendo la visibilità di un elemento indicativo del caricamento corretto della pagina. Se l&#39;elemento viene rilevato entro il</span>
+<span class="sd">    tempo limite, l&#39;utente è considerato esistente; altrimenti, viene restituito un valore che indica l&#39;assenza dell&#39;utente.</span>
+
+<span class="sd">    **Comportamento della funzione**:\n</span>
+<span class="sd">    1. Utilizza `WebDriverWait` per attendere fino a 120 secondi che la pagina utente sia completamente caricata.\n</span>
+<span class="sd">    2. Cerca la visibilità di un elemento tramite un selettore XPath per confermare l&#39;esistenza della pagina.\n</span>
+<span class="sd">    3. Se l&#39;elemento è visibile, restituisce `True`, indicando che l&#39;utente esiste.\n</span>
+<span class="sd">    4. In caso di timeout, cattura una `TimeoutException`, stampa un messaggio e restituisce `False`.\n</span>
+
 <span class="sd">    :param driver: driver selenium per il controllo del browser\n</span>
 <span class="sd">    :param user: nome dell&#39;utente di cui devo fare il check\n</span>
 <span class="sd">    :return bool: valore booleano che indica se l&#39;utente esiste o no</span>
@@ -407,12 +508,20 @@
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.check_limited_user">[docs]</a>
 <span class="k">def</span> <span class="nf">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che verifica se l&#39;utente è temporaneamente limitato. In tal caso al caricamento della pagina sarà presente un</span>
-<span class="sd">    bottone che deve essere premuto per visualizzare correttamente la pagina X del determinato utente. La funzione quindi</span>
-<span class="sd">    effettua un check sull&#39;effettiva presenza di tale bottone e in caso positivo simula la pressione del tasto invio sulla</span>
-<span class="sd">    tastiera per premerlo. In caso contrario l&#39;utente non è limitato e si va avanti normalmente.\n</span>
-<span class="sd">    :param driver: driver selenium per il controllo del browser</span>
-<span class="sd">    :return None:</span>
+<span class="sd">    Funzione che verifica se un utente è temporaneamente limitato su una piattaforma.</span>
+
+<span class="sd">    Questa funzione utilizza Selenium per controllare se, al caricamento della pagina di un utente, è presente un bottone che indica</span>
+<span class="sd">    che l&#39;accesso al profilo è limitato. Se il bottone è presente, simula la pressione del tasto Invio per rimuovere la limitazione</span>
+<span class="sd">    e consentire l&#39;accesso al profilo. Se il bottone non è presente, la funzione prosegue senza ulteriori azioni, indicando che</span>
+<span class="sd">    l&#39;utente non è limitato.</span>
+
+<span class="sd">    **Comportamento della funzione**:\n</span>
+<span class="sd">    1. Cerca la presenza di un elemento rappresentante il bottone di limitazione utilizzando un selettore XPath.\n</span>
+<span class="sd">    2. Se l&#39;elemento è trovato, simula la pressione del tasto Invio per sbloccare la visualizzazione del profilo.\n</span>
+<span class="sd">    3. Se l&#39;elemento non è trovato (`NoSuchElementException`), stampa un messaggio e prosegue, poiché l&#39;utente non è limitato.\n</span>
+
+<span class="sd">    :param driver: driver selenium per il controllo del browser\n</span>
+<span class="sd">    :return Nessun valore ritornato.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">show_profile_button</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button&#39;</span><span class="p">)</span>

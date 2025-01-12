@@ -89,14 +89,16 @@
   <section id="module-src.Discord_scraping.db_to_csv">
 <span id="db-to-csv"></span><h1>db_to_csv<a class="headerlink" href="#module-src.Discord_scraping.db_to_csv" title="Link to this heading"></a></h1>
 <p>Questo script estrae tutti i dati presenti nelle collezioni di un database MongoDB e li esporta in un file CSV.</p>
-<p>Il flusso di lavoro include i seguenti passaggi:
-1. Si connette al database MongoDB utilizzando la stringa di connessione configurata.
-2. Recupera l’elenco di tutte le collezioni nel database.
-3. Estrae i dati da ogni collezione e li accumula in un’unica struttura dati.
-4. Utilizza la libreria <cite>pandas</cite> per creare un DataFrame contenente tutti i documenti estratti.
-5. Esporta il DataFrame in un file CSV nella cartella <cite>data_results</cite>, facilitando l’analisi e l’elaborazione dei dati.</p>
+<p>Il flusso di lavoro include i seguenti passaggi:</p>
+<ol class="arabic simple">
+<li><p>Si connette al database MongoDB utilizzando la stringa di connessione configurata.</p></li>
+<li><p>Recupera l’elenco di tutte le collezioni nel database.</p></li>
+<li><p>Estrae i dati da ogni collezione e li accumula in un’unica struttura dati.</p></li>
+<li><p>Utilizza la libreria <cite>pandas</cite> per creare un DataFrame contenente tutti i documenti estratti.</p></li>
+<li><p>Esporta il DataFrame in un file CSV nella cartella <cite>data_results</cite>, facilitando l’analisi e l’elaborazione dei dati.</p></li>
+</ol>
 <p>Questa funzionalità è utile per creare un backup dei dati presenti nel database o per analizzare i dati in modo strutturato utilizzando strumenti come Excel, Google Sheets o software di data science come Python o R.</p>
-<p>Autore: Francesco Pinsone</p>
+<p><strong>Autore</strong>: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.db_to_csv.export_csv">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.db_to_csv.</span></span><span class="sig-name descname"><span class="pre">export_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/db_to_csv.html#export_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.db_to_csv.export_csv" title="Link to this definition"></a></dt>

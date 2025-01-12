@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.firefox.user_info_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.X_scraping.firefox.user_info_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Wall-e Project</a>
+          <a href="../../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -73,11 +73,36 @@
              
   <h1>Source code for src.X_scraping.firefox.user_info_scraper</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Script che ha la funzione di estrarre le informazioni principali di uno o più utenti X.\n</span>
-<span class="sd">Gli utenti da sottoporre a questo processo vengono estratti dalle varie collection, ovvero dai dati</span>
-<span class="sd">relativi ai tweet raccolti fino a quel momento. Si considerano quindi tutti gli autori dei tweet salvati.\n</span>
+<span class="sd">Script per l&#39;estrazione automatica delle informazioni di profili utente da X (precedentemente noto come Twitter).</span>
 
-<span class="sd">Autore: Francesco Pinsone.</span>
+<span class="sd">Questo script esegue il login a X, estrae gli utenti target da un database MongoDB contenente dati relativi ai tweet raccolti,</span>
+<span class="sd">e raccoglie informazioni specifiche su ciascun utente tramite una navigazione automatica su X. Le informazioni raccolte includono</span>
+<span class="sd">dati come nome utente, biografia, numero di follower, tweet recenti e altre metriche pertinenti.</span>
+
+<span class="sd">Le informazioni estratte vengono successivamente salvate in una collection del database MongoDB, denominata `users_info`,</span>
+<span class="sd">per una successiva analisi.</span>
+
+<span class="sd">**Funzionalità principali**:\n</span>
+<span class="sd">1. **Estrazione degli Utenti Target**: Lo script estrae gli utenti da tutte le collezioni del database MongoDB che contengono dati relativi ai tweet, ad eccezione delle collection `users_info` e `target_groups`. Gli utenti sono identificati tramite il campo `username_tag` presente in ciascun documento. La lista di utenti viene generata evitando duplicati.\n</span>
+
+<span class="sd">2. **Login a X**: Utilizzando le credenziali memorizzate in un file JSON, lo script effettua il login su X. La sessione di login viene automatizzata tramite il driver Firefox di Selenium in modalità &quot;headless&quot; (senza interfaccia grafica).\n</span>
+
+<span class="sd">3. **Raccolta delle Informazioni sui Profili**:\n</span>
+<span class="sd">    Per ciascun utente nella lista di target, lo script:\n</span>
+<span class="sd">   - Accede al profilo dell&#39;utente su X.\n</span>
+<span class="sd">   - Verifica che il profilo esista e che l&#39;account non sia limitato.\n</span>
+<span class="sd">   - Raccoglie le informazioni pubblicamente visibili sul profilo, tra cui nome utente, bio, numero di follower, tweet recenti e altre statistiche.\n</span>
+<span class="sd">   - Gestisce automaticamente eventuali account limitati, come nel caso in cui l&#39;account sia stato bloccato temporaneamente.\n</span>
+
+<span class="sd">4. **Analisi HTML tramite BeautifulSoup**: Una volta che la pagina del profilo utente è stata caricata, lo script utilizza BeautifulSoup per analizzare l&#39;HTML e estrarre le informazioni pertinenti dal contenuto.\n</span>
+
+<span class="sd">5. **Salvataggio delle Informazioni nel Database**: Le informazioni estratte da ciascun profilo vengono salvate nel database MongoDB nella collection `users_info`, per l&#39;archiviazione e l&#39;analisi futura.\n</span>
+
+<span class="sd">6. **Gestione degli Errori**: Lo script è progettato per proseguire con la raccolta dei dati anche se un utente non viene trovato, se il profilo è limitato o se si verificano altri errori. In questi casi, il processo non viene interrotto e il sistema continua con il successivo utente.\n</span>
+
+<span class="sd">7. **Chiusura delle Risorse**: Alla fine del processo di scraping, il driver di Selenium viene correttamente chiuso e la connessione al database MongoDB viene terminata.\n</span>
+
+<span class="sd">**Autore**: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
@@ -95,12 +120,35 @@
 <a class="viewcode-back" href="../../../../user_info_scraper_firefox.html#src.X_scraping.firefox.user_info_scraper.scrape_user_info">[docs]</a>
 <span class="k">def</span> <span class="nf">scrape_user_info</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che racchiude l&#39;intero funzionamento dello script.\n</span>
-<span class="sd">    Dopo aver effettuato la connessione al db estrae una lista di utenti target da tutte le collection che contengono</span>
-<span class="sd">    dati relativi ai tweet salvati. Effettua poi la procedura di login ad X e in seguito inizia lo scraping delle info</span>
-<span class="sd">    per ognuno degli utenti presenti nella lista dei target. Ad ogni iterazione le informazioni raccolte vengono salvate</span>
-<span class="sd">    a db nella collection &#39;users_info&#39;.\n</span>
-<span class="sd">    :return None:</span>
+<span class="sd">    Funzione che automatizza la raccolta delle informazioni sui profili utente da X (precedentemente noto come Twitter).</span>
+<span class="sd">    Lo script esegue il login su X, esegue la ricerca di utenti target estratti da tutte le collezioni di tweet nel database</span>
+<span class="sd">    e raccoglie le informazioni associate a ciascun utente. Le informazioni estratte vengono poi salvate nel database MongoDB,</span>
+<span class="sd">    nella collection &#39;users_info&#39;. Questo processo permette di ottenere dettagli rilevanti sugli utenti coinvolti, come il loro</span>
+<span class="sd">    nome utente, bio, numero di follower, post recenti, e altre informazioni pertinenti.</span>
+
+<span class="sd">    **Funzionamento del Processo**:\n</span>
+<span class="sd">    1. **Connessione al Database**: La funzione si connette al database MongoDB per estrarre una lista di utenti target da tutte le collezioni che contengono dati relativi ai tweet salvati (eccetto le collection `users_info` e `target_groups`). Gli utenti vengono identificati tramite il campo `username_tag`.\n</span>
+
+<span class="sd">    2. **Creazione della Lista di Target**: Lo script attraversa tutte le collezioni del database, estraendo il campo `username_tag` da ciascun documento che contiene informazioni sui tweet. Gli username vengono aggiunti a una lista, evitando duplicati.\n</span>
+
+<span class="sd">    3. **Preparazione per l&#39;Automazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.\n</span>
+
+<span class="sd">    4. **Login su X**: Dopo aver configurato il browser, la funzione effettua il login su X utilizzando le credenziali memorizzate in un file JSON.\n</span>
+
+<span class="sd">    5. **Raccolta delle Informazioni sugli Utenti**:\n</span>
+<span class="sd">       - Per ciascun utente nella lista di target, lo script esegue una ricerca sul suo profilo su X.\n</span>
+<span class="sd">       - Se l&#39;utente esiste, lo script raccoglie le informazioni disponibili sul suo profilo, come il nome, la bio, i follower, i tweet recenti, e altre metriche.\n</span>
+<span class="sd">       - Se l&#39;utente è limitato temporaneamente (ad esempio, se il profilo è stato bloccato per qualche motivo), lo script gestisce automaticamente questa situazione e prosegue.\n</span>
+
+<span class="sd">    6. **Analisi con BeautifulSoup**: Una volta che il contenuto HTML del profilo dell&#39;utente è stato caricato, viene passato a BeautifulSoup per l&#39;analisi e l&#39;estrazione delle informazioni rilevanti. Questo permette di strutturare i dati in un formato utile per il salvataggio nel database.\n</span>
+
+<span class="sd">    7. **Salvataggio nel Database**: Le informazioni estratte da ciascun profilo utente vengono salvate nella collection `users_info` del database MongoDB.\n</span>
+
+<span class="sd">    8. **Gestione degli Errori**: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l&#39;utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l&#39;esecuzione.\n</span>
+
+<span class="sd">    9. **Chiusura delle Risorse**: Al termine dell&#39;operazione di scraping, il driver di Selenium viene chiuso correttamente e la connessione al database viene terminata.\n</span>
+
+<span class="sd">    :return: Nessun valore restituito. Le informazioni sugli utenti vengono salvate direttamente nel database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Connessione al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.chrome.tweet_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.X_scraping.chrome.tweet_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Wall-e Project</a>
+          <a href="../../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -73,12 +73,41 @@
              
   <h1>Source code for src.X_scraping.chrome.tweet_scraper</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Lo script ha il compito di effettuare un&#39;attività di scraping su X andando a fare ricerca dei tweet per parole chiave.</span>
-<span class="sd">Sulla base di un report sulla cybersecurity del 2024 sono stati scelti i nomi di una serie di gruppi hacker come target list</span>
-<span class="sd">iniziale sulla quale far lavorare lo script. Ad ogni esecuzione lo script effettua una ricerca su X ed estrae i tweet che ne risultano.</span>
-<span class="sd">Per ogni tweet vengono salvate diverse informazioni: autore, contenuto, url, gruppo hacker di riferimento, immagini e video contenuti.\n</span>
+<span class="sd">Questo script automatizza il processo di scraping di tweet da X (precedentemente noto come Twitter) per raccogliere informazioni</span>
+<span class="sd">relativi a gruppi hacker, come indicato in un report sulla cybersecurity del 2024. L&#39;obiettivo principale è eseguire una</span>
+<span class="sd">ricerca su X per estrarre i tweet pertinenti a specifici gruppi hacker, raccogliendo vari dettagli come autore, contenuto, URL,</span>
+<span class="sd">video, immagini, e il gruppo hacker di riferimento. Tutti i dati raccolti vengono quindi salvati nel database MongoDB per un</span>
+<span class="sd">eventuale utilizzo futuro.</span>
 
-<span class="sd">Autore: Francesco Pinsone.</span>
+<span class="sd">**Funzionamento del Processo**:\n</span>
+<span class="sd">1. **Connessione al Database**: Lo script si connette a un database MongoDB per recuperare i gruppi target (gruppi hacker) definiti nella collection `target_groups`. Questi gruppi sono utilizzati come base per la ricerca dei tweet.</span>
+
+<span class="sd">2. **Preparazione per l&#39;Automazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per l&#39;automazione della navigazione su X. Questo approccio consente di simulare l&#39;interazione umana con il sito in modo che lo scraping possa essere effettuato automaticamente.</span>
+
+<span class="sd">3. **Login su X**: Lo script esegue un login automatizzato a X utilizzando le credenziali memorizzate in un file JSON. La parte di login è manuale attraverso l&#39;uso di un&#39;apposita funzione, per garantire la sicurezza delle credenziali.</span>
+
+<span class="sd">4. **Costruzione della Ricerca**: Per ogni gruppo target, viene costruito un URL di ricerca personalizzato. Questo URL filtra i tweet relativi al gruppo target, utilizzando le parole chiave scelte e limitando i risultati a quelli pubblicati tra la data dell&#39;ultimo aggiornamento e quella odierna.</span>
+
+<span class="sd">5. **Caricamento e Raccolta dei Tweet**:</span>
+<span class="sd">   - Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.</span>
+<span class="sd">   - Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.</span>
+
+<span class="sd">6. **Estrazione e Analisi del Contenuto**:</span>
+<span class="sd">   - Una volta caricati i tweet, l&#39;HTML della pagina viene estratto utilizzando Selenium.</span>
+<span class="sd">   - Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.</span>
+
+<span class="sd">7. **Salvataggio dei Dati nel Database**: Le informazioni estratte dai tweet (come autore, contenuto, URL, immagini, video e gruppo hacker di riferimento) vengono parsate e salvate nel database MongoDB per una successiva consultazione o analisi.</span>
+
+<span class="sd">8. **Gestione degli Aggiornamenti**: Alla fine di ogni esecuzione, lo script aggiorna la data dell&#39;ultimo aggiornamento nel database, in modo che nelle esecuzioni future lo script possa raccogliere solo i tweet nuovi, risparmiando tempo e risorse.</span>
+
+<span class="sd">9. **Gestione degli Errori**: Se non vengono trovati risultati per un gruppo target o se si verificano problemi nel caricare una pagina (ad esempio, a causa di un errore di rete o di un timeout), lo script continua automaticamente con il gruppo successivo, senza interrompere l&#39;intero processo di scraping.</span>
+
+<span class="sd">10. **Chiusura delle Risorse**: Alla fine del processo, il driver Selenium viene chiuso correttamente, e la connessione al database MongoDB viene terminata, liberando risorse e chiudendo tutte le connessioni attive.</span>
+
+<span class="sd">**Obiettivo**:\n</span>
+<span class="sd">Il principale scopo di questo script è raccogliere informazioni utili dai tweet pubblici relativi ai gruppi hacker, al fine di monitorare le attività dei gruppi di interesse in un contesto di sicurezza informatica. Ogni esecuzione dello script consente di ottenere dati aggiornati e pertinenti, che possono essere analizzati per osservare eventuali tendenze o comportamenti sospetti.</span>
+
+<span class="sd">**Autore**: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -99,12 +128,34 @@
 <a class="viewcode-back" href="../../../../tweet_scraper_chrome.html#src.X_scraping.chrome.tweet_scraper.scrape_tweets">[docs]</a>
 <span class="k">def</span> <span class="nf">scrape_tweets</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione che racchiude l&#39;intero funzionamento dello script.\n</span>
-<span class="sd">    Dopo aver effettuato la connessione a MondoDB e inizializzato il driver selenium per l&#39;automazione del browser effettua il</span>
-<span class="sd">    login ad X. Subito dopo per ogni target effettua la ricerca e filtra il contenuto della pagina html che ottiene al fine di</span>
-<span class="sd">    ottenere una lista di elementi relativi a tutti i tweet trovati. Questo insieme di informazioni viene dapprima diviso, per</span>
-<span class="sd">    differenziare i vari elementi, e poi parsato per ottenere i tweet nel giusto formato da poter poi salvare nel db.\n</span>
-<span class="sd">    :return None:</span>
+<span class="sd">    Funzione che automatizza la raccolta dei tweet da X (precedentemente noto come Twitter) per gruppi target predefiniti.</span>
+<span class="sd">    Il processo comprende il login su X, la ricerca di tweet relativi a ciascun gruppo, e l&#39;estrazione delle informazioni</span>
+<span class="sd">    pertinenti da ciascun tweet. Le informazioni estratte vengono quindi salvate nel database MongoDB.</span>
+
+<span class="sd">    **Funzionamento**:\n</span>
+<span class="sd">    1. **Connessione al Database**: La funzione inizia con la connessione al database MongoDB, dove vengono recuperati i gruppi target dalla collection &quot;target_groups&quot;. Ogni gruppo target corrisponde a una ricerca di tweet specifica su X.</span>
+
+<span class="sd">    2. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per interagire automaticamente con il sito X.</span>
+
+<span class="sd">    3. **Login su X**: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.</span>
+
+<span class="sd">    4. **Creazione della Ricerca**: Per ogni gruppo target:\n</span>
+<span class="sd">       - Viene costruito un URL di ricerca personalizzato che include la data odierna e la data dell&#39;ultimo aggiornamento per filtrare i tweet.\n</span>
+<span class="sd">       - Viene eseguita una ricerca su X per ottenere i tweet relativi a quel gruppo, limitando i risultati a quelli pubblicati tra la data dell&#39;ultimo aggiornamento e quella odierna.\n</span>
+
+<span class="sd">    5. **Raccolta dei Tweet**: Una volta caricata la pagina con i risultati della ricerca:\n</span>
+<span class="sd">       - Viene eseguita una scrollata della pagina per caricare i tweet aggiuntivi.\n</span>
+<span class="sd">       - L&#39;HTML della pagina viene estratto e analizzato con BeautifulSoup, che filtra e organizza i tweet trovati.\n</span>
+
+<span class="sd">    6. **Estrazione e Salvataggio delle Informazioni**: I tweet estratti vengono parsati in una struttura utile, quindi vengono salvati nel database MongoDB.</span>
+
+<span class="sd">    7. **Aggiornamento della Data di Riferimento**: Una volta completata l&#39;operazione di scraping, la data dell&#39;ultimo aggiornamento viene registrata nel database per essere utilizzata nelle future esecuzioni dello script.</span>
+
+<span class="sd">    8. **Gestione degli Errori**: Se non vengono trovati risultati per un gruppo target o se si verificano errori durante il caricamento della pagina, lo script continua con il gruppo successivo senza interrompere l&#39;esecuzione.</span>
+
+<span class="sd">    Alla fine, il driver di Selenium viene chiuso e la connessione al database viene terminata.</span>
+
+<span class="sd">    :return: Nessun valore ritornato. Le informazioni vengono salvate nel database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Leggo file con credenziali</span>
     <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>

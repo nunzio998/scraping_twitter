@@ -116,18 +116,6 @@
 <li><p><strong>Logging</strong>:
 - Logging delle operazioni eseguite per monitorare l’avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l’esecuzione dello scraping, il login a Discord, ecc.).</p></li>
 </ol>
-<p><strong>Autore</strong>: Francesco Pinsone</p>
-<p><strong>Descrizione delle principali funzioni</strong>:
-- <cite>connect_to_mongo()</cite>: si connette al database MongoDB e restituisce il client di connessione.
-- <cite>disconnect_to_mongo()</cite>: disconnette la sessione dal database MongoDB.
-- <cite>connect_to_mongo_collection()</cite>: si connette a una collezione specifica di MongoDB o la crea se non esiste.
-- <cite>save_to_mongo()</cite>: salva i dati in una collezione di MongoDB.
-- <cite>beautifulsoup_analisys()</cite>: analizza una pagina web di Discord, estrae i messaggi della chat e restituisce un elenco di messaggi con autore, data e contenuto.
-- <cite>scroll_up()</cite>: simula lo scroll verso l’alto della pagina per caricare più messaggi.
-- <cite>load_cookies()</cite>: carica i cookies di sessione da un file JSON per evitare un nuovo login.
-- <cite>login()</cite>: esegue il login a Discord utilizzando Selenium, incluse le credenziali utente.
-- <cite>discord_login()</cite>: gestisce il login vero e proprio su Discord.
-- <cite>check_captcha()</cite>: verifica la presenza di un captcha e fornisce istruzioni per risolverlo manualmente se necessario.</p>
 <p>Lo script è progettato per operare in un ambiente automatizzato di scraping di chat Discord, ma include anche la gestione di eventuali ostacoli come il captcha. È inoltre integrato con MongoDB per il salvataggio dei dati raccolti.</p>
 <p><strong>Prerequisiti</strong>:
 - Una connessione attiva a un database MongoDB.
@@ -135,6 +123,7 @@
 - Un ambiente con Selenium e BeautifulSoup per l’automazione del browser e l’analisi del contenuto delle pagine.</p>
 <p><strong>Uso</strong>:
 Lo script può essere utilizzato per raccogliere e analizzare messaggi da una chat di Discord, quindi salvare i dati nel database MongoDB per ulteriori elaborazioni. Le credenziali per il login a Discord devono essere fornite tramite un file di configurazione. Inoltre, lo script gestisce automaticamente il login e la risoluzione di eventuali captcha.</p>
+<p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.utils.utils.beautifulsoup_analisys">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scroll_times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/utils/utils.html#beautifulsoup_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.utils.utils.beautifulsoup_analisys" title="Link to this definition"></a></dt>

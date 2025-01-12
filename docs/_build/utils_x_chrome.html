@@ -106,35 +106,80 @@
              
   <section id="module-src.X_scraping.chrome.utils.utils">
 <span id="utils"></span><h1>utils<a class="headerlink" href="#module-src.X_scraping.chrome.utils.utils" title="Link to this heading"></a></h1>
-<p>Questo script ha lo scopo di definire ed ospitare una serie di funzionalità richiamate dagli altri script.
-Alcuni esempi sono:</p>
+<p>Questo script fornisce una serie di funzioni utili per interagire con il sito web di X, eseguire scraping dei messaggi in una chat e interagire con un database MongoDB. Le funzionalità principali incluse in questo script sono:</p>
+<ol class="arabic simple">
+<li><p><strong>Gestione MongoDB</strong>:</p>
 <ul class="simple">
-<li><p>Gestione interazioni con MongoDB</p></li>
-<li><p>Parsing dei dati estratti</p></li>
-<li><p>Procedure di login</p></li>
+<li><p>Connessione a un database MongoDB tramite una stringa di connessione.</p></li>
+<li><p>Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.</p></li>
+<li><p>Salvataggio dei dati nel database MongoDB.</p></li>
 </ul>
-<p>Autore: Francesco Pinsone</p>
+</li>
+<li><p><strong>Analisi dei dati con BeautifulSoup</strong>:</p>
+<ul class="simple">
+<li><p>Estrazione e parsing dei dati da una pagina web tramite il modulo BeautifulSoup.</p></li>
+</ul>
+</li>
+<li><p><strong>Interazioni con X tramite Selenium</strong>:</p>
+<ul class="simple">
+<li><p>Automazione del login a X usando Selenium.</p></li>
+<li><p>Navigazione tra le pagine di X per raccogliere messaggi da una chat.</p></li>
+<li><p>Scroll della pagina per caricare più messaggi tramite l’interazione con la pagina HTML.</p></li>
+</ul>
+</li>
+<li><p><strong>Check dei dati</strong>:</p>
+<ul class="simple">
+<li><p>Check dei dati estratti.</p></li>
+</ul>
+</li>
+<li><p><strong>Logging</strong>:</p>
+<ul class="simple">
+<li><p>Logging delle operazioni eseguite per monitorare l’avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l’esecuzione dello scraping, il login a X, ecc.).</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Prerequisiti</strong>:</p>
+<ul class="simple">
+<li><p>Una connessione attiva a un database MongoDB.</p></li>
+<li><p>Un ambiente con Selenium e BeautifulSoup per l’automazione del browser e l’analisi del contenuto delle pagine.</p></li>
+</ul>
+<p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.check_limited_user">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_limited_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#check_limited_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.check_limited_user" title="Link to this definition"></a></dt>
-<dd><p>Funzione che verifica se l’utente è temporaneamente limitato. In tal caso al caricamento della pagina sarà presente un
-bottone che deve essere premuto per visualizzare correttamente la pagina X del determinato utente. La funzione quindi
-effettua un check sull’effettiva presenza di tale bottone e in caso positivo simula la pressione del tasto invio sulla
-tastiera per premerlo. In caso contrario l’utente non è limitato e si va avanti normalmente.</p>
+<dd><p>Funzione che verifica se un utente è temporaneamente limitato su una piattaforma.</p>
+<p>Questa funzione utilizza Selenium per controllare se, al caricamento della pagina di un utente, è presente un bottone che indica
+che l’accesso al profilo è limitato. Se il bottone è presente, simula la pressione del tasto Invio per rimuovere la limitazione
+e consentire l’accesso al profilo. Se il bottone non è presente, la funzione prosegue senza ulteriori azioni, indicando che
+l’utente non è limitato.</p>
+<p><strong>Comportamento della funzione</strong>:</p>
+<ol class="arabic simple">
+<li><p>Cerca la presenza di un elemento rappresentante il bottone di limitazione utilizzando un selettore XPath.</p></li>
+<li><p>Se l’elemento è trovato, simula la pressione del tasto Invio per sbloccare la visualizzazione del profilo.</p></li>
+<li><p>Se l’elemento non è trovato (<cite>NoSuchElementException</cite>), stampa un messaggio e prosegue, poiché l’utente non è limitato.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>driver</strong> – driver selenium per il controllo del browser</p>
 </dd>
-<dt class="field-even">Return None<span class="colon">:</span></dt>
-<dd class="field-even"><p></p></dd>
 </dl>
+<p>:return Nessun valore ritornato.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.check_user">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#check_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.check_user" title="Link to this definition"></a></dt>
-<dd><p>Funzione che effettua un check per verificare l’effettiva esistenza dello specificato utente.</p>
-<p>Se l’utente esiste vado avanti (ritorno True) altrimenti continuo col prossimo utente (ritorno False).</p>
+<dd><p>Funzione che verifica l’esistenza di uno specifico utente su una piattaforma tramite Selenium.</p>
+<p>Questa funzione utilizza il driver Selenium per accedere alla pagina relativa all’utente specificato e verifica la sua esistenza
+attendendo la visibilità di un elemento indicativo del caricamento corretto della pagina. Se l’elemento viene rilevato entro il
+tempo limite, l’utente è considerato esistente; altrimenti, viene restituito un valore che indica l’assenza dell’utente.</p>
+<p><strong>Comportamento della funzione</strong>:</p>
+<ol class="arabic simple">
+<li><p>Utilizza <cite>WebDriverWait</cite> per attendere fino a 120 secondi che la pagina utente sia completamente caricata.</p></li>
+<li><p>Cerca la visibilità di un elemento tramite un selettore XPath per confermare l’esistenza della pagina.</p></li>
+<li><p>Se l’elemento è visibile, restituisce <cite>True</cite>, indicando che l’utente esiste.</p></li>
+<li><p>In caso di timeout, cattura una <cite>TimeoutException</cite>, stampa un messaggio e restituisce <cite>False</cite>.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -151,10 +196,17 @@ tastiera per premerlo. In caso contrario l’utente non è limitato e si va avan
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.connect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi al database MongoDB.</p>
+<dd><p>Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Connessione al Database</strong>: Utilizza la stringa di connessione predefinita, configurata nel file di configurazione, per stabilire la connessione con il server MongoDB.</p></li>
+<li><p><strong>Verifica della Connessione</strong>: Esegue un comando <cite>ping</cite> sul database per verificare se la connessione è attiva. Se la connessione ha successo, viene registrato un log con la versione del server MongoDB.</p></li>
+<li><p><strong>Gestione degli Errori</strong>: Se si verifica un errore durante il tentativo di connessione, l’errore viene registrato nel log.</p></li>
+</ol>
+<p><strong>Nota</strong>: Il client MongoDB viene creato utilizzando la libreria <cite>pymongo</cite>, e la connessione viene stabilita utilizzando la stringa di connessione definita nel file di configurazione.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return client<span class="colon">:</span></dt>
-<dd class="field-odd"><p>oggetto che rappresenta la connessione al database</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>client, oggetto che rappresenta la connessione attiva al database MongoDB.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -162,16 +214,23 @@ tastiera per premerlo. In caso contrario l’utente non è limitato e si va avan
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.connect_to_mongo_collection">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di connettersi ad una specifica collezione del database MongoDB, oppure di crearla se non esiste.</p>
+<dd><p>Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Connessione al Database</strong>: La funzione si connette al database MongoDB utilizzando il client e il nome del database fornito nelle impostazioni.</p></li>
+<li><p><strong>Verifica e Creazione Collezione</strong>: La funzione verifica se la collezione specificata esiste già nel database. Se non esiste, la funzione la crea.</p></li>
+<li><p><strong>Restituzione della Collezione</strong>: Una volta verificata o creata la collezione, la funzione restituisce un oggetto che rappresenta la collezione, pronto per operazioni successive.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione assume che la configurazione del database (incluso il nome del database) sia disponibile attraverso un oggetto di configurazione (ad esempio <cite>config_data</cite>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client</strong> – oggetto che rappresenta la connessione al database</p></li>
-<li><p><strong>collection_name</strong> – stringa, nome della collezione</p></li>
+<li><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p></li>
+<li><p><strong>collection_name</strong> – Stringa che rappresenta il nome della collezione a cui ci si vuole connettere o che si vuole creare.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>collection, oggetto che rappresenta la collezione</p>
+<dd class="field-even"><p>Oggetto che rappresenta la collezione MongoDB. La collezione sarà pronta per l’uso (lettura/scrittura).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,13 +238,19 @@ tastiera per premerlo. In caso contrario l’utente non è limitato e si va avan
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.disconnect_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che consente di disconnettersi dal database MongoDB.</p>
+<dd><p>Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Log della Disconnessione</strong>: La funzione registra un log che indica la disconnessione dal database, includendo la versione del server MongoDB al quale era connesso.</p></li>
+<li><p><strong>Chiusura della Connessione</strong>: Una volta eseguito il log, la connessione al database viene chiusa, liberando le risorse.</p></li>
+</ol>
+<p><strong>Nota</strong>: La funzione utilizza il metodo <cite>server_info()</cite> per recuperare informazioni sul server, come la versione, che verranno incluse nel log.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>client</strong> – oggetto che rappresenta la connessione a mongoDB</p>
+<dd class="field-odd"><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito. La funzione esegue solo l’azione di disconnessione dal database.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -193,11 +258,15 @@ tastiera per premerlo. In caso contrario l’utente non è limitato e si va avan
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.get_db">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">get_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#get_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.get_db" title="Link to this definition"></a></dt>
-<dd><p>Funzione che ritorna il database MongoDB.
-:param client: oggetto che rappresenta la connessione a mongoDB</p>
+<dd><p>Funzione che restituisce un riferimento al database MongoDB specificato.</p>
+<p>La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file <cite>credentials.json</cite>.
+È utile per ottenere un’istanza del database e interagire con le sue collezioni.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>oggetto che rappresenta la connessione al db specificato in ‘credentials.json’</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client</strong> – oggetto che rappresenta la connessione a MongoDB.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>oggetto che rappresenta la connessione al database specificato in ‘credentials.json’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -205,21 +274,25 @@ tastiera per premerlo. In caso contrario l’utente non è limitato e si va avan
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.parse_and_save">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_and_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweets_to_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#parse_and_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.parse_and_save" title="Link to this definition"></a></dt>
-<dd><p>Funzione che si occupa di leggere, parsare e salvare i post nel database. Questa funzione viene richiamata nello script
-‘tweet_scraper.py’. Alla funzione viene passata una lista che contiene tutte le righe dell’html estratto. Righe che quindi
-rappresentano i vari tweet da estrarre. Per prima cosa con la funzione ‘read_posts()’ i post vengono raggruppati e divisi
-in base anche al numero di righe. Non avrò più, quindi, una lista con tutte le righe di un file html ma una lista di tweet.
-A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funzione ‘parse_post()’ e poi salvato a db.</p>
+<dd><p>Funzione per il parsing e il salvataggio di tweet nel database MongoDB.</p>
+<p>Questa funzione è utilizzata nello script <cite>tweet_scraper.py</cite> per elaborare e archiviare i tweet estratti da un file HTML.
+Riceve in ingresso una lista di righe HTML che rappresentano i vari tweet da processare. La funzione esegue le seguenti operazioni:</p>
+<ol class="arabic simple">
+<li><p><strong>Raggruppamento e organizzazione dei tweet</strong>: Utilizza la funzione <cite>read_posts()</cite> per trasformare la lista di righe HTML in una lista di tweet ben definiti.</p></li>
+<li><p><strong>Parsing dei tweet</strong>: Ogni tweet viene processato con la funzione <cite>parse_tweet()</cite> per estrarre e organizzare le informazioni rilevanti.</p></li>
+<li><p><strong>Salvataggio nel database</strong>: I tweet parsati vengono salvati nella collezione MongoDB corrispondente al nome del gruppo target.</p></li>
+</ol>
+<p>La funzione garantisce che solo i tweet validi vengano salvati nel database, ignorando quelli che risultano incompleti o malformati.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tweets_to_save</strong> – list, lista che contiene tutte le righe dell’html estratto</p></li>
-<li><p><strong>group_name</strong> – str, nome del gruppo target che sto analizzando</p></li>
-<li><p><strong>client</strong> – oggetto che rappresenta la connessione a mongoDB</p></li>
+<li><p><strong>(</strong><strong>list</strong><strong>)</strong> (<em>tweets_to_save</em>) – Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.</p></li>
+<li><p><strong>(</strong><strong>str</strong><strong>)</strong> (<em>group_name</em>) – Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.</p></li>
+<li><p><strong>(</strong><strong>object</strong><strong>)</strong> (<em>client</em>) – Oggetto che rappresenta la connessione al database MongoDB.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -227,31 +300,37 @@ A questo punto ogni tweet viene sottoposto ad un processo di parsing con la funz
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.parse_tweet">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#parse_tweet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.parse_tweet" title="Link to this definition"></a></dt>
-<dd><p>Funzione che si occupa di parsare un post e restituirlo in formato json. Questa funzione riceve in input una lista
-di informazioni su uno specifico tweet. Ha lo scopo di parsare il tweet, ovvero organizzare queste informazioni in modo
-opportuno ed estrarne il giusto contenuto informativo. Ogni tweet viene infatti organizzato in un oggetto con la
-seguente struttura:</p>
+<dd><p>Funzione per il parsing di un tweet in formato JSON.</p>
+<p>Questa funzione riceve in input una lista contenente le informazioni grezze di un tweet e restituisce un oggetto JSON ben strutturato,
+organizzando i dati in campi chiave per facilitarne l’analisi o l’archiviazione. È progettata per filtrare contenuti incompleti e
+estrarre solo le informazioni rilevanti, riformattandole per un utilizzo più pratico.</p>
+<p><strong>Struttura dell’oggetto restituito</strong>:</p>
 <ul class="simple">
-<li><p>‘username’: username dell’autore del tweet</p></li>
-<li><p>‘tag_username’: username_tag dell’autore del tweet</p></li>
-<li><p>‘date’: data di pubblicazione</p></li>
-<li><p>‘scrape_date’: data in cui il dato è stato estratto ed elaborato dal codice</p></li>
-<li><p>‘content’: testo del tweet</p></li>
-<li><p>‘reshared’: contenuto di un eventuale post ricondiviso</p></li>
-<li><p>‘images’: immagini contenute nel tweet</p></li>
-<li><p>‘videos’: video contenuti nel tweet</p></li>
-<li><p>‘comments’: numero di commenti</p></li>
-<li><p>‘reposts’: numero di repost</p></li>
-<li><p>‘likes’: numero di like</p></li>
-<li><p>‘views’: numero di visualizzazioni</p></li>
-<li><p>‘url’: url del tweet</p></li>
+<li><p><cite>‘username’</cite>: Nome utente dell’autore del tweet.</p></li>
+<li><p><cite>‘tag_username’</cite>: Tag dello username dell’autore del tweet (es. &#64;username).</p></li>
+<li><p><cite>‘date’</cite>: Data di pubblicazione del tweet.</p></li>
+<li><p><cite>‘scrape_date’</cite>: Data in cui il tweet è stato estratto e analizzato.</p></li>
+<li><p><cite>‘content’</cite>: Testo contenuto nel tweet.</p></li>
+<li><p><cite>‘reshared’</cite>: Contenuto del post originale in caso di ricondivisione (retweet).</p></li>
+<li><p><cite>‘images’</cite>: Lista di immagini incluse nel tweet.</p></li>
+<li><p><cite>‘videos’</cite>: Lista di video inclusi nel tweet.</p></li>
+<li><p><cite>‘comments’</cite>: Numero di commenti ricevuti.</p></li>
+<li><p><cite>‘reposts’</cite>: Numero di repost o retweet.</p></li>
+<li><p><cite>‘likes’</cite>: Numero di like ricevuti.</p></li>
+<li><p><cite>‘views’</cite>: Numero di visualizzazioni totali.</p></li>
+<li><p><cite>‘url’</cite>: URL diretto al tweet.</p></li>
+</ul>
+<p><strong>Gestione di eventuali discrepanze</strong>:</p>
+<ul class="simple">
+<li><p>Se i dati del tweet non contengono tutte le informazioni necessarie (ad esempio mancano valori numerici per i commenti, like, ecc.), i campi corrispondenti vengono riempiti con <cite>None</cite>.</p></li>
+<li><p>I post con meno di 9 elementi vengono scartati automaticamente.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tweet</strong> – list, lista di elementi che che rappresentano il tweet</p>
+<dd class="field-odd"><p><strong>tweet</strong> – list, lista contenente i dati del tweet in ordine predefinito.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>oggetto con il formato descritto in precedenza</p>
+<dd class="field-even"><p>dict, oggetto JSON contenente i dati strutturati del tweet, oppure <cite>None</cite> se i dati in ingresso sono incompleti.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -259,13 +338,19 @@ seguente struttura:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.read_json">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.read_json" title="Link to this definition"></a></dt>
-<dd><p>Funzione per la lettura di file JSON.</p>
+<dd><p>Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</p>
+<p><strong>Funzionamento</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Apertura del file</strong>: Apre il file JSON specificato dal percorso <cite>path</cite> in modalità lettura.</p></li>
+<li><p><strong>Caricamento del contenuto</strong>: Utilizza la funzione <cite>json.load</cite> per caricare il contenuto del file JSON e convertirlo in un oggetto Python (dizionario).</p></li>
+<li><p><strong>Restituzione dei dati</strong>: Una volta letto il file, la funzione restituisce il dizionario contenente i dati del file JSON.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> – percorso del file JSON</p>
+<dd class="field-odd"><p><strong>path</strong> – str, il percorso del file JSON da leggere.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict, contenuto del file JSON</p>
+<dd class="field-even"><p>dict, i dati contenuti nel file JSON, rappresentati come un dizionario Python.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,16 +358,22 @@ seguente struttura:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.save_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione per il salvataggio di dati nel database MongoDB.</p>
+<dd><p>Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Salvataggio dei dati</strong>: I dati vengono passati come un dizionario (<cite>data</cite>) e vengono inseriti nella collezione MongoDB fornita tramite il metodo <cite>insert_one()</cite>.</p></li>
+<li><p><strong>Logging</strong>: Viene registrato un messaggio di log che conferma che i dati sono stati salvati nel database.</p></li>
+</ol>
+<p><strong>Nota</strong>: Questa funzione salva i dati in un’unica operazione e non esegue controlli avanzati (ad esempio, verifica di duplicati o gestione di errori).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – dict, dati da salvare</p></li>
-<li><p><strong>collection</strong> – oggetto che rappresenta la collezione</p></li>
+<li><p><strong>data</strong> – dict, i dati da salvare nel database. Si suppone che siano nel formato appropriato per MongoDB (ad esempio, un dizionario Python).</p></li>
+<li><p><strong>collection</strong> – Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito. La funzione esegue solo l’inserimento dei dati.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -290,19 +381,20 @@ seguente struttura:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.save_user_info_to_mongo">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_user_info_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#save_user_info_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.save_user_info_to_mongo" title="Link to this definition"></a></dt>
-<dd><p>Funzione che si occupa di il salvataggio di dati, relativi alle info utente, nel database MongoDB.
-Questa funzione viene richiamata dallo script ‘user_info_scraper.py’. In tale script non usiamo la funzione
-‘save_to_mongo’ come visto negli altri script in quanto dopo il salvataggio non visualizziamo più l’url di un
-post salvato ma abbiamo bisogno di visualizzare lo username tag dell’utente di cui stiamo salvando le info nel db.</p>
+<dd><p>Funzione per salvare informazioni utente nel database MongoDB.</p>
+<p>Questa funzione consente di salvare un documento contenente i dati relativi a un utente in una specifica collezione del database MongoDB.
+È progettata per essere utilizzata nello script <cite>user_info_scraper.py</cite>, che richiede un approccio diverso rispetto alla funzione generica <cite>save_to_mongo</cite>.
+In particolare, dopo il salvataggio, l’attenzione è rivolta alla visualizzazione del tag dello username dell’utente, piuttosto che all’URL di un post salvato,
+rendendo questa funzione specifica per le esigenze dello script.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – dict, dati da salvare</p></li>
-<li><p><strong>collection</strong> – oggetto che rappresenta la collezione</p></li>
+<li><p><strong>data</strong> – dict, dizionario contenente i dati relativi all’utente da salvare.</p></li>
+<li><p><strong>collection</strong> – oggetto che rappresenta la collezione MongoDB in cui salvare il documento.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -310,17 +402,34 @@ post salvato ma abbiamo bisogno di visualizzare lo username tag dell’utente di
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.chrome.utils.utils.x_login">
 <span class="sig-prename descclassname"><span class="pre">src.X_scraping.chrome.utils.utils.</span></span><span class="sig-name descname"><span class="pre">x_login</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">credentials_access</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver_access</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/chrome/utils/utils.html#x_login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.chrome.utils.utils.x_login" title="Link to this definition"></a></dt>
-<dd><p>Funzione che automatizza la procedura di accesso ad X. Prende in input le credenziali d’accesso (‘credentials.json) e il driver
-selenium che serve a controllare il browser. Per prima cosa controlla la presenza del campo email, se è presente inserisce
-l’email specificata in ‘credentials.json’ e simula la pressione del tasto invio sulla tastiera. Prosegue ripetendo lo stesso
-procedimento per i campi username e password.
-:param credentials_access: dict, dizionario di credenziali d’accesso specificate in ‘credentials.json’</p>
+<dd><p>La funzione <cite>x_login</cite> automatizza la procedura di accesso a X (Twitter) utilizzando il driver Selenium per il controllo del browser.
+Prende in input un dizionario contenente le credenziali di accesso (email, username e password) e il driver del browser.
+La funzione interagisce con i campi del modulo di login per inserire i dati necessari e simulare la pressione del tasto Invio.</p>
+<p><strong>Funzionalità principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Inserimento dell’email:</strong> La funzione cerca il campo per l’inserimento dell’email tramite il suo percorso XPath. Se il campo è presente, inserisce l’email fornita nelle credenziali e invia il modulo.</p></li>
+<li><p><strong>Gestione dello username (se richiesto):</strong> In caso di richieste aggiuntive di sicurezza, come l’inserimento dello username, la funzione identifica il campo corrispondente e procede con l’inserimento e l’invio.</p></li>
+<li><p><strong>Inserimento della password:</strong> La funzione individua il campo della password, inserisce il valore fornito nelle credenziali e completa il login simulando la pressione del tasto Invio.</p></li>
+<li><p><strong>Gestione degli errori:</strong> Se uno dei campi non viene trovato (ad esempio, se l’interfaccia cambia), la funzione gestisce l’eccezione e stampa un messaggio di errore.</p></li>
+</ol>
+<p><strong>Comportamento della funzione</strong>:</p>
+<ol class="arabic simple">
+<li><p>Controlla e riempie il campo dell’email.</p></li>
+<li><p>Se richiesto, riempie il campo dello username.</p></li>
+<li><p>Inserisce la password e completa l’accesso.</p></li>
+<li><p>Effettua un breve ritardo dopo ogni interazione per garantire il caricamento delle pagine.</p></li>
+</ol>
+<p><strong>Utilità:</strong>
+La funzione è utile per automatizzare l’accesso a X in applicazioni di scraping o altre automazioni, gestendo richieste di sicurezza aggiuntive come l’inserimento dello username.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>driver_access</strong> – driver selenium per il controllo del browser</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>credentials_access</strong> – dict contenente le credenziali di accesso</p></li>
+<li><p><strong>driver_access</strong> – oggetto Selenium WebDriver utilizzato per controllare il browser e interagire con l’interfaccia.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>
