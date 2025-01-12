@@ -20,7 +20,8 @@ project-root/
 │   ├── DarkWeb_scraping/                     # Script per scraping sul dark web
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
 │   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
-│   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
+│   │   │   ├── mongo_utils.json              # file che contiene le credenziali per l'accesso al DB
+│   │   │   ├── screenshot_collector.py       # Script per la cattura di screenshot su ahmia browser
 │   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script
 │   │   ├── __init__.py                       # Script per contrassegnare la directory come modulo
 │   │   ├── ahmia_browser_scraper.py          # Script per scraping
@@ -35,8 +36,9 @@ project-root/
 │   │   │   └── geckodriver                   # Driver per Firefox 
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
 │   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
-│   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
+│   │   │   ├── conf.json                     # file che contiene i valori di configurazione dello script
 │   │   │   ├── cookies.json                  # file dei cookies di una sessione Firefox in cui si è effettuato il login
+│   │   │   ├── mongo_utils.json              # file che contiene le credenziali per l'accesso al DB
 │   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script
 │   │   ├── __init__.py                       # Script per contrassegnare la directory come modulo         
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
@@ -49,7 +51,8 @@ project-root/
 │   ├── Telegram_scraping/                    # Script per scraping su Telegram
 │   │   ├── utils/                            # Utility (connessione DB, accesso)
 │   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
-│   │   │   ├── credentials.json              # file che contiene le credenziali per l'accesso al DB
+│   │   │   ├── conf.json                     # file che contiene i valori di configurazione dello script
+│   │   │   ├── mongo_utils.json              # file che contiene le credenziali per l'accesso al DB
 │   │   │   └── utils.py                      # Script che contiene le funzioni utilizzate dagli altri script 
 │   │   ├── __init__.py                       # Script per contrassegnare la directory come modulo              
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
@@ -60,12 +63,13 @@ project-root/
 │   │   ├── chrome/                           # Versione con Chrome
 │   │   │   ├── deepfake_detection/           # directory relativa al task di deepfake detection
 │   │   │   │   ├── utils/                    # Utility connessione API
-│   │   │   │   │   └── credentials.json      # file che contiene le credenziali per l'accesso all'API
+│   │   │   │   │   └── credentials_api.json  # file che contiene le credenziali per l'accesso all'API
 │   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
 │   │   │   │   └── deepfake_detection.py     # Script per il rilevamento di deepfake nei contenuti multimediali estrapolati
 │   │   │   ├── utils/                        # Utility (connessione DB, accesso)
 │   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
-│   │   │   │   ├── credentials.json          # file che contiene le credenziali per l'accesso al DB
+│   │   │   │   ├── conf.json                 # file che contiene i valori di configurazione dello script
+│   │   │   │   ├── mongo_utils.json          # file che contiene le credenziali per l'accesso al DB
 │   │   │   │   └── utils.py                  # Script che contiene le funzioni utilizzate dagli altri script 
 │   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── beautifulsoup_analisys.py     # Script che contiene le funzioni per l'analisi dei dell'html raccolto
@@ -78,14 +82,15 @@ project-root/
 │   │   ├── firefox/                          # Versione con Firefox
 │   │   │   ├── deepfake_detection/           # directory relativa al task di deepfake detection
 │   │   │   │   ├── utils/                    # Utility connessione API
-│   │   │   │   │   └── credentials.json      # file che contiene le credenziali per l'accesso all'API
+│   │   │   │   │   └── credentials_api.json  # file che contiene le credenziali per l'accesso all'API
 │   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
 │   │   │   │   └── deepfake_detection.py     # Script per il rilevamento di deepfake nei contenuti multimediali estrapolati
 │   │   │   ├── driver/
 │   │   │   │   └── geckodriver               # Driver per Firefox 
 │   │   │   ├── utils/                        # Utility (connessione DB, accesso)
 │   │   │   │   ├── __init__.py               # Script per contrassegnare la directory come modulo
-│   │   │   │   ├── credentials.json          # file che contiene le credenziali per l'accesso al DB
+│   │   │   │   ├── conf.json                 # file che contiene i valori di configurazione dello script
+│   │   │   │   ├── mongo_utils.json          # file che contiene le credenziali per l'accesso al DB
 │   │   │   │   └── utils.py                  # Script che contiene le funzioni utilizzate dagli altri script 
 │   │   │   ├── __init__.py                   # Script per contrassegnare la directory come modulo
 │   │   │   ├── beautifulsoup_analisys.py     # Script che contiene le funzioni per l'analisi dei dell'html raccolto
