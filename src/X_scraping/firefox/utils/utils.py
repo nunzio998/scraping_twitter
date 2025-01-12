@@ -352,7 +352,7 @@ def parse_and_save(tweets_to_save, group_name, client):
     :param **tweets_to_save** (list): Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.\n
     :param **group_name** (str): Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.\n
     :param **client** (object): Oggetto che rappresenta la connessione al database MongoDB.\n
-    :return: Nessun valore restituito.
+    :return: Nessun valore restituito:
     """
 
     # Connessione alla collezione dati
@@ -412,7 +412,7 @@ def check_limited_user(driver):
     3. Se l'elemento non è trovato (`NoSuchElementException`), stampa un messaggio e prosegue, poiché l'utente non è limitato.\n
 
     :param driver: driver selenium per il controllo del browser\n
-    :return Nessun valore ritornato.
+    :return: Nessun valore ritornato.
     """
     try:
         show_profile_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button')
