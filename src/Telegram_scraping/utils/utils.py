@@ -36,7 +36,7 @@ def read_json(path):
         return json.load(file)
 
 
-config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/Telegram_scraping/utils/conf.json')
+config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/Telegram_scraping/utils/mongo_utils.json')
 
 
 # Funzioni MongoDB:
