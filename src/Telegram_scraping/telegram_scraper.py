@@ -4,7 +4,6 @@ database MongoDB. Utilizza la libreria Telethon per connettersi alle API di Tele
 offrendo un sistema flessibile, configurabile e resiliente adatto a diversi scenari di utilizzo.
 
 Caratteristiche principali:\n
-----------------------------
 1. **Connessione a Telegram**:\n
    - Recupero della cronologia dei messaggi da canali o gruppi specificati.\n
    - Estrazione di dettagli sui mittenti (nome, cognome, username), se disponibili.\n
@@ -24,7 +23,6 @@ Caratteristiche principali:\n
    - Se i target non vengono forniti, vengono automaticamente caricati dal database MongoDB.\n
 
 Flusso di esecuzione:\n
-----------------------
 1. **Configurazione iniziale**:\n
    - Lettura delle credenziali API e dei parametri di configurazione da un file JSON.\n
    - Configurazione del logger per monitorare tutte le operazioni.\n
@@ -40,7 +38,6 @@ Flusso di esecuzione:\n
    - Al termine dell'elaborazione, il client Telegram viene chiuso e la connessione a MongoDB viene terminata.\n
 
 Prerequisiti:\n
--------------
 - Una configurazione valida delle credenziali API di Telegram (api_id, api_hash, phone).\n
 - Una connessione funzionante al database MongoDB.\n
 - La libreria Telethon installata.\n
