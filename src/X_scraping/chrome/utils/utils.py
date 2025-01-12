@@ -166,11 +166,11 @@ def get_db(client):
     """
     Funzione che restituisce un riferimento al database MongoDB specificato.
 
-    La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file `credentials.json`.
+    La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file `conf.json`.
     È utile per ottenere un'istanza del database e interagire con le sue collezioni.
 
     :param client: oggetto che rappresenta la connessione a MongoDB.\n
-    :return: oggetto che rappresenta la connessione al database specificato in 'credentials.json'.
+    :return: oggetto che rappresenta la connessione al database specificato in 'conf.json'.
     """
     return client.get_database(config_data['database'])
 

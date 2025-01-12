@@ -66,7 +66,7 @@ def find_related_users():
     client = connect_to_mongo()
 
     # Leggo file con credenziali
-    credentials = read_json("utils/credentials.json")
+    credentials = read_json("utils/conf.json")
 
     # Configura opzioni del browser
     firefox_options = Options()

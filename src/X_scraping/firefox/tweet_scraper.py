@@ -83,7 +83,7 @@ def scrape_tweets():
     :return: Nessun valore ritornato. Le informazioni vengono salvate nel database.
     """
     # Leggo file con credenziali
-    credentials = read_json("utils/credentials.json")
+    credentials = read_json("utils/conf.json")
 
     # Connessione al DB
     client = connect_to_mongo()

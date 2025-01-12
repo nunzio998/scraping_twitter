@@ -96,7 +96,7 @@ def scrape_user_info():
             continue
 
     # Leggo file con credenziali
-    credentials = read_json("utils/credentials.json")
+    credentials = read_json("utils/conf.json")
 
     collection = connect_to_mongo_collection(client, 'users_info')
 
