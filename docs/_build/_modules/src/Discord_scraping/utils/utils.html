@@ -75,34 +75,34 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Questo script fornisce una serie di funzioni utili per interagire con il sito web di Discord, eseguire scraping dei messaggi in una chat e interagire con un database MongoDB. Le funzionalità principali incluse in questo script sono:</span>
 
-<span class="sd">1. **Gestione MongoDB**:</span>
-<span class="sd">   - Connessione a un database MongoDB tramite una stringa di connessione.</span>
-<span class="sd">   - Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.</span>
-<span class="sd">   - Salvataggio dei dati nel database MongoDB.</span>
+<span class="sd">1. **Gestione MongoDB**:\n</span>
+<span class="sd">   - Connessione a un database MongoDB tramite una stringa di connessione.\n</span>
+<span class="sd">   - Connessione a specifiche collezioni MongoDB, con la possibilità di crearle se non esistono.\n</span>
+<span class="sd">   - Salvataggio dei dati nel database MongoDB.\n</span>
 
-<span class="sd">2. **Analisi dei dati con BeautifulSoup**:</span>
-<span class="sd">   - Estrazione e parsing dei messaggi da una pagina web tramite il modulo BeautifulSoup.</span>
-<span class="sd">   - Raccolta dei messaggi da una chat di Discord, insieme ai metadati relativi all&#39;autore, alla data e al contenuto del messaggio.</span>
+<span class="sd">2. **Analisi dei dati con BeautifulSoup**:\n</span>
+<span class="sd">   - Estrazione e parsing dei messaggi da una pagina web tramite il modulo BeautifulSoup.\n</span>
+<span class="sd">   - Raccolta dei messaggi da una chat di Discord, insieme ai metadati relativi all&#39;autore, alla data e al contenuto del messaggio.\n</span>
 
-<span class="sd">3. **Interazioni con Discord tramite Selenium**:</span>
-<span class="sd">   - Automazione del login a Discord usando Selenium, includendo la gestione di un possibile captcha.</span>
-<span class="sd">   - Navigazione tra le pagine di Discord per raccogliere messaggi da una chat.</span>
-<span class="sd">   - Scroll della pagina per caricare più messaggi tramite l&#39;interazione con la pagina HTML.</span>
+<span class="sd">3. **Interazioni con Discord tramite Selenium**:\n</span>
+<span class="sd">   - Automazione del login a Discord usando Selenium, includendo la gestione di un possibile captcha.\n</span>
+<span class="sd">   - Navigazione tra le pagine di Discord per raccogliere messaggi da una chat.\n</span>
+<span class="sd">   - Scroll della pagina per caricare più messaggi tramite l&#39;interazione con la pagina HTML.\n</span>
 
-<span class="sd">4. **Gestione delle sessioni con i cookies**:</span>
-<span class="sd">   - Caricamento dei cookies di sessione da un file JSON per superare eventuali sistemi di autenticazione come il captcha.</span>
+<span class="sd">4. **Gestione delle sessioni con i cookies**:\n</span>
+<span class="sd">   - Caricamento dei cookies di sessione da un file JSON per superare eventuali sistemi di autenticazione come il captcha.\n</span>
 
-<span class="sd">5. **Logging**:</span>
-<span class="sd">   - Logging delle operazioni eseguite per monitorare l&#39;avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l&#39;esecuzione dello scraping, il login a Discord, ecc.).</span>
+<span class="sd">5. **Logging**:\n</span>
+<span class="sd">   - Logging delle operazioni eseguite per monitorare l&#39;avanzamento e il successo o il fallimento delle azioni (ad esempio, la connessione al database, l&#39;esecuzione dello scraping, il login a Discord, ecc.).\n</span>
 
 <span class="sd">Lo script è progettato per operare in un ambiente automatizzato di scraping di chat Discord, ma include anche la gestione di eventuali ostacoli come il captcha. È inoltre integrato con MongoDB per il salvataggio dei dati raccolti.</span>
 
-<span class="sd">**Prerequisiti**:</span>
-<span class="sd">- Una connessione attiva a un database MongoDB.</span>
-<span class="sd">- I cookies di sessione per evitare il login manuale ripetuto (se necessario).</span>
-<span class="sd">- Un ambiente con Selenium e BeautifulSoup per l&#39;automazione del browser e l&#39;analisi del contenuto delle pagine.</span>
+<span class="sd">**Prerequisiti**:\n</span>
+<span class="sd">- Una connessione attiva a un database MongoDB.\n</span>
+<span class="sd">- I cookies di sessione per evitare il login manuale ripetuto (se necessario).\n</span>
+<span class="sd">- Un ambiente con Selenium e BeautifulSoup per l&#39;automazione del browser e l&#39;analisi del contenuto delle pagine.\n</span>
 
-<span class="sd">**Uso**:</span>
+<span class="sd">**Uso**:\n</span>
 <span class="sd">Lo script può essere utilizzato per raccogliere e analizzare messaggi da una chat di Discord, quindi salvare i dati nel database MongoDB per ulteriori elaborazioni. Le credenziali per il login a Discord devono essere fornite tramite un file di configurazione. Inoltre, lo script gestisce automaticamente il login e la risoluzione di eventuali captcha.</span>
 
 <span class="sd">**Autore**: Francesco Pinsone.</span>
