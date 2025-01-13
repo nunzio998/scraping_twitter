@@ -105,6 +105,10 @@
 
 <span class="sd">    :return: Nessun valore restituito. La funzione si occupa di gestire l&#39;eliminazione e il logging.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Configuro il logger</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
+                        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
+
     <span class="c1"># Mi connetto al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
 
@@ -114,7 +118,7 @@
     <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collection_list</span><span class="p">:</span>
         <span class="n">data_coll</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">data_coll</span><span class="o">.</span><span class="n">delete_many</span><span class="p">({})</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Eliminati </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">deleted_count</span><span class="si">}</span><span class="s2"> documenti per la collection </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Eliminati </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">deleted_count</span><span class="si">}</span><span class="s2"> documenti per la collection </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>
 

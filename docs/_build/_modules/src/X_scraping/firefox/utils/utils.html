@@ -110,6 +110,11 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># Configuro il logger</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
+                    <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
 
 
 <span class="n">interest_groups</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Killnet&quot;</span><span class="p">,</span> <span class="s2">&quot;NoName057(16)&quot;</span><span class="p">,</span> <span class="s2">&quot;Lazarus&quot;</span><span class="p">,</span> <span class="s2">&quot;DarkHalo&quot;</span><span class="p">,</span> <span class="s2">&quot;MustangPanda&quot;</span><span class="p">,</span> <span class="s2">&quot;BlackEnergy&quot;</span><span class="p">,</span> <span class="s2">&quot;BadMagic&quot;</span><span class="p">,</span>
@@ -170,33 +175,35 @@
 <span class="sd">    :param **driver_access**: oggetto Selenium WebDriver utilizzato per controllare il browser e interagire con l&#39;interfaccia.</span>
 <span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">email_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
-                                                 <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input&#39;</span><span class="p">)</span>
+        <span class="n">email_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input&#39;</span><span class="p">)</span>
         <span class="n">email_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">])</span>
         <span class="n">email_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo email non trovato..&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Campo email non trovato..&quot;</span><span class="p">)</span>
 
     <span class="c1"># Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">username_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
-                                                    <span class="s1">&#39;/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input&#39;</span><span class="p">)</span>
+        <span class="c1">#username_field = driver_access.find_element(By.XPATH, &#39;/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input&#39;)</span>
+        <span class="n">username_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input&#39;</span><span class="p">)</span>
         <span class="n">username_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">])</span>
         <span class="n">username_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo username non trovato..&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Campo username non trovato..&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">password_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
-                                                    <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input&#39;</span><span class="p">)</span>
+        <span class="n">password_field</span> <span class="o">=</span> <span class="n">driver_access</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input&#39;</span><span class="p">)</span>
         <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">])</span>
         <span class="n">password_field</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Campo password non trovato..&quot;</span><span class="p">)</span></div>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Campo password non trovato..&quot;</span><span class="p">)</span></div>
 
 
 
@@ -221,9 +228,9 @@
     <span class="c1"># Provo a connettermi al database</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">client</span><span class="o">.</span><span class="n">admin</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;ping&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connesso al database: &quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connesso al database: </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">client</span></div>
 
@@ -244,7 +251,7 @@
 <span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
 <span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;azione di disconnessione dal database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Disconnesso dal database: &quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Disconnesso dal database: </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">server_info</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
@@ -255,11 +262,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che restituisce un riferimento al database MongoDB specificato.</span>
 
-<span class="sd">    La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file `credentials.json`.</span>
+<span class="sd">    La funzione utilizza un oggetto client di MongoDB per connettersi al database configurato nel file `conf.json`.</span>
 <span class="sd">    È utile per ottenere un&#39;istanza del database e interagire con le sue collezioni.</span>
 
 <span class="sd">    :param client: oggetto che rappresenta la connessione a MongoDB.\n</span>
-<span class="sd">    :return: oggetto che rappresenta la connessione al database specificato in &#39;credentials.json&#39;.</span>
+<span class="sd">    :return: oggetto che rappresenta la connessione al database specificato in &#39;conf.json&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span></div>
 
@@ -288,9 +295,9 @@
     <span class="k">if</span> <span class="n">collection_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">():</span>
         <span class="c1"># Se la collezione non esiste, creala</span>
         <span class="n">db</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creata la collezione:&quot;</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creata la collezione: </span><span class="si">{</span><span class="n">collection_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;La collezione esiste già:&quot;</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;La collezione esiste già: </span><span class="si">{</span><span class="n">collection_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">get_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span></div>
 
@@ -313,7 +320,7 @@
 <span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;inserimento dei dati.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Salvato nel database: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel database: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 
@@ -333,7 +340,7 @@
 <span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Salvato nel database: &quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">])</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel database: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 
@@ -380,7 +387,10 @@
 
     <span class="n">data_pubblicazione</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
-    <span class="n">contenuto</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tweet</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+        <span class="n">contenuto</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tweet</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">contenuto</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">ricondivisione</span> <span class="o">=</span> <span class="n">tweet</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
 
@@ -499,7 +509,7 @@
         <span class="n">search_tweets</span> <span class="o">=</span> <span class="n">wait_user</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2&#39;</span><span class="p">)))</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TimeoutException: utente </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> non trovato..&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TimeoutException: utente </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> non trovato..&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
@@ -527,7 +537,7 @@
         <span class="n">show_profile_button</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button&#39;</span><span class="p">)</span>
         <span class="n">show_profile_button</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Account non limitato..&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Account non limitato..&quot;</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
 </pre></div>

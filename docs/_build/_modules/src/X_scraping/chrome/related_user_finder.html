@@ -104,7 +104,9 @@
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
 <span class="kn">from</span> <span class="nn">src.X_scraping.chrome.beautifulsoup_analisys</span> <span class="kn">import</span> <span class="n">find_related_user</span><span class="p">,</span> <span class="n">beautifulsoup_user_analisys</span>
-<span class="kn">from</span> <span class="nn">src.X_scraping.chrome.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_user_info_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">x_login</span><span class="p">,</span> <span class="n">check_user</span><span class="p">,</span> <span class="n">check_limited_user</span>
+<span class="kn">from</span> <span class="nn">src.X_scraping.chrome.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_user_info_to_mongo</span><span class="p">,</span> \
+    <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">x_login</span><span class="p">,</span> <span class="n">check_user</span><span class="p">,</span> <span class="n">check_limited_user</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 
 <div class="viewcode-block" id="find_related_users">
@@ -137,11 +139,15 @@
 
 <span class="sd">    :return: Nessun valore ritornato.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Configuro il logger</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
+                        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
+
     <span class="c1"># Connessione al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
 
     <span class="c1"># Leggo file con credenziali</span>
-    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/conf.json&quot;</span><span class="p">)</span>
 
     <span class="c1"># Configura opzioni del browser</span>
     <span class="n">chrome_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
@@ -205,7 +211,7 @@
 
         <span class="n">related_users</span> <span class="o">=</span> <span class="n">find_related_user</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">related_users</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">related_users</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># 4) Ora, per ognuno degli utenti correlati trovati, cerco le informazioni utente e le salvo nel database nella collection &#39;users_info&#39;</span>
         <span class="k">if</span> <span class="n">related_users</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -238,7 +244,7 @@
 
                 <span class="c1"># Salvo le informazioni nel database</span>
                 <span class="n">save_user_info_to_mongo</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;info utente </span><span class="si">{</span><span class="n">user_related</span><span class="si">}</span><span class="s2"> salvate nel database..&quot;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;info utente </span><span class="si">{</span><span class="n">user_related</span><span class="si">}</span><span class="s2"> salvate nel database..&quot;</span><span class="p">)</span>
 
     <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
     <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>

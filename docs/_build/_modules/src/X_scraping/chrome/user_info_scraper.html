@@ -106,15 +106,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
-<span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.service</span> <span class="kn">import</span> <span class="n">Service</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
 <span class="kn">from</span> <span class="nn">src.X_scraping.chrome.beautifulsoup_analisys</span> <span class="kn">import</span> <span class="n">beautifulsoup_user_analisys</span>
-<span class="kn">from</span> <span class="nn">src.X_scraping.chrome.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_user_info_to_mongo</span><span class="p">,</span> \
-    <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">get_db</span><span class="p">,</span> <span class="n">x_login</span>
+<span class="kn">from</span> <span class="nn">src.X_scraping.chrome.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_user_info_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">get_db</span><span class="p">,</span> <span class="n">x_login</span><span class="p">,</span> <span class="n">check_user</span><span class="p">,</span> <span class="n">check_limited_user</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 
 <div class="viewcode-block" id="scrape_user_info">
@@ -151,6 +150,10 @@
 
 <span class="sd">    :return: Nessun valore restituito. Le informazioni sugli utenti vengono salvate direttamente nel database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Configuro il logger</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
+                        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
+
     <span class="c1"># Connessione al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
 
@@ -173,7 +176,7 @@
             <span class="k">continue</span>
 
     <span class="c1"># Leggo file con credenziali</span>
-    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/credentials.json&quot;</span><span class="p">)</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/conf.json&quot;</span><span class="p">)</span>
 
     <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;users_info&#39;</span><span class="p">)</span>
 
@@ -213,26 +216,20 @@
         <span class="c1"># Controllo se l&#39;utente è già presente nel database</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;username_tag&#39;</span><span class="p">:</span> <span class="n">user</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">doc</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Utente già presente:&#39;</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Utente già presente:</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
 
         <span class="c1"># Cerco l&#39;utente</span>
         <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://www.X.com/</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Verifico che l&#39;utente esista, se non esiste passo alla prssima iterazione</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Attendo caricamento pagina</span>
-            <span class="n">wait_user</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
-
-            <span class="c1"># Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile</span>
-            <span class="n">search_tweets</span> <span class="o">=</span> <span class="n">wait_user</span><span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">EC</span><span class="o">.</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span>
-                                                                              <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2&#39;</span><span class="p">)))</span>
-        <span class="k">except</span> <span class="n">TimeoutException</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TimeoutException: utente </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> non trovato..&quot;</span><span class="p">)</span>
+        <span class="c1"># Verifico che l&#39;utente esista, se non esiste passo alla prossima iterazione</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
             <span class="k">continue</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Controllo se l&#39;account è temporanemente limitato. Se lo è sarà presente il seguente bottone per mostrare il profilo, in tal caso clicco sul bottone</span>
+        <span class="n">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">html_content</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
 
@@ -240,7 +237,7 @@
         <span class="n">res</span> <span class="o">=</span> <span class="n">beautifulsoup_user_analisys</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Utente non trovato:&#39;</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Utente non trovato: </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
 
         <span class="c1"># 3) Salvo i risultati nel database</span>
