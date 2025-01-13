@@ -77,23 +77,25 @@ def analisys_with_beautifulsoup(response_html):
     soup = soup.body
 
     # Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)
-    results = soup.find_all("article",
-                            class_="css-175oi2r r-18u37iz r-1udh08x r-1c4vpko r-1c7gwzm r-o7ynqc r-6416eg r-1ny4l3l r-1loqt21")
+    results = soup.find_all("article", class_="css-175oi2r r-18u37iz r-1udh08x r-1c4vpko r-1c7gwzm r-o7ynqc r-6416eg r-1ny4l3l r-1loqt21")
 
     # estraggo il testo dai div ottenuti e lo salvo in un file
     tweets = []
     for result in results:
+        a_url = result.find("a", class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
+        url = f"https://x.com{a_url['href']}"
 
         # Se non è presente l'autore il tweet viene scartato
         try:
             div_username = result.find("div", class_="css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs")
             username = div_username.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
 
-            div_tag_username = result.find("div",
-                                           class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
-            tag_username = div_tag_username.text.strip()
+
+            div_tag_username = result.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+            tag_username = div_tag_username.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
+
         except AttributeError:
-            logging.exception("Tweet scartato per assenza autore..")
+            logging.exception(f"Tweet {url} scartato per assenza autore..")
             continue
 
         div_date = result.find("div", class_="css-175oi2r r-18u37iz r-1q142lx")
@@ -101,33 +103,29 @@ def analisys_with_beautifulsoup(response_html):
 
         # Controllo che il tweet abbia contenuto testuale
         try:
-            div_contenuto = result.find("div",
-                                        class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
+            div_contenuto = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-1udbk01 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
             content = div_contenuto.text.strip()
         except AttributeError:
-            logging.info("Il tweet non ha contenuto..")
+            content = None
+            logging.info(f"Il tweet {url} non ha contenuto..")
 
         # Provo a cercare contenuti ricondivisi
         reshared = []
         try:
             div_ricondiviso = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
 
-            div_utente_ricondiviso = div_ricondiviso.find("div",
-                                                          class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
-            utente_ricondiviso = div_utente_ricondiviso.find("span",
-                                                             class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
+            div_utente_ricondiviso = div_ricondiviso.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+            utente_ricondiviso = div_utente_ricondiviso.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
             contenuto_ricondiviso = None
             try:
-                div_contenuto_ricondiviso = result.find("div",
-                                                        class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim r-14gqq1x")
-                contenuto_ricondiviso = div_contenuto_ricondiviso.find("span",
-                                                                       class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").strip()
+                div_contenuto_ricondiviso = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim r-14gqq1x")
+                contenuto_ricondiviso = div_contenuto_ricondiviso.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").strip()
             except TypeError:
-                logging.info("Nessun contenuto ricondivisibile..")
+                logging.info(f"Nessun contenuto ricondivisibile per il tweet {url}..")
 
             reshared = [utente_ricondiviso, contenuto_ricondiviso]
         except AttributeError:
-            logging.info("Nessun contenuto ricondiviso..")
+            logging.info(f"Nessun contenuto ricondiviso per il tweet {url}..")
 
         # Cerco presenza d'immagini e/o video nei tweet
         img_list = []
@@ -140,7 +138,7 @@ def analisys_with_beautifulsoup(response_html):
             for img in imgs:
                 img_list.append(img['src'])
         except AttributeError:
-            logging.info("Immagini non trovate..")
+            logging.info(f"Immagini non trovate per il tweet {url}..")
 
         video_list = []
         try:
@@ -152,14 +150,10 @@ def analisys_with_beautifulsoup(response_html):
             for video in videos:
                 video_list.append(video['src'])
         except AttributeError:
-            logging.info("Video non trovati..")
+            logging.info(f"Video non trovati per il tweet {url}..")
 
         div_numeri = result.find("div", class_="css-175oi2r r-1kbdv8c r-18u37iz r-1wtj0ep r-1ye8kvj r-1s2bzr4")
         numbers = div_numeri.text.strip()
-
-        a_url = result.find("a",
-                            class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
-        url = f"https://x.com{a_url['href']}"
 
         tweet = [username, tag_username, date, content, reshared, img_list, video_list, numbers, url]
 

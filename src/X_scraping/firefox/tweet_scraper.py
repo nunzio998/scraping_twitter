@@ -102,7 +102,7 @@ def scrape_tweets():
 
     # Configura opzioni del browser
     firefox_options = Options()
-    firefox_options.add_argument("--headless")
+    # firefox_options.add_argument("--headless")
 
     # Geckodriver
     service = Service('driver/geckodriver')

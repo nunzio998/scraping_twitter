@@ -96,30 +96,32 @@ def x_login(credentials_access, driver_access):
     :param **driver_access**: oggetto Selenium WebDriver utilizzato per controllare il browser e interagire con l'interfaccia.
     :return: Nessun valore restituito.
     """
+
     try:
-        email_field = driver_access.find_element(By.XPATH,
-                                                 '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')
+        email_field = driver_access.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')
         email_field.send_keys(credentials_access["email"])
         email_field.send_keys(Keys.RETURN)
+
         time.sleep(2)
     except NoSuchElementException:
         logging.info("Campo email non trovato..")
 
     # Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza
     try:
-        username_field = driver_access.find_element(By.XPATH,
-                                                    '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
+        #username_field = driver_access.find_element(By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
+        username_field = driver_access.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')
         username_field.send_keys(credentials_access["username"])
         username_field.send_keys(Keys.RETURN)
+
         time.sleep(2)
     except NoSuchElementException:
         logging.info("Campo username non trovato..")
 
     try:
-        password_field = driver_access.find_element(By.XPATH,
-                                                    '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')
+        password_field = driver_access.find_element(By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input')
         password_field.send_keys(credentials_access["password"])
         password_field.send_keys(Keys.RETURN)
+
         time.sleep(2)
     except NoSuchElementException:
         logging.info("Campo password non trovato..")
@@ -285,7 +287,10 @@ def parse_tweet(tweet):
 
     data_pubblicazione = tweet[2]
 
-    contenuto = ' '.join(tweet[3].split())
+    if tweet[3]:
+        contenuto = ' '.join(tweet[3].split())
+    else:
+        contenuto = None
 
     ricondivisione = tweet[4]
 
