@@ -30,6 +30,7 @@ per una successiva analisi.
 
 **Autore**: Francesco Pinsone.
 """
+import logging
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -74,6 +75,10 @@ def scrape_user_info():
 
     :return: Nessun valore restituito. Le informazioni sugli utenti vengono salvate direttamente nel database.
     """
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
     # Connessione al database
     client = connect_to_mongo()
 
@@ -132,7 +137,7 @@ def scrape_user_info():
         # Controllo se l'utente è già presente nel database
         doc = collection.find_one({'username_tag': user})
         if doc:
-            print('Utente già presente:', user)
+            logging.info(f"Utente già presente:{user}")
             continue
 
         # Cerco l'utente
@@ -153,13 +158,13 @@ def scrape_user_info():
         res = beautifulsoup_user_analisys(html_content)
 
         if res['username_tag'] is None:
-            print('Utente non trovato:', user)
+            logging.info(f"Utente non trovato: {user}")
             continue
 
         # 3) Salvo i risultati nel database
         save_user_info_to_mongo(res, collection)
 
-        print(res)
+        logging.info(res)
 
     driver.quit()
     disconnect_to_mongo(client)

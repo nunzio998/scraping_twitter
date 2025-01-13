@@ -33,8 +33,13 @@ Lo script è pensato per raccogliere e organizzare in modo strutturato i dati de
 
 **Autore**: Francesco Pinsone.
 """
+import logging
 
 from bs4 import BeautifulSoup
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 
 def analisys_with_beautifulsoup(response_html):
@@ -72,7 +77,8 @@ def analisys_with_beautifulsoup(response_html):
     soup = soup.body
 
     # Cerco i div che contengono il tweet per intero (comprensivo si nome, data, testo, ecc.)
-    results = soup.find_all("article", class_="css-175oi2r r-18u37iz r-1udh08x r-1c4vpko r-1c7gwzm r-o7ynqc r-6416eg r-1ny4l3l r-1loqt21")
+    results = soup.find_all("article",
+                            class_="css-175oi2r r-18u37iz r-1udh08x r-1c4vpko r-1c7gwzm r-o7ynqc r-6416eg r-1ny4l3l r-1loqt21")
 
     # estraggo il testo dai div ottenuti e lo salvo in un file
     tweets = []
@@ -82,44 +88,46 @@ def analisys_with_beautifulsoup(response_html):
         try:
             div_username = result.find("div", class_="css-175oi2r r-1awozwy r-18u37iz r-1wbh5a2 r-dnmrzs")
             username = div_username.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
-            # print(f"username: {username}")
 
-            div_tag_username = result.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+            div_tag_username = result.find("div",
+                                           class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
             tag_username = div_tag_username.text.strip()
-            # print(f"tag:{tag_username}")
         except AttributeError:
-            print("Tweet scartato per assenza autore..")
+            logging.exception("Tweet scartato per assenza autore..")
             continue
 
         div_date = result.find("div", class_="css-175oi2r r-18u37iz r-1q142lx")
         date = div_date.find("time")['datetime']
-        # print(f"data:{date}")
 
         # Controllo che il tweet abbia contenuto testuale
         try:
-            div_contenuto = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
+            div_contenuto = result.find("div",
+                                        class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim")
             content = div_contenuto.text.strip()
-            # print(f"contenuto:{content}")
         except AttributeError:
-            print("Il tweet non ha contenuto..")
+            logging.info("Il tweet non ha contenuto..")
 
         # Provo a cercare contenuti ricondivisi
         reshared = []
         try:
             div_ricondiviso = result.find("div", class_="css-175oi2r r-9aw3ui r-1s2bzr4")
 
-            div_utente_ricondiviso = div_ricondiviso.find("div", class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
-            utente_ricondiviso = div_utente_ricondiviso.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
+            div_utente_ricondiviso = div_ricondiviso.find("div",
+                                                          class_="css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978")
+            utente_ricondiviso = div_utente_ricondiviso.find("span",
+                                                             class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").text.strip()
             contenuto_ricondiviso = None
             try:
-                div_contenuto_ricondiviso = result.find("div", class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim r-14gqq1x")
-                contenuto_ricondiviso = div_contenuto_ricondiviso.find("span", class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").strip()
+                div_contenuto_ricondiviso = result.find("div",
+                                                        class_="css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim r-14gqq1x")
+                contenuto_ricondiviso = div_contenuto_ricondiviso.find("span",
+                                                                       class_="css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3").strip()
             except TypeError:
-                print("Nessun contenuto ricondivisibile..")
+                logging.info("Nessun contenuto ricondivisibile..")
 
             reshared = [utente_ricondiviso, contenuto_ricondiviso]
         except AttributeError:
-            print("Nessun contenuto ricondiviso..")
+            logging.info("Nessun contenuto ricondiviso..")
 
         # Cerco presenza d'immagini e/o video nei tweet
         img_list = []
@@ -132,7 +140,7 @@ def analisys_with_beautifulsoup(response_html):
             for img in imgs:
                 img_list.append(img['src'])
         except AttributeError:
-            print("Immagini non trovate...")
+            logging.info("Immagini non trovate..")
 
         video_list = []
         try:
@@ -144,12 +152,13 @@ def analisys_with_beautifulsoup(response_html):
             for video in videos:
                 video_list.append(video['src'])
         except AttributeError:
-            print("Video non trovati...")
+            logging.info("Video non trovati..")
 
         div_numeri = result.find("div", class_="css-175oi2r r-1kbdv8c r-18u37iz r-1wtj0ep r-1ye8kvj r-1s2bzr4")
         numbers = div_numeri.text.strip()
 
-        a_url = result.find("a", class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
+        a_url = result.find("a",
+                            class_="css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-xoduu5 r-1q142lx r-1w6e6rj r-9aw3ui r-3s2u2q r-1loqt21")
         url = f"https://x.com{a_url['href']}"
 
         tweet = [username, tag_username, date, content, reshared, img_list, video_list, numbers, url]
@@ -207,22 +216,25 @@ def beautifulsoup_user_analisys(html_content):
     # Mi sposto nel tag main dove sono le info che mi interessano
     soup = soup.main
 
-    soup = soup.find('div', class_='css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj')
+    soup = soup.find('div',
+                     class_='css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj')
 
     # Trovo il tag dell'utente
     try:
-        tag = soup.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+        tag = soup.find('div',
+                        class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
         span_username = tag.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3')
         tag_username = span_username.text
     except AttributeError:
         tag_username = None
-        print("Username non trovato...")
+        logging.info("Username non trovato...")
 
     # Controllo se l'utente è verificato
     verified = False
     try:
         username_div = soup.find('div', class_='css-175oi2r r-xoduu5 r-1awozwy r-18u37iz r-dnmrzs')
-        if username_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx'):
+        if username_div.find('span',
+                             class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx'):
             username_div_span = username_div.find('span',
                                                   class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx')
             verified_path_tag = username_div_span.find('path')
@@ -232,15 +244,16 @@ def beautifulsoup_user_analisys(html_content):
                     verified = True
     except AttributeError:
         verified = False
-        print("Utente non verificato...")
+        logging.info("Utente non verificato...")
 
     # Trovo il numero di post
     try:
-        num_post = soup.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41').text.split(
+        num_post = soup.find('div',
+                             class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41').text.split(
             ' ')[0]
     except AttributeError:
         num_post = None
-        print("Numero di post non trovato...")
+        logging.info("Numero di post non trovato...")
 
     # Trovo il numero di following e followers
     if soup.find('div', class_='css-175oi2r r-13awgt0 r-18u37iz r-1w6e6rj'):
@@ -252,18 +265,18 @@ def beautifulsoup_user_analisys(html_content):
             following_div.decompose()
         except AttributeError:
             followings = None
-            print("Numero di following non trovato...")
+            logging.info("Numero di following non trovato...")
 
         try:
             followers_div = follows_div.find('div', class_='css-175oi2r')
             followers = followers_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
         except AttributeError:
             followers = None
-            print("Numero di followers non trovato...")
+            logging.info("Numero di followers non trovato...")
     else:
         followings = None
         followers = None
-        print("Numero di following e followers non trovati...")
+        logging.info("Numero di following e followers non trovati...")
 
     # Mi sposto sul div che contiene le informazioni dell'utente
     soup = soup.find('div', class_='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-16dba41 r-56xrmm')
@@ -271,7 +284,8 @@ def beautifulsoup_user_analisys(html_content):
     # Cerco elemento lavoro
     job = None
     try:
-        el_span = soup.find('span',  class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21')
+        el_span = soup.find('span',
+                            class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21')
 
         if el_span.find('path')['d'] == job_path:
             job = el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
@@ -279,7 +293,7 @@ def beautifulsoup_user_analisys(html_content):
             el_span.decompose()
     except AttributeError:
         job = None
-        print("Campo lavoro non presente...")
+        logging.info("Campo lavoro non presente...")
 
     # Cerco elementi località, data iscrizione e data di nascita poiché il loro html ha la stessa classe. Li inizializzo a None.
     location = None
@@ -302,7 +316,7 @@ def beautifulsoup_user_analisys(html_content):
             # rimuovo lo span dall'html per evitare errori nella ricerca del prossimo elemento
             el_span.decompose()
         except AttributeError:
-            print("Campo località/data iscrizione/data di nascita non presente...")
+            logging.info("Campo località/data iscrizione/data di nascita non presente...")
 
     # Cerco elemento sito web
     website = None
@@ -314,7 +328,7 @@ def beautifulsoup_user_analisys(html_content):
         el_span.decompose()
     except AttributeError:
         website = None
-        print("Campo sito web non presente...")
+        logging.info("Campo sito web non presente...")
 
     return {
         "username_tag": tag_username,
@@ -360,13 +374,15 @@ def find_related_user(html_content):
         user_ul = soup.find('ul', class_='css-175oi2r')
 
         # Dal tag <ul> trovo tutti i tag <span> che si trovano nei tag <li> che compongono la lista
-        user_list = user_ul.find_all('li', class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
+        user_list = user_ul.find_all('li',
+                                     class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
 
         for user in user_list:
-            user_div = user.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+            user_div = user.find('div',
+                                 class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
             related_users.append(user_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text)
     except AttributeError:
-        print("Utenti correlati non presenti...")
+        logging.info("Utenti correlati non presenti...")
         return None
 
     return related_users

@@ -22,6 +22,7 @@ Questo script automatizza il processo di ricerca e raccolta delle informazioni s
 
 **Autore**: Francesco Pinsone.
 """
+import logging
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -30,7 +31,8 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from src.X_scraping.firefox.beautifulsoup_analisys import find_related_user, beautifulsoup_user_analisys
-from src.X_scraping.firefox.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
+from src.X_scraping.firefox.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, \
+    save_user_info_to_mongo, \
     connect_to_mongo_collection, x_login, check_limited_user, check_user
 
 
@@ -62,6 +64,10 @@ def find_related_users():
 
     :return: Nessun valore ritornato.
     """
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
     # Connessione al database
     client = connect_to_mongo()
 
@@ -101,7 +107,8 @@ def find_related_users():
     wait_login = WebDriverWait(driver, 60)
 
     # Aspetto che un campo di ricerca con ID 'search-input' sia visibile
-    search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
+    search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH,
+                                                                            '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
 
     time.sleep(1)
 
@@ -126,7 +133,7 @@ def find_related_users():
 
         related_users = find_related_user(html_content)
 
-        print(f"{user}:{related_users}")
+        logging.info(f"{user}:{related_users}")
 
         # 4) Ora, per ognuno degli utenti correlati trovati, cerco le informazioni utente e le salvo nel database nella collection 'users_info'
         if related_users is not None:
@@ -154,12 +161,12 @@ def find_related_users():
                 # Controllo se l'utente è già presente nel database
                 doc = collection.find_one({'username_tag': res['username_tag']})
                 if doc:
-                    print('Utente già presente:', res['username_tag'])
+                    logging.info('Utente già presente:', res['username_tag'])
                     continue
 
                 # Salvo le informazioni nel database
                 save_user_info_to_mongo(res, collection)
-                print(f"info utente {user_related} salvate nel database..")
+                logging.info(f"info utente {user_related} salvate nel database..")
 
     driver.quit()
     disconnect_to_mongo(client)

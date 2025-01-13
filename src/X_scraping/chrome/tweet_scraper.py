@@ -48,6 +48,7 @@ from selenium.webdriver.chrome.service import Service
 from src.X_scraping.chrome.utils.utils import primary_keywords, secondary_keywords, read_json, connect_to_mongo, \
     connect_to_mongo_collection, disconnect_to_mongo, parse_and_save, x_login
 from src.X_scraping.chrome.beautifulsoup_analisys import analisys_with_beautifulsoup
+import logging
 
 
 def scrape_tweets():
@@ -81,6 +82,10 @@ def scrape_tweets():
 
     :return: Nessun valore ritornato. Le informazioni vengono salvate nel database.
     """
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
     # Leggo file con credenziali
     credentials = read_json("utils/conf.json")
 
@@ -131,7 +136,7 @@ def scrape_tweets():
 
     for group in target_list:
 
-        print(f"{group} in lavorazione..")
+        logging.info(f"{group} in lavorazione..")
 
         # keyword1 = random.choice(primary_keywords)
         # keyword2 = random.choice(secondary_keywords)
@@ -149,7 +154,7 @@ def scrape_tweets():
             # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
             search_tweets = wait_tweets.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
         except TimeoutException:
-            print(f"Nessun risultato per {group}..")
+            logging.exception(f"Nessun risultato per {group}..")
             continue
 
         # Scorri la pagina verso il basso per caricare più tweet

@@ -29,6 +29,10 @@ def drop_data():
 
     :return: Nessun valore restituito. La funzione si occupa di gestire l'eliminazione e il logging.
     """
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
     # Mi connetto al database
     client = connect_to_mongo()
 
@@ -38,7 +42,7 @@ def drop_data():
     for collection in collection_list:
         data_coll = connect_to_mongo_collection(client, collection)
         result = data_coll.delete_many({})
-        print(f"Eliminati {result.deleted_count} documenti per la collection {collection}")
+        logging.info(f"Eliminati {result.deleted_count} documenti per la collection {collection}")
 
     disconnect_to_mongo(client)
 

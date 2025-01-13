@@ -36,6 +36,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import logging
+
+# Configuro il logger
+logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                    format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 interest_groups = ["Killnet", "NoName057(16)", "Lazarus", "DarkHalo", "MustangPanda", "BlackEnergy", "BadMagic",
                    "DarkSide", "LockBit", "DopplePaymer", "RagnarLocker",
@@ -97,7 +102,7 @@ def x_login(credentials_access, driver_access):
         email_field.send_keys(Keys.RETURN)
         time.sleep(2)
     except NoSuchElementException:
-        print("Campo email non trovato..")
+        logging.info("Campo email non trovato..")
 
     # Controllo anche il campo username poiché dopo tanti accessi consecutivi X richiede anche lo username per sicurezza
     try:
@@ -107,7 +112,7 @@ def x_login(credentials_access, driver_access):
         username_field.send_keys(Keys.RETURN)
         time.sleep(2)
     except NoSuchElementException:
-        print("Campo username non trovato..")
+        logging.info("Campo username non trovato..")
 
     try:
         password_field = driver_access.find_element(By.XPATH,
@@ -116,7 +121,7 @@ def x_login(credentials_access, driver_access):
         password_field.send_keys(Keys.RETURN)
         time.sleep(2)
     except NoSuchElementException:
-        print("Campo password non trovato..")
+        logging.info("Campo password non trovato..")
 
 
 # Funzioni MongoDB:
@@ -138,9 +143,9 @@ def connect_to_mongo():
     # Provo a connettermi al database
     try:
         client.admin.command('ping')
-        print("Connesso al database: ", client.server_info()["version"])
+        logging.info("Connesso al database: ", client.server_info()["version"])
     except Exception as e:
-        print(e)
+        logging.info(e)
 
     return client
 
@@ -158,7 +163,7 @@ def disconnect_to_mongo(client):
     :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n
     :return: Nessun valore restituito. La funzione esegue solo l'azione di disconnessione dal database.
     """
-    print("Disconnesso dal database: ", client.server_info()["version"])
+    logging.info("Disconnesso dal database: ", client.server_info()["version"])
     client.close()
 
 
@@ -196,9 +201,9 @@ def connect_to_mongo_collection(client, collection_name):
     if collection_name not in db.list_collection_names():
         # Se la collezione non esiste, creala
         db.create_collection(collection_name)
-        print("Creata la collezione:", collection_name)
+        logging.info("Creata la collezione:", collection_name)
     else:
-        print("La collezione esiste già:", collection_name)
+        logging.info("La collezione esiste già:", collection_name)
 
     return db.get_collection(collection_name)
 
@@ -218,7 +223,7 @@ def save_to_mongo(data, collection):
     :return: Nessun valore restituito. La funzione esegue solo l'inserimento dei dati.
     """
     collection.insert_one(data)
-    print("Salvato nel database: ", data['url'])
+    logging.info("Salvato nel database: ", data['url'])
 
 
 def save_user_info_to_mongo(data, collection):
@@ -235,7 +240,7 @@ def save_user_info_to_mongo(data, collection):
     :return: Nessun valore restituito.
     """
     collection.insert_one(data)
-    print("Salvato nel database: ", data['username_tag'])
+    logging.info("Salvato nel database: ", data['username_tag'])
 
 
 # config_data = read_json('mongo_utils.json')
@@ -392,7 +397,7 @@ def check_user(driver, user):
         search_tweets = wait_user.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2')))
         return True
     except TimeoutException:
-        print(f"TimeoutException: utente {user} non trovato..")
+        logging.info(f"TimeoutException: utente {user} non trovato..")
         return False
 
 
@@ -417,5 +422,5 @@ def check_limited_user(driver):
         show_profile_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button')
         show_profile_button.send_keys(Keys.RETURN)
     except NoSuchElementException:
-        print("Account non limitato..")
+        logging.info("Account non limitato..")
         pass

@@ -32,15 +32,14 @@ per una successiva analisi.
 """
 import time
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from src.X_scraping.chrome.beautifulsoup_analisys import beautifulsoup_user_analisys
-from src.X_scraping.chrome.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
-    connect_to_mongo_collection, get_db, x_login
+from src.X_scraping.chrome.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, connect_to_mongo_collection, get_db, x_login, check_user, check_limited_user
+import logging
 
 
 def scrape_user_info():
@@ -75,6 +74,10 @@ def scrape_user_info():
 
     :return: Nessun valore restituito. Le informazioni sugli utenti vengono salvate direttamente nel database.
     """
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
     # Connessione al database
     client = connect_to_mongo()
 
@@ -137,26 +140,20 @@ def scrape_user_info():
         # Controllo se l'utente è già presente nel database
         doc = collection.find_one({'username_tag': user})
         if doc:
-            print('Utente già presente:', user)
+            logging.info(f"Utente già presente:{user}")
             continue
 
         # Cerco l'utente
         driver.get(f"https://www.X.com/{user}")
 
-        # Verifico che l'utente esista, se non esiste passo alla prssima iterazione
-
-        try:
-            # Attendo caricamento pagina
-            wait_user = WebDriverWait(driver, 120)
-
-            # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
-            search_tweets = wait_user.until(EC.visibility_of_element_located((By.XPATH,
-                                                                              '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[1]/div[1]/div/div/div/div/div/div[2]/div/h2')))
-        except TimeoutException:
-            print(f"TimeoutException: utente {user} non trovato..")
+        # Verifico che l'utente esista, se non esiste passo alla prossima iterazione
+        if not check_user(driver, user):
             continue
+        time.sleep(1)
 
-        time.sleep(2)
+        # Controllo se l'account è temporanemente limitato. Se lo è sarà presente il seguente bottone per mostrare il profilo, in tal caso clicco sul bottone
+        check_limited_user(driver)
+        time.sleep(1)
 
         html_content = driver.page_source
 
@@ -164,7 +161,7 @@ def scrape_user_info():
         res = beautifulsoup_user_analisys(html_content)
 
         if res['username_tag'] is None:
-            print('Utente non trovato:', user)
+            logging.info(f"Utente non trovato: {user}")
             continue
 
         # 3) Salvo i risultati nel database

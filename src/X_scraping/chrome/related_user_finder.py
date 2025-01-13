@@ -30,7 +30,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from src.X_scraping.chrome.beautifulsoup_analisys import find_related_user, beautifulsoup_user_analisys
-from src.X_scraping.chrome.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, connect_to_mongo_collection, x_login, check_user, check_limited_user
+from src.X_scraping.chrome.utils.utils import read_json, connect_to_mongo, disconnect_to_mongo, save_user_info_to_mongo, \
+    connect_to_mongo_collection, x_login, check_user, check_limited_user
+import logging
 
 
 def find_related_users():
@@ -61,6 +63,10 @@ def find_related_users():
 
     :return: Nessun valore ritornato.
     """
+    # Configuro il logger
+    logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
+                        format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
+
     # Connessione al database
     client = connect_to_mongo()
 
@@ -129,7 +135,7 @@ def find_related_users():
 
         related_users = find_related_user(html_content)
 
-        print(f"{user}:{related_users}")
+        logging.info(f"{user}:{related_users}")
 
         # 4) Ora, per ognuno degli utenti correlati trovati, cerco le informazioni utente e le salvo nel database nella collection 'users_info'
         if related_users is not None:
@@ -162,7 +168,7 @@ def find_related_users():
 
                 # Salvo le informazioni nel database
                 save_user_info_to_mongo(res, collection)
-                print(f"info utente {user_related} salvate nel database..")
+                logging.info(f"info utente {user_related} salvate nel database..")
 
     driver.quit()
     disconnect_to_mongo(client)
