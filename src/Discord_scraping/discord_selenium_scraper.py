@@ -3,25 +3,25 @@ Questo script esegue lo scraping della versione web di Discord utilizzando Selen
 e BeautifulSoup per effettuare l'analisi e il parsing dei contenuti HTML. I dati estratti (messaggi, autore, data,
 contenuto e nome del canale) vengono poi salvati in un database MongoDB per essere archiviati e successivamente analizzati.
 
-**Funzionalità principali**:
-1. **Automazione del Browser**:
-    - Controllo del browser Firefox con Selenium per simulare la navigazione web.
-    - Accesso alla piattaforma Discord tramite login automatizzato.
+**Funzionalità principali**:\n
+1. **Automazione del Browser**:\n
+    - Controllo del browser Firefox con Selenium per simulare la navigazione web.\n
+    - Accesso alla piattaforma Discord tramite login automatizzato.\n
 
-2. **Recupero dei Messaggi**:
-    - Per ogni server e canale specificato, esegue lo scraping dei messaggi presenti nella cronologia visibile.
-    - Permette di scorrere verso l'alto per caricare messaggi precedenti.
+2. **Recupero dei Messaggi**:\n
+    - Per ogni server e canale specificato, esegue lo scraping dei messaggi presenti nella cronologia visibile.\n
+    - Permette di scorrere verso l'alto per caricare messaggi precedenti.\n
 
-3. **Parsing con BeautifulSoup**:
-    - Analizza il contenuto HTML scaricato per estrarre i messaggi e le relative informazioni.
-    - Restituisce una struttura JSON contenente i campi `author`, `date`, `content` e `channel_name`.
+3. **Parsing con BeautifulSoup**:\n
+    - Analizza il contenuto HTML scaricato per estrarre i messaggi e le relative informazioni.\n
+    - Restituisce una struttura JSON contenente i campi `author`, `date`, `content` e `channel_name`.\n
 
-4. **Salvataggio su Database MongoDB**:
-    - I dati estratti vengono organizzati per server e salvati in collezioni separate nel database.
+4. **Salvataggio su Database MongoDB**:\n
+    - I dati estratti vengono organizzati per server e salvati in collezioni separate nel database.\n
 
-**Limiti attuali**:
-    - La gestione dei CAPTCHA durante il login a Discord non è completamente automatizzata.
-    - Richiede che i target (server e canali) siano specificati e configurati correttamente nel database MongoDB.
+**Limiti attuali**:\n
+    - La gestione dei CAPTCHA durante il login a Discord non è completamente automatizzata.\n
+    - Richiede che i target (server e canali) siano specificati e configurati correttamente nel database MongoDB.\n
 
 **Autore**: Francesco Pinsone.
 """
