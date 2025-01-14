@@ -4,6 +4,7 @@ e BeautifulSoup per effettuare l'analisi e il parsing dei contenuti HTML. I dati
 contenuto e nome del canale) vengono poi salvati in un database MongoDB per essere archiviati e successivamente analizzati.
 
 **Funzionalità principali**:\n
+
 1. **Automazione del Browser**:\n
     - Controllo del browser Firefox con Selenium per simulare la navigazione web.\n
     - Accesso alla piattaforma Discord tramite login automatizzato.\n

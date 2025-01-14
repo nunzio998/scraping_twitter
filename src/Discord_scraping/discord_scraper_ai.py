@@ -45,7 +45,7 @@ def discord_ollama_scraper():
     Questa funzione gestisce il flusso principale dello script, eseguendo lo scraping dei messaggi dai canali Discord specificati
     e analizzandoli tramite un modello LLM (ad es. Ollama) per estrarre informazioni strutturate.
 
-    ** Passaggi principali**:\n
+    **Passaggi principali**:\n
     1. **Inizializzazione del modello LLM**:\n
         - Configura un modello di linguaggio naturale per effettuare il parsing avanzato dei messaggi.\n
 
