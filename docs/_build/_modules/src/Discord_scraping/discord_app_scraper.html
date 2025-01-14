@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.Discord_scraping.discord_app_scraper &mdash; Wall-e Project 1.0.0 documentation</title>
+  <title>src.Discord_scraping.discord_app_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            Wall-e Project
+            Dcomuentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -41,8 +41,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../DarkWeb_scraper.html">DarkWeb_scraper</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../Discord_scraper.html">Discord_scraper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../DarkWeb_scraper.html">DarkWeb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Discord_scraper.html">Discord</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Telegram_scraper.html">Telegram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../X_scraper.html">X</a></li>
 </ul>
 
         </div>
@@ -51,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Wall-e Project</a>
+          <a href="../../../index.html">Dcomuentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -71,11 +73,42 @@
              
   <h1>Source code for src.Discord_scraping.discord_app_scraper</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Questo script permette al bot di Discord di connettersi ad un server e un canale specifici</span>
-<span class="sd">e recuperare i messaggi all&#39;interno.\n</span>
-<span class="sd">Il bot deve essere aggiunto al server e al canale e avere quindi i permessi corretti per poter</span>
-<span class="sd">accedere ai messaggi.\n</span>
-<span class="sd">Autore: Francesco Pinsone</span>
+<span class="sd">Questo script consente di configurare un bot di Discord per connettersi a un server (guild) e a un canale specifici,</span>
+<span class="sd">e analizzare i messaggi presenti nel canale. Il bot esegue un filtraggio dei messaggi basato su parole chiave e registra</span>
+<span class="sd">quelli che corrispondono ai criteri specificati.</span>
+
+<span class="sd">**Funzionalità principali**:\n</span>
+<span class="sd">1. **Connessione al server e al canale**:\n</span>
+<span class="sd">   Il bot utilizza un token di autenticazione (TOKEN) per accedere all&#39;API di Discord e connettersi al server (identificato</span>
+<span class="sd">   tramite `GUILD_ID`) e al canale (identificato tramite `CHANNEL_ID`). È necessario che il bot sia stato aggiunto al server</span>
+<span class="sd">   con i permessi adeguati per leggere i messaggi.</span>
+
+<span class="sd">2. **Recupero della cronologia dei messaggi**:\n</span>
+<span class="sd">   Una volta connesso, il bot recupera gli ultimi 100 messaggi (configurabile) dal canale specificato, usando il metodo</span>
+<span class="sd">   `channel.history`.</span>
+
+<span class="sd">3. **Filtro per parole chiave**:\n</span>
+<span class="sd">   I messaggi vengono filtrati confrontandoli con una lista di parole chiave (`keywords`). Vengono selezionati solo i messaggi</span>
+<span class="sd">   che contengono almeno una parola chiave specificata, ignorando la distinzione tra maiuscole e minuscole.</span>
+
+<span class="sd">4. **Logging dei messaggi filtrati**:\n</span>
+<span class="sd">   I messaggi che soddisfano i criteri di filtraggio vengono registrati utilizzando la libreria `logging`, includendo</span>
+<span class="sd">   dettagli come l&#39;autore del messaggio e il suo contenuto.</span>
+
+<span class="sd">**Requisiti**:\n</span>
+<span class="sd">    - Il bot deve essere stato aggiunto al server Discord e deve avere i permessi necessari per leggere i messaggi nel canale.\n</span>
+<span class="sd">    - La libreria `discord.py` deve essere installata.\n</span>
+<span class="sd">    - Devono essere configurati correttamente i seguenti parametri:\n</span>
+<span class="sd">        - **TOKEN**: Il token del bot fornito dal portale Discord Developer.\n</span>
+<span class="sd">        - **GUILD_ID**: L’ID del server Discord (guild) in cui si trova il canale.\n</span>
+<span class="sd">        - **CHANNEL_ID**: L’ID del canale Discord da cui si vogliono estrarre i messaggi.\n</span>
+<span class="sd">        - **keywords**: Una lista di parole chiave da cercare nei messaggi.</span>
+
+<span class="sd">**Limiti**:\n</span>
+<span class="sd">    - Data la natura limitante dei bot discord i dati estratti con questo scriopt non vengono salvati a db ma vengono solo mostrati nei log.\n</span>
+<span class="sd">    - Lo script è progettato per scopi di analisi e test e non per un utilizzo continuativo o automatizzato su larga scala.\n</span>
+
+<span class="sd">**Autore**: Francesco Pinsone.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">discord</span>
@@ -104,8 +137,39 @@
 <span class="nd">@client</span><span class="o">.</span><span class="n">event</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_ready</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Funzione per connettersi al bot di Discord. Dopo aver effettuato la connessione al bot la funzione estrae i messaggi dal canale\n</span>
-<span class="sd">    :return: None, causa limitazioni di utilizzo dei bot discord i dati estratti con questo script non vengono salvati su db</span>
+<span class="sd">    Evento che viene attivato quando il bot si connette correttamente a Discord.</span>
+
+<span class="sd">    **Funzionalità**:\n</span>
+<span class="sd">    1. **Verifica della connessione**:\n</span>
+<span class="sd">        - Stampa un messaggio di conferma nel terminale indicando che il bot è online e operativo.\n</span>
+<span class="sd">        - Usa il nome utente del bot (`client.user`) per confermare l&#39;identità con cui il bot si è connesso.\n</span>
+
+<span class="sd">    2. **Ricerca del server e del canale**:\n</span>
+<span class="sd">        - Il bot cerca il server specificato tramite il suo ID (`GUILD_ID`) utilizzando la funzione `discord.utils.get`.\n</span>
+<span class="sd">        - Se il server non viene trovato, registra un messaggio di avviso e termina il programma.\n</span>
+<span class="sd">        - Allo stesso modo, cerca il canale specificato tramite il suo ID (`CHANNEL_ID`) all&#39;interno del server trovato.\n</span>
+<span class="sd">        - Se il canale non viene trovato, registra un avviso e termina il programma.\n</span>
+
+<span class="sd">    3. **Recupero della cronologia dei messaggi**:\n</span>
+<span class="sd">        - Recupera gli ultimi 100 messaggi (configurabile) presenti nel canale tramite il metodo asincrono `channel.history`.\n</span>
+<span class="sd">        - I messaggi vengono salvati in una lista chiamata `messages`.\n</span>
+
+<span class="sd">    4. **Filtraggio dei messaggi**:\n</span>
+<span class="sd">        - Confronta il contenuto di ciascun messaggio con una lista di parole chiave predefinite (`keywords`).\n</span>
+<span class="sd">        - I messaggi che contengono almeno una delle parole chiave, ignorando maiuscole e minuscole, vengono salvati in una lista chiamata `filtered_messages`.\n</span>
+
+<span class="sd">    5. **Logging dei messaggi filtrati**:\n</span>
+<span class="sd">        - Per ogni messaggio filtrato, registra il nome dell&#39;autore e il contenuto del messaggio utilizzando la libreria `logging`.\n</span>
+
+<span class="sd">    **Logica degli errori**:\n</span>
+<span class="sd">        - Se il server o il canale specificati non vengono trovati, il bot registra un messaggio di avviso e termina il programma per evitare ulteriori problemi.\n</span>
+<span class="sd">        - L&#39;implementazione di questo controllo garantisce che il bot non generi errori cercando di accedere a un canale non valido.\n</span>
+
+<span class="sd">    **Nota**:\n</span>
+<span class="sd">        - Il limite di 100 messaggi recuperati è configurabile modificando il parametro `limit` in `channel.history`.\n</span>
+<span class="sd">        - I dati estratti vengono solo registrati nel log e non salvati in un database.\n</span>
+
+<span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bot connesso come </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">user</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">guild</span> <span class="o">=</span> <span class="n">discord</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">guilds</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">GUILD_ID</span><span class="p">))</span>
@@ -116,8 +180,7 @@
 
     <span class="n">channel</span> <span class="o">=</span> <span class="n">discord</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">CHANNEL_ID</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Non riesco a trovare il canale con ID </span><span class="si">{</span><span class="n">CHANNEL_ID</span><span class="si">}</span><span class="s2">. Assicurati che il bot abbia i permessi corretti.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Non riesco a trovare il canale con ID </span><span class="si">{</span><span class="n">CHANNEL_ID</span><span class="si">}</span><span class="s2">. Assicurati che il bot abbia i permessi corretti.&quot;</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>

@@ -88,21 +88,160 @@
              
   <section id="module-src.Discord_scraping.discord_scraper_ai">
 <span id="discord-scraper-ai"></span><h1>discord_scraper_ai<a class="headerlink" href="#module-src.Discord_scraping.discord_scraper_ai" title="Link to this heading"></a></h1>
-<p>Questo script ha il compito di fare scraping sulla versione web di Discord utilizzando quindi la libreria Python
-Selenium. Inoltre avvalendosi di un LLM (Large Language Model) è in grado di effettuare il parsing di una pagina HTML
-in modo automatico ed efficace, senza quindi affidarsi esclusivamente all’utilizzo di BeautifulSoup. Quest’ultima parte,
-tuttavia, richiede l’utilizzo di un modello più performante di quello a disposizione. Sarà quindi completata insieme ad
-altri sviluppi futuri.</p>
-<p>Autore: Francesco Pinsone.</p>
+<p>Questo script è progettato per eseguire lo scraping della versione web di Discord utilizzando la libreria Selenium per il controllo del browser.
+Inoltre, sfrutta un modello di linguaggio naturale avanzato (LLM, come Ollama) per effettuare il parsing e l’estrazione dei dati dai contenuti HTML
+dei canali Discord in modo automatizzato e flessibile.</p>
+<p><strong>Funzionalità principali</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Automazione del Browser</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Effettua l’accesso alla versione web di Discord simulando un utente reale.</p></li>
+<li><p>Naviga automaticamente attraverso i server e i canali specificati.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Recupero dei Messaggi</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Scarica i messaggi visibili in un canale e permette di estendere lo scraping scorrendo verso l’alto per recuperare ulteriori contenuti.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Parsing Avanzato con LLM</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Utilizza un modello LLM per analizzare i messaggi scaricati e convertirli in un formato strutturato (JSON).</p></li>
+<li><p>Riconosce campi come autore, data, contenuto e nome del canale.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Archiviazione su Database</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>I dati estratti vengono salvati in un database MongoDB per facilitarne la gestione e l’analisi.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p><strong>Limiti attuali</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Il parsing dei messaggi tramite LLM è in fase di sviluppo e richiede un modello più performante per risultati ottimali.</p></li>
+<li><p>La gestione del CAPTCHA durante l’accesso a Discord web è manuale e non completamente automatizzata.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.discord_scraper_ai.discord_ollama_scraper">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">discord_ollama_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_scraper_ai.html#discord_ollama_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_scraper_ai.discord_ollama_scraper" title="Link to this definition"></a></dt>
-<dd><p>Funzione che definisce la metodologia di lavoro dello script. Dopo aver inizializzato LLM e driver per il controllo del browser
-si effettua l’accesso a Discord web. Una volta eseguito il login, per ognuno dei canali e server specificati, si
-scaricano i messaggi presenti e si effettua il parsing tramite LLM. I risultati verranno poi salvati su db.</p>
+<dd><p>Questa funzione gestisce il flusso principale dello script, eseguendo lo scraping dei messaggi dai canali Discord specificati
+e analizzandoli tramite un modello LLM (ad es. Ollama) per estrarre informazioni strutturate.</p>
+<p>** Passaggi principali**:</p>
+<ol class="arabic">
+<li><p><strong>Inizializzazione del modello LLM</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Configura un modello di linguaggio naturale per effettuare il parsing avanzato dei messaggi.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Configurazione del logger</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Imposta il logger per monitorare gli eventi e registrare informazioni durante l’esecuzione.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Lettura della configurazione</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Carica i parametri principali, come il numero di scroll verso l’alto e credenziali di accesso, da un file JSON.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Inizializzazione del browser</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Utilizza Selenium per avviare il browser Firefox e gestire l’accesso automatizzato.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Login su Discord Web</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Esegue l’accesso alla piattaforma utilizzando le credenziali fornite.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Recupero dei target dal database</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Si collega a un database MongoDB e recupera l’elenco dei server e canali su cui eseguire lo scraping.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Navigazione e scraping</strong>:</p>
+<blockquote>
+<div><ul>
+<li><p>Per ogni server e canale specificato:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Carica la pagina web corrispondente.</p></li>
+<li><p>Attende il caricamento completo dei messaggi.</p></li>
+<li><p>Scorre verso l’alto per caricare messaggi aggiuntivi, se richiesto.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Parsing dei messaggi</strong>:</p>
+<blockquote>
+<div><ul>
+<li><p>Utilizza un LLM per analizzare il contenuto HTML recuperato, estraendo i messaggi in formato JSON con i campi:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>author</cite>: Nome dell’autore del messaggio.</p></li>
+<li><p><cite>date</cite>: Data di pubblicazione del messaggio.</p></li>
+<li><p><cite>content</cite>: Contenuto testuale del messaggio.</p></li>
+<li><p><cite>channel_name</cite>: Nome del canale di appartenenza.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Salvataggio dei dati</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>I messaggi estratti vengono salvati in una collezione del database MongoDB, organizzati per server e canale.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Chiusura delle risorse</strong>:</p>
+<ul class="simple">
+<li><p>Chiude la connessione al database e termina il driver Selenium.</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Nota</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>La funzione è progettata per essere espandibile, permettendo di integrare facilmente nuovi modelli LLM o strategie di scraping.</p></li>
+<li><p>La gestione del CAPTCHA e altre interruzioni impreviste richiede ulteriori miglioramenti.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Limiti</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Il parsing dei dati dipende dalla capacità del modello LLM utilizzato.</p></li>
+<li><p>La gestione del caricamento dei messaggi potrebbe variare in base alla struttura HTML di Discord Web.</p></li>
+</ul>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
+<dd class="field-odd"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>

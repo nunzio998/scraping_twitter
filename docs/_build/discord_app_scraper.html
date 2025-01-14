@@ -88,18 +88,119 @@
              
   <section id="module-src.Discord_scraping.discord_app_scraper">
 <span id="discord-app-scraper"></span><h1>discord_app_scraper<a class="headerlink" href="#module-src.Discord_scraping.discord_app_scraper" title="Link to this heading"></a></h1>
-<p>Questo script permette al bot di Discord di connettersi ad un server e un canale specifici
-e recuperare i messaggi all’interno.</p>
-<p>Il bot deve essere aggiunto al server e al canale e avere quindi i permessi corretti per poter
-accedere ai messaggi.</p>
-<p>Autore: Francesco Pinsone</p>
+<p>Questo script consente di configurare un bot di Discord per connettersi a un server (guild) e a un canale specifici,
+e analizzare i messaggi presenti nel canale. Il bot esegue un filtraggio dei messaggi basato su parole chiave e registra
+quelli che corrispondono ai criteri specificati.</p>
+<p><strong>Funzionalità principali</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Connessione al server e al canale</strong>:</p>
+<p>Il bot utilizza un token di autenticazione (TOKEN) per accedere all’API di Discord e connettersi al server (identificato
+tramite <cite>GUILD_ID</cite>) e al canale (identificato tramite <cite>CHANNEL_ID</cite>). È necessario che il bot sia stato aggiunto al server
+con i permessi adeguati per leggere i messaggi.</p>
+</li>
+<li><p><strong>Recupero della cronologia dei messaggi</strong>:</p>
+<p>Una volta connesso, il bot recupera gli ultimi 100 messaggi (configurabile) dal canale specificato, usando il metodo
+<cite>channel.history</cite>.</p>
+</li>
+<li><p><strong>Filtro per parole chiave</strong>:</p>
+<p>I messaggi vengono filtrati confrontandoli con una lista di parole chiave (<cite>keywords</cite>). Vengono selezionati solo i messaggi
+che contengono almeno una parola chiave specificata, ignorando la distinzione tra maiuscole e minuscole.</p>
+</li>
+<li><p><strong>Logging dei messaggi filtrati</strong>:</p>
+<p>I messaggi che soddisfano i criteri di filtraggio vengono registrati utilizzando la libreria <cite>logging</cite>, includendo
+dettagli come l’autore del messaggio e il suo contenuto.</p>
+</li>
+</ol>
+<p><strong>Requisiti</strong>:</p>
+<blockquote>
+<div><ul>
+<li><p>Il bot deve essere stato aggiunto al server Discord e deve avere i permessi necessari per leggere i messaggi nel canale.</p></li>
+<li><p>La libreria <cite>discord.py</cite> deve essere installata.</p></li>
+<li><p>Devono essere configurati correttamente i seguenti parametri:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>TOKEN</strong>: Il token del bot fornito dal portale Discord Developer.</p></li>
+<li><p><strong>GUILD_ID</strong>: L’ID del server Discord (guild) in cui si trova il canale.</p></li>
+<li><p><strong>CHANNEL_ID</strong>: L’ID del canale Discord da cui si vogliono estrarre i messaggi.</p></li>
+<li><p><strong>keywords</strong>: Una lista di parole chiave da cercare nei messaggi.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Limiti</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Data la natura limitante dei bot discord i dati estratti con questo scriopt non vengono salvati a db ma vengono solo mostrati nei log.</p></li>
+<li><p>Lo script è progettato per scopi di analisi e test e non per un utilizzo continuativo o automatizzato su larga scala.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.discord_app_scraper.on_ready">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_app_scraper.</span></span><span class="sig-name descname"><span class="pre">on_ready</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_app_scraper.html#on_ready"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_app_scraper.on_ready" title="Link to this definition"></a></dt>
-<dd><p>Funzione per connettersi al bot di Discord. Dopo aver effettuato la connessione al bot la funzione estrae i messaggi dal canale</p>
+<dd><p>Evento che viene attivato quando il bot si connette correttamente a Discord.</p>
+<p><strong>Funzionalità</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Verifica della connessione</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Stampa un messaggio di conferma nel terminale indicando che il bot è online e operativo.</p></li>
+<li><p>Usa il nome utente del bot (<cite>client.user</cite>) per confermare l’identità con cui il bot si è connesso.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Ricerca del server e del canale</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Il bot cerca il server specificato tramite il suo ID (<cite>GUILD_ID</cite>) utilizzando la funzione <cite>discord.utils.get</cite>.</p></li>
+<li><p>Se il server non viene trovato, registra un messaggio di avviso e termina il programma.</p></li>
+<li><p>Allo stesso modo, cerca il canale specificato tramite il suo ID (<cite>CHANNEL_ID</cite>) all’interno del server trovato.</p></li>
+<li><p>Se il canale non viene trovato, registra un avviso e termina il programma.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Recupero della cronologia dei messaggi</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Recupera gli ultimi 100 messaggi (configurabile) presenti nel canale tramite il metodo asincrono <cite>channel.history</cite>.</p></li>
+<li><p>I messaggi vengono salvati in una lista chiamata <cite>messages</cite>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Filtraggio dei messaggi</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Confronta il contenuto di ciascun messaggio con una lista di parole chiave predefinite (<cite>keywords</cite>).</p></li>
+<li><p>I messaggi che contengono almeno una delle parole chiave, ignorando maiuscole e minuscole, vengono salvati in una lista chiamata <cite>filtered_messages</cite>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Logging dei messaggi filtrati</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Per ogni messaggio filtrato, registra il nome dell’autore e il contenuto del messaggio utilizzando la libreria <cite>logging</cite>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p><strong>Logica degli errori</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Se il server o il canale specificati non vengono trovati, il bot registra un messaggio di avviso e termina il programma per evitare ulteriori problemi.</p></li>
+<li><p>L’implementazione di questo controllo garantisce che il bot non generi errori cercando di accedere a un canale non valido.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Nota</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Il limite di 100 messaggi recuperati è configurabile modificando il parametro <cite>limit</cite> in <cite>channel.history</cite>.</p></li>
+<li><p>I dati estratti vengono solo registrati nel log e non salvati in un database.</p></li>
+</ul>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None, causa limitazioni di utilizzo dei bot discord i dati estratti con questo script non vengono salvati su db</p>
+<dd class="field-odd"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>

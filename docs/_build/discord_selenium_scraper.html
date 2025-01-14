@@ -88,20 +88,147 @@
              
   <section id="module-src.Discord_scraping.discord_selenium_scraper">
 <span id="discord-selenium-scraper"></span><h1>discord_selenium_scraper<a class="headerlink" href="#module-src.Discord_scraping.discord_selenium_scraper" title="Link to this heading"></a></h1>
-<p>Questo script ha il compito di fare scraping sulla versione web di Discord utilizzando quindi la libreria Python
-Selenium. I contenuti estratti vengono poi sottoposti ad un processo di parsing tramite l’utilizzo di BeautifulSoup ed infine salvati su db.</p>
-<p>Autore: Francesco Pinsone.</p>
+<p>Questo script esegue lo scraping della versione web di Discord utilizzando Selenium per controllare il browser
+e BeautifulSoup per effettuare l’analisi e il parsing dei contenuti HTML. I dati estratti (messaggi, autore, data,
+contenuto e nome del canale) vengono poi salvati in un database MongoDB per essere archiviati e successivamente analizzati.</p>
+<p><strong>Funzionalità principali</strong>:
+1. <strong>Automazione del Browser</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Controllo del browser Firefox con Selenium per simulare la navigazione web.</p></li>
+<li><p>Accesso alla piattaforma Discord tramite login automatizzato.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><dl class="simple">
+<dt><strong>Recupero dei Messaggi</strong>:</dt><dd><ul class="simple">
+<li><p>Per ogni server e canale specificato, esegue lo scraping dei messaggi presenti nella cronologia visibile.</p></li>
+<li><p>Permette di scorrere verso l’alto per caricare messaggi precedenti.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Parsing con BeautifulSoup</strong>:</dt><dd><ul class="simple">
+<li><p>Analizza il contenuto HTML scaricato per estrarre i messaggi e le relative informazioni.</p></li>
+<li><p>Restituisce una struttura JSON contenente i campi <cite>author</cite>, <cite>date</cite>, <cite>content</cite> e <cite>channel_name</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Salvataggio su Database MongoDB</strong>:</dt><dd><ul class="simple">
+<li><p>I dati estratti vengono organizzati per server e salvati in collezioni separate nel database.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<dl class="simple">
+<dt><strong>Limiti attuali</strong>:</dt><dd><ul class="simple">
+<li><p>La gestione dei CAPTCHA durante il login a Discord non è completamente automatizzata.</p></li>
+<li><p>Richiede che i target (server e canali) siano specificati e configurati correttamente nel database MongoDB.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.discord_scraper">
 <span class="sig-prename descclassname"><span class="pre">src.Discord_scraping.discord_selenium_scraper.</span></span><span class="sig-name descname"><span class="pre">discord_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Discord_scraping/discord_selenium_scraper.html#discord_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Discord_scraping.discord_selenium_scraper.discord_scraper" title="Link to this definition"></a></dt>
-<dd><p>Funzione che definisce la metodologia di lavoro dello script. Dopo aver inizializzato il driver selenium per il controllo del browser
-si effettua l’accesso a Discord web. Una volta eseguito il login, per ognuno dei canali e server specificati, si
-scaricano i messaggi presenti e si effettua il parsing con la funzione ‘beautifulsoup_analisys’ che
-restituisce una lista di messaggi in formato json, il nome del server e il nome del canale da cui sono stati estratti.
-infine i messaggi estratti vengono salvati su un db.</p>
+<dd><p>Questa funzione rappresenta il cuore dello script, gestendo il flusso di lavoro necessario per eseguire lo scraping
+dei messaggi dalla versione web di Discord. Combina l’uso di Selenium per la navigazione automatizzata e BeautifulSoup
+per il parsing dei dati HTML.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Configurazione del Logger</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Imposta un logger per registrare eventi e informazioni durante l’esecuzione dello script.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Lettura della Configurazione</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Carica i parametri principali, come credenziali di accesso e numero di scroll da eseguire, da un file JSON.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Inizializzazione di Selenium</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Avvia il browser Firefox utilizzando il driver Selenium e configura il servizio necessario.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Accesso a Discord Web</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Esegue automaticamente il login a Discord utilizzando una funzione dedicata (<cite>login</cite>).</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Connessione al Database</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Si connette a un database MongoDB per accedere alla lista di server e canali da analizzare.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Navigazione e Scraping</strong>:</p>
+<ul>
+<li><p>Per ogni server e canale specificato:</p>
+<blockquote>
+<div><ul>
+<li><p>Carica la pagina corrispondente su Discord Web.</p></li>
+<li><p>Attende che la pagina sia completamente caricata.</p></li>
+<li><p>Scorre verso l’alto per caricare messaggi aggiuntivi, se necessario.</p></li>
+<li><p>Utilizza la funzione <cite>beautifulsoup_analisys</cite> per effettuare il parsing del contenuto HTML, estraendo:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Lista dei messaggi con campi <cite>author</cite>, <cite>date</cite>, <cite>content</cite>.</p></li>
+<li><p>Nome del server (<cite>server_name</cite>).</p></li>
+<li><p>Nome del canale (<cite>channel_name</cite>).</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>Salvataggio dei Dati</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Organizza i dati estratti per server e li salva in collezioni separate nel database MongoDB.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Chiusura delle Risorse</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Disconnette il database e chiude il browser controllato da Selenium.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p><strong>Nota</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>La funzione è progettata per gestire un flusso di lavoro modulare e scalabile, rendendo facile l’aggiunta di nuove funzionalità.</p></li>
+<li><p>È possibile ottimizzare ulteriormente la gestione dei CAPTCHA e migliorare la velocità di scraping.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Limiti</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>La gestione del CAPTCHA durante il login richiede intervento manuale.</p></li>
+<li><p>La funzione presuppone che i target di scraping siano correttamente configurati nel database.</p></li>
+</ul>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
+<dd class="field-odd"><p>Nessun valore restituito.</p>
 </dd>
 </dl>
 </dd></dl>
