@@ -91,46 +91,47 @@
 <p>Questo script esegue lo scraping della versione web di Discord utilizzando Selenium per controllare il browser
 e BeautifulSoup per effettuare l’analisi e il parsing dei contenuti HTML. I dati estratti (messaggi, autore, data,
 contenuto e nome del canale) vengono poi salvati in un database MongoDB per essere archiviati e successivamente analizzati.</p>
-<p><strong>Funzionalità principali</strong>:
-1. <strong>Automazione del Browser</strong>:</p>
+<p><strong>Funzionalità principali</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Automazione del Browser</strong>:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Controllo del browser Firefox con Selenium per simulare la navigazione web.</p></li>
 <li><p>Accesso alla piattaforma Discord tramite login automatizzato.</p></li>
 </ul>
 </div></blockquote>
-<ol class="arabic simple" start="2">
-<li><dl class="simple">
-<dt><strong>Recupero dei Messaggi</strong>:</dt><dd><ul class="simple">
+</li>
+<li><p><strong>Recupero dei Messaggi</strong>:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Per ogni server e canale specificato, esegue lo scraping dei messaggi presenti nella cronologia visibile.</p></li>
 <li><p>Permette di scorrere verso l’alto per caricare messaggi precedenti.</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl class="simple">
-<dt><strong>Parsing con BeautifulSoup</strong>:</dt><dd><ul class="simple">
+<li><p><strong>Parsing con BeautifulSoup</strong>:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>Analizza il contenuto HTML scaricato per estrarre i messaggi e le relative informazioni.</p></li>
 <li><p>Restituisce una struttura JSON contenente i campi <cite>author</cite>, <cite>date</cite>, <cite>content</cite> e <cite>channel_name</cite>.</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl class="simple">
-<dt><strong>Salvataggio su Database MongoDB</strong>:</dt><dd><ul class="simple">
+<li><p><strong>Salvataggio su Database MongoDB</strong>:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>I dati estratti vengono organizzati per server e salvati in collezioni separate nel database.</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </li>
 </ol>
-<dl class="simple">
-<dt><strong>Limiti attuali</strong>:</dt><dd><ul class="simple">
+<p><strong>Limiti attuali</strong>:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>La gestione dei CAPTCHA durante il login a Discord non è completamente automatizzata.</p></li>
 <li><p>Richiede che i target (server e canali) siano specificati e configurati correttamente nel database MongoDB.</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 <p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Discord_scraping.discord_selenium_scraper.discord_scraper">
