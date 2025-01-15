@@ -325,7 +325,7 @@ def beautifulsoup_user_analisys(html_content):
         logging.info("Campo sito web non presente...")
 
     return {
-        "username_tag": tag_username,
+        "tag_username": tag_username,
         "verified": verified,
         "num_post": num_post,
         "following": followings,
