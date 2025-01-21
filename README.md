@@ -146,6 +146,10 @@ Per eseguire lo script è quindi necessario il comando:
 ./tor_setup.sh
 ```
 Dopo aver configurato il servizio Tor, è possibile eseguire lo scraping sul Dark Web:
+- screenshot_collector.py: script per la cattura di screenshot su ahmia browser. Gli altri script possono utilizzare la funzione 'take_screenshot()' oppure si può eseguire lo script specificando degli url come argomento con il seguente comando:
+  ```bash
+    python src/DarkWeb_scraping/utils/screenshot_collector.py --urls <elenco di url separati da spazio>
+    ```
 - ahmia_browser_scraper.py: script che esegue lo scraping su Dark Web utilizzando il motore di ricerca Ahmia. Cerca per parole chiave e salva i risultati della ricerca per una futura analisi più apporofondita.
   ```bash
     python src/DarkWeb_scraping/ahmia_browser_scraper.py
@@ -188,6 +192,10 @@ Lo scraping su Discord è stato implementato seguendo due modalità: tramite Sel
 - drop_data_collection.py: script che cancella tutti i dati presenti nel database.
     ```bash
       python src/Discord_scraping/drop_data_collection.py
+    ```
+- extract_cookies.py: script che consente di estrarre i cookies di sessione per superare i test captcha.
+    ```bash
+      python src/Discord_scraping/extract_cookies.py
     ```
 
 ### Telegram
