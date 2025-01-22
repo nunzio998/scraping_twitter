@@ -77,16 +77,16 @@
 <span class="sd">effettua una ricerca tramite una query di parole chiave e salva i risultati nel database MongoDB. Questo processo permette di raccogliere informazioni provenienti dal dark web in modo sicuro e</span>
 <span class="sd">anonimo, archiviandole per ulteriori analisi o monitoraggi.</span>
 
-<span class="sd">**Passaggi principali**:</span>
-<span class="sd">1. **Connessione a Tor**: Configurazione dei proxy SOCKS5 per permettere la connessione alla rete Tor.</span>
-<span class="sd">2. **Connessione a MongoDB**: Connessione al database MongoDB per il salvataggio dei dati estratti.</span>
-<span class="sd">3. **Esecuzione della ricerca**: Utilizzo della funzione `search_ahmia()` per inviare una query di ricerca su Ahmia.</span>
-<span class="sd">4. **Salvataggio dei risultati**: I risultati vengono analizzati e salvati nel database MongoDB.</span>
-<span class="sd">5. **Disconnessione dal database**: La connessione a MongoDB viene chiusa una volta completato il salvataggio dei dati.</span>
+<span class="sd">**Passaggi principali**:\n</span>
+<span class="sd">1. **Connessione a Tor**: Configurazione dei proxy SOCKS5 per permettere la connessione alla rete Tor.\n</span>
+<span class="sd">2. **Connessione a MongoDB**: Connessione al database MongoDB per il salvataggio dei dati estratti.\n</span>
+<span class="sd">3. **Esecuzione della ricerca**: Utilizzo della funzione `search_ahmia()` per inviare una query di ricerca su Ahmia.\n</span>
+<span class="sd">4. **Salvataggio dei risultati**: I risultati vengono analizzati e salvati nel database MongoDB.\n</span>
+<span class="sd">5. **Disconnessione dal database**: La connessione a MongoDB viene chiusa una volta completato il salvataggio dei dati.\n</span>
 
-<span class="sd">**Requisiti**:</span>
-<span class="sd">- È necessario avere un server Tor in esecuzione sul computer e configurato correttamente.</span>
-<span class="sd">- MongoDB deve essere installato e configurato per l&#39;archiviazione dei risultati.</span>
+<span class="sd">**Requisiti**:\n</span>
+<span class="sd">- È necessario avere un server Tor in esecuzione sul computer e configurato correttamente.\n</span>
+<span class="sd">- MongoDB deve essere installato e configurato per l&#39;archiviazione dei risultati.\n</span>
 
 <span class="sd">**Autore**: Francesco Pinsone</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -104,7 +104,7 @@
 <span class="sd">    Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia</span>
 <span class="sd">    e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.\n</span>
 
-<span class="sd">    **Passaggi principali**:</span>
+<span class="sd">    **Passaggi principali**:\n</span>
 <span class="sd">    1. **Costruzione dell&#39;URL**: Combina l&#39;URL di Ahmia (versione onion) con la query di ricerca specificata.\n</span>
 <span class="sd">    2. **Invio della Richiesta**: Utilizza la sessione configurata con proxy Tor per inviare una richiesta HTTP al motore di ricerca.\n</span>
 <span class="sd">    3. **Gestione degli Errori**: Verifica eventuali errori di connessione o nella richiesta e, in caso di problemi, restituisce una lista vuota.\n</span>

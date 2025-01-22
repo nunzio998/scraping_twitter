@@ -115,12 +115,14 @@ ricerca. L’integrazione tra il modello LLM e il codice di scraping avviene tra
 Inizialmente, la funzione effettua la configurazione del proxy Tor, esegue la ricerca sul dark web, e successivamente invia i risultati
 a Ollama per l’elaborazione e l’estrazione di informazioni strutturate. I risultati non sono ancora salvati nel database, poiché il sistema
 è in fase di sviluppo per perfezionare il prompt e i risultati restituiti dal modello.</p>
-<p><strong>Passaggi principali</strong>:
-1. <strong>Impostazione del Proxy Tor</strong>: Si configurano i proxy per navigare in modo anonimo attraverso Tor.
-2. <strong>Ricerca su Ahmia</strong>: La funzione <cite>search_ahmia()</cite> invia una query al motore di ricerca del dark web Ahmia e raccoglie i risultati.
-3. <strong>Elaborazione con Ollama</strong>: I risultati vengono inviati al modello Ollama per estrarre informazioni specifiche come il titolo, il link e lo snippet.
-4. <strong>Stampa dei Risultati</strong>: I risultati elaborati vengono stampati, ma non sono ancora salvati nel database in quanto il sistema è in fase di ottimizzazione.
-5. <strong>Sviluppi futuri</strong>: L’obiettivo è migliorare la consistenza dei risultati e perfezionare il prompt per garantire formati stabili di output.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Impostazione del Proxy Tor</strong>: Si configurano i proxy per navigare in modo anonimo attraverso Tor.</p></li>
+<li><p><strong>Ricerca su Ahmia</strong>: La funzione <cite>search_ahmia()</cite> invia una query al motore di ricerca del dark web Ahmia e raccoglie i risultati.</p></li>
+<li><p><strong>Elaborazione con Ollama</strong>: I risultati vengono inviati al modello Ollama per estrarre informazioni specifiche come il titolo, il link e lo snippet.</p></li>
+<li><p><strong>Stampa dei Risultati</strong>: I risultati elaborati vengono stampati, ma non sono ancora salvati nel database in quanto il sistema è in fase di ottimizzazione.</p></li>
+<li><p><strong>Sviluppi futuri</strong>: L’obiettivo è migliorare la consistenza dei risultati e perfezionare il prompt per garantire formati stabili di output.</p></li>
+</ol>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Nessun valore restituito, stampa solo i risultati elaborati.</p>

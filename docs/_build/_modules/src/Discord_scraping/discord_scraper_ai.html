@@ -232,7 +232,7 @@
         <span class="c1"># Eseguo il modello sul testo</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">extracted_data</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">ol_messages</span><span class="o">.</span><span class="n">text</span><span class="p">})</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Risposta Ollama:</span><span class="se">\n</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Risposta Ollama:</span><span class="se">\n</span><span class="si">{</span><span class="n">output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># # Mi connetto alla collezione relativa al server da cui voglio estrarre i dati, se non esiste la creo</span>
         <span class="c1"># collection = connect_to_mongo_collection(client, server_name)</span>
