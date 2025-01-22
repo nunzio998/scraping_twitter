@@ -75,12 +75,12 @@ def darkweb_ollama_scraper():
     a Ollama per l'elaborazione e l'estrazione di informazioni strutturate. I risultati non sono ancora salvati nel database, poiché il sistema
     è in fase di sviluppo per perfezionare il prompt e i risultati restituiti dal modello.
 
-    **Passaggi principali**:
-    1. **Impostazione del Proxy Tor**: Si configurano i proxy per navigare in modo anonimo attraverso Tor.
-    2. **Ricerca su Ahmia**: La funzione `search_ahmia()` invia una query al motore di ricerca del dark web Ahmia e raccoglie i risultati.
-    3. **Elaborazione con Ollama**: I risultati vengono inviati al modello Ollama per estrarre informazioni specifiche come il titolo, il link e lo snippet.
-    4. **Stampa dei Risultati**: I risultati elaborati vengono stampati, ma non sono ancora salvati nel database in quanto il sistema è in fase di ottimizzazione.
-    5. **Sviluppi futuri**: L'obiettivo è migliorare la consistenza dei risultati e perfezionare il prompt per garantire formati stabili di output.
+    **Passaggi principali**:\n
+    1. **Impostazione del Proxy Tor**: Si configurano i proxy per navigare in modo anonimo attraverso Tor.\n
+    2. **Ricerca su Ahmia**: La funzione `search_ahmia()` invia una query al motore di ricerca del dark web Ahmia e raccoglie i risultati.\n
+    3. **Elaborazione con Ollama**: I risultati vengono inviati al modello Ollama per estrarre informazioni specifiche come il titolo, il link e lo snippet.\n
+    4. **Stampa dei Risultati**: I risultati elaborati vengono stampati, ma non sono ancora salvati nel database in quanto il sistema è in fase di ottimizzazione.\n
+    5. **Sviluppi futuri**: L'obiettivo è migliorare la consistenza dei risultati e perfezionare il prompt per garantire formati stabili di output.\n
 
     :return: Nessun valore restituito, stampa solo i risultati elaborati.
     """

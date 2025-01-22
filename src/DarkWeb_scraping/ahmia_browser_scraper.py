@@ -3,16 +3,16 @@ Questo script esegue il processo di scraping sul motore di ricerca Ahmia, che è
 effettua una ricerca tramite una query di parole chiave e salva i risultati nel database MongoDB. Questo processo permette di raccogliere informazioni provenienti dal dark web in modo sicuro e
 anonimo, archiviandole per ulteriori analisi o monitoraggi.
 
-**Passaggi principali**:
-1. **Connessione a Tor**: Configurazione dei proxy SOCKS5 per permettere la connessione alla rete Tor.
-2. **Connessione a MongoDB**: Connessione al database MongoDB per il salvataggio dei dati estratti.
-3. **Esecuzione della ricerca**: Utilizzo della funzione `search_ahmia()` per inviare una query di ricerca su Ahmia.
-4. **Salvataggio dei risultati**: I risultati vengono analizzati e salvati nel database MongoDB.
-5. **Disconnessione dal database**: La connessione a MongoDB viene chiusa una volta completato il salvataggio dei dati.
+**Passaggi principali**:\n
+1. **Connessione a Tor**: Configurazione dei proxy SOCKS5 per permettere la connessione alla rete Tor.\n
+2. **Connessione a MongoDB**: Connessione al database MongoDB per il salvataggio dei dati estratti.\n
+3. **Esecuzione della ricerca**: Utilizzo della funzione `search_ahmia()` per inviare una query di ricerca su Ahmia.\n
+4. **Salvataggio dei risultati**: I risultati vengono analizzati e salvati nel database MongoDB.\n
+5. **Disconnessione dal database**: La connessione a MongoDB viene chiusa una volta completato il salvataggio dei dati.\n
 
-**Requisiti**:
-- È necessario avere un server Tor in esecuzione sul computer e configurato correttamente.
-- MongoDB deve essere installato e configurato per l'archiviazione dei risultati.
+**Requisiti**:\n
+- È necessario avere un server Tor in esecuzione sul computer e configurato correttamente.\n
+- MongoDB deve essere installato e configurato per l'archiviazione dei risultati.\n
 
 **Autore**: Francesco Pinsone
 """
@@ -28,7 +28,7 @@ def search_ahmia(session, query):
     Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia
     e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.\n
 
-    **Passaggi principali**:
+    **Passaggi principali**:\n
     1. **Costruzione dell'URL**: Combina l'URL di Ahmia (versione onion) con la query di ricerca specificata.\n
     2. **Invio della Richiesta**: Utilizza la sessione configurata con proxy Tor per inviare una richiesta HTTP al motore di ricerca.\n
     3. **Gestione degli Errori**: Verifica eventuali errori di connessione o nella richiesta e, in caso di problemi, restituisce una lista vuota.\n
