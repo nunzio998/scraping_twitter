@@ -40,6 +40,9 @@ def drop_data():
     collection_list = client.get_database(config_data['database']).list_collection_names()
 
     for collection in collection_list:
+        if collection == "target_groups" or collection == "last_update":
+            logging.info(f"La collection {collection} è stata esclusa dall'eliminazione.")
+            continue
         data_coll = connect_to_mongo_collection(client, collection)
         result = data_coll.delete_many({})
         logging.info(f"Eliminati {result.deleted_count} documenti per la collection {collection}")
