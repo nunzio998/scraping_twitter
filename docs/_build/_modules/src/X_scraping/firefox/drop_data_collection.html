@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.firefox.drop_data_collection &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.X_scraping.firefox.drop_data_collection &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -116,6 +116,9 @@
     <span class="n">collection_list</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_database</span><span class="p">(</span><span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collection_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">collection</span> <span class="o">==</span> <span class="s2">&quot;target_groups&quot;</span> <span class="ow">or</span> <span class="n">collection</span> <span class="o">==</span> <span class="s2">&quot;last_update&quot;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;La collection </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2"> è stata esclusa dall&#39;eliminazione.&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
         <span class="n">data_coll</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">data_coll</span><span class="o">.</span><span class="n">delete_many</span><span class="p">({})</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Eliminati </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">deleted_count</span><span class="si">}</span><span class="s2"> documenti per la collection </span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

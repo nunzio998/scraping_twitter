@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.Telegram_scraping.db_to_csv &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.Telegram_scraping.db_to_csv &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -118,9 +118,15 @@
     <span class="n">data</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collection_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">collection</span> <span class="o">==</span> <span class="s1">&#39;targets&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
         <span class="n">data_coll</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
-
         <span class="n">data_tmp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data_coll</span><span class="o">.</span><span class="n">find</span><span class="p">())</span>
+
+        <span class="c1"># Salvo in un file specifico per ogni collezione</span>
+        <span class="n">df_local</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_tmp</span><span class="p">)</span>
+        <span class="n">df_local</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;data_results/</span><span class="si">{</span><span class="n">collection</span><span class="si">}</span><span class="s1">.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">data_tmp</span><span class="p">)</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>

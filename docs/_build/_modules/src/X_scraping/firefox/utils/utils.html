@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.firefox.utils.utils &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.X_scraping.firefox.utils.utils &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -449,7 +449,7 @@
 
 <div class="viewcode-block" id="parse_and_save">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_and_save">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_and_save</span><span class="p">(</span><span class="n">tweets_to_save</span><span class="p">,</span> <span class="n">group_name</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">parse_and_save</span><span class="p">(</span><span class="n">tweets_to_save</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per il parsing e il salvataggio di tweet nel database MongoDB.</span>
 
@@ -463,20 +463,18 @@
 <span class="sd">    La funzione garantisce che solo i tweet validi vengano salvati nel database, ignorando quelli che risultano incompleti o malformati.</span>
 
 <span class="sd">    :param **tweets_to_save** (list): Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.\n</span>
-<span class="sd">    :param **group_name** (str): Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.\n</span>
-<span class="sd">    :param **client** (object): Oggetto che rappresenta la connessione al database MongoDB.\n</span>
+<span class="sd">    :param **collection** (object): Oggetto che rappresenta la connessione alla collection MongoDB.\n</span>
 <span class="sd">    :return: Nessun valore restituito:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Connessione alla collezione dati</span>
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">group_name</span><span class="p">)</span>
 
     <span class="c1"># Parso ogni post e lo aggiungo al database</span>
     <span class="k">for</span> <span class="n">tweet</span> <span class="ow">in</span> <span class="n">tweets_to_save</span><span class="p">:</span>
         <span class="n">parsed_tweet</span> <span class="o">=</span> <span class="n">parse_tweet</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span>
         <span class="c1"># Salvo il post parsato nel database, se non è None</span>
-        <span class="k">if</span> <span class="n">parsed_tweet</span><span class="p">:</span>
-            <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">parsed_tweet</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">parsed_tweet</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_url_in_db</span><span class="p">(</span><span class="n">parsed_tweet</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">collection</span><span class="p">):</span>
+            <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">parsed_tweet</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tweet non valido o già presente nel database: </span><span class="si">{</span><span class="n">parsed_tweet</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 
@@ -540,6 +538,11 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Account non limitato..&quot;</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
+
+
+<span class="k">def</span> <span class="nf">is_url_in_db</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">})</span>  <span class="c1"># Sostituisci &quot;tweet_url&quot; con il campo corretto</span>
+    <span class="k">return</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 </pre></div>
 
            </div>

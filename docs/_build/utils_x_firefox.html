@@ -275,7 +275,7 @@ tempo limite, l’utente è considerato esistente; altrimenti, viene restituito 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.utils.utils.parse_and_save">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_and_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweets_to_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/utils/utils.html#parse_and_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.utils.utils.parse_and_save" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.utils.utils.</span></span><span class="sig-name descname"><span class="pre">parse_and_save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweets_to_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/utils/utils.html#parse_and_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.utils.utils.parse_and_save" title="Link to this definition"></a></dt>
 <dd><p>Funzione per il parsing e il salvataggio di tweet nel database MongoDB.</p>
 <p>Questa funzione è utilizzata nello script <cite>tweet_scraper.py</cite> per elaborare e archiviare i tweet estratti da un file HTML.
 Riceve in ingresso una lista di righe HTML che rappresentano i vari tweet da processare. La funzione esegue le seguenti operazioni:</p>
@@ -289,8 +289,7 @@ Riceve in ingresso una lista di righe HTML che rappresentano i vari tweet da pro
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>(</strong><strong>list</strong><strong>)</strong> (<em>tweets_to_save</em>) – Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.</p></li>
-<li><p><strong>(</strong><strong>str</strong><strong>)</strong> (<em>group_name</em>) – Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.</p></li>
-<li><p><strong>(</strong><strong>object</strong><strong>)</strong> (<em>client</em>) – Oggetto che rappresenta la connessione al database MongoDB.</p></li>
+<li><p><strong>(</strong><strong>object</strong><strong>)</strong> (<em>collection</em>) – Oggetto che rappresenta la connessione alla collection MongoDB.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
