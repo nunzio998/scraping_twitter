@@ -101,8 +101,6 @@ def scrape_tweets():
     else:
         target_list = [credentials['cve']]
 
-    # TODO valutare modifica alla modalità di ricerca tramite gruppi target
-
     # Configura opzioni del browser
     firefox_options = Options()
     firefox_options.add_argument("--headless")
@@ -138,6 +136,8 @@ def scrape_tweets():
     for target in target_list:
 
         logging.info(f"{target} in lavorazione..")
+
+        target_collection = connect_to_mongo_collection(client, target)
 
         # keyword1 = random.choice(primary_keywords)
         # keyword2 = random.choice(secondary_keywords)
@@ -175,13 +175,13 @@ def scrape_tweets():
             res = analisys_with_beautifulsoup(soup.prettify())
 
             # Divido le info in post e le salvo nel database
-            parse_and_save(res, target, client)
+            parse_and_save(res, target_collection)
 
+    # Se non sto cercando dati relativi alle CVE, bensi sto ricercando informazioni sui gruppi hacker, aggiorno la data di ultimo aggiornamento
+    if credentials['group_search']:
+        coll = connect_to_mongo_collection(client, "last_update")
+        coll.update_one({"id": "01"}, {"$set": {"last_update": today}})
 
-
-    # Salvo la nuova data di ultimo aggiornamento, mi disconnetto da MongoDB e chiudo il driver.
-    coll = connect_to_mongo_collection(client, "last_update")
-    coll.update_one({"id": "01"}, {"$set": {"last_update": today}})
     disconnect_to_mongo(client)
     driver.quit()
 
