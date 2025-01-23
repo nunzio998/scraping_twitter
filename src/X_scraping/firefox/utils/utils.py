@@ -435,5 +435,5 @@ def check_limited_user(driver):
 
 
 def is_url_in_db(url, collection):
-    result = collection.find_one({"tweet_url": url})  # Sostituisci "tweet_url" con il campo corretto
+    result = collection.find_one({"url": url})  # Sostituisci "tweet_url" con il campo corretto
     return result is not None
