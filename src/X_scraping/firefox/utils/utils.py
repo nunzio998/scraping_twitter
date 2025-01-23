@@ -346,7 +346,7 @@ def parse_tweet(tweet):
     }
 
 
-def parse_and_save(tweets_to_save, group_name, client):
+def parse_and_save(tweets_to_save, collection):
     """
     Funzione per il parsing e il salvataggio di tweet nel database MongoDB.
 
@@ -360,13 +360,9 @@ def parse_and_save(tweets_to_save, group_name, client):
     La funzione garantisce che solo i tweet validi vengano salvati nel database, ignorando quelli che risultano incompleti o malformati.
 
     :param **tweets_to_save** (list): Lista di righe HTML estratte, dove ogni riga rappresenta una parte di un tweet.\n
-    :param **group_name** (str): Nome del gruppo target che si sta analizzando. Questo nome viene utilizzato per identificare la collezione MongoDB.\n
-    :param **client** (object): Oggetto che rappresenta la connessione al database MongoDB.\n
+    :param **collection** (object): Oggetto che rappresenta la connessione alla collection MongoDB.\n
     :return: Nessun valore restituito:
     """
-
-    # Connessione alla collezione dati
-    collection = connect_to_mongo_collection(client, group_name)
 
     # Parso ogni post e lo aggiungo al database
     for tweet in tweets_to_save:
