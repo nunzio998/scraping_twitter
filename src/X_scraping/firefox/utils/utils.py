@@ -372,8 +372,10 @@ def parse_and_save(tweets_to_save, group_name, client):
     for tweet in tweets_to_save:
         parsed_tweet = parse_tweet(tweet)
         # Salvo il post parsato nel database, se non è None
-        if parsed_tweet:
+        if parsed_tweet and not is_url_in_db(parsed_tweet['url'], collection):
             save_to_mongo(parsed_tweet, collection)
+        else:
+            logging.info(f"Tweet non valido o già presente nel database: {parsed_tweet['url']}")
 
 
 def check_user(driver, user):
@@ -430,3 +432,8 @@ def check_limited_user(driver):
     except NoSuchElementException:
         logging.info("Account non limitato..")
         pass
+
+
+def is_url_in_db(url, collection):
+    result = collection.find_one({"tweet_url": url})  # Sostituisci "tweet_url" con il campo corretto
+    return result is not None
