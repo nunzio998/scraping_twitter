@@ -162,20 +162,22 @@ def scrape_tweets():
         last_height = driver.execute_script("return document.body.scrollHeight")
         while True:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(3)  # Attendi il caricamento della pagina
+            time.sleep(random.uniform(3, 7))  # Attesa casuale nel tentativo di simulare il comportamento umano
             new_height = driver.execute_script("return document.body.scrollHeight")
             if new_height == last_height:
                 break
             last_height = new_height
 
-        # Estraggo HTML pagina con BeautifulSoup e lo stampo
-        html_content = driver.page_source
-        soup = BeautifulSoup(html_content, 'html.parser')
+            # Estraggo HTML pagina con BeautifulSoup e lo stampo
+            html_content = driver.page_source
+            soup = BeautifulSoup(html_content, 'html.parser')
 
-        res = analisys_with_beautifulsoup(soup.prettify())
+            res = analisys_with_beautifulsoup(soup.prettify())
 
-        # Divido le info in post e le salvo nel database
-        parse_and_save(res, target, client)
+            # Divido le info in post e le salvo nel database
+            parse_and_save(res, target, client)
+
+
 
     # Salvo la nuova data di ultimo aggiornamento, mi disconnetto da MongoDB e chiudo il driver.
     coll = connect_to_mongo_collection(client, "last_update")
