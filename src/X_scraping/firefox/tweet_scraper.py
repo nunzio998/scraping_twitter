@@ -94,15 +94,18 @@ def scrape_tweets():
     client = connect_to_mongo()
 
     # Estrapolazione della lista di target su cui far partire la ricerca
-    targets_collection = connect_to_mongo_collection(client, "target_groups")
-    documents = targets_collection.find()
-    target_list = [doc['name'] for doc in documents]
+    if credentials['group_search']:
+        targets_collection = connect_to_mongo_collection(client, "target_groups")
+        documents = targets_collection.find()
+        target_list = [doc['name'].replace(" ", "_") for doc in documents] # Sostituisco gli spazi con underscore per semplificare la query di ricerca
+    else:
+        target_list = [credentials['cve']]
 
     # TODO valutare modifica alla modalità di ricerca tramite gruppi target
 
     # Configura opzioni del browser
     firefox_options = Options()
-    # firefox_options.add_argument("--headless")
+    firefox_options.add_argument("--headless")
 
     # Geckodriver
     service = Service('driver/geckodriver')
@@ -111,7 +114,7 @@ def scrape_tweets():
     driver = webdriver.Firefox(service=service, options=firefox_options)
     # driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
 
-    # Loggarsi manualmente su Twitter
+    # Carico la pagina di login di X
     driver.get('https://www.twitter.com/login')
 
     # Imposto un'attesa esplicita di massimo 60 secondi
@@ -132,16 +135,16 @@ def scrape_tweets():
 
     last_update = coll.find_one({"id": "01"}).get("last_update")
 
-    for group in target_list:
+    for target in target_list:
 
-        logging.info(f"{group} in lavorazione..")
+        logging.info(f"{target} in lavorazione..")
 
         # keyword1 = random.choice(primary_keywords)
         # keyword2 = random.choice(secondary_keywords)
         #
         # search_url = f"https://x.com/search?q={group}%20{keyword1}%20{keyword2}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
 
-        search_url = f"https://x.com/search?q={group}%20until%3A{today}%20since%3A{last_update}%20-filter%3Areplies&src=typed_query"
+        search_url = f"https://x.com/search?q={target}%20until%3A{today}%20since%3A{last_update}%20-filter%3Areplies&src=typed_query"
 
         try:
             driver.get(search_url)
@@ -152,7 +155,7 @@ def scrape_tweets():
             # Aspettare che un elemento indicativo del completo caricamento della pagina sia visibile
             search_tweets = wait_tweets.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/section/div')))
         except TimeoutException:
-            logging.exception(f"Nessun risultato per {group}..")
+            logging.exception(f"Nessun risultato per {target}..")
             continue
 
         # Scorri la pagina verso il basso per caricare più tweet
@@ -172,7 +175,7 @@ def scrape_tweets():
         res = analisys_with_beautifulsoup(soup.prettify())
 
         # Divido le info in post e le salvo nel database
-        parse_and_save(res, group, client)
+        parse_and_save(res, target, client)
 
     # Salvo la nuova data di ultimo aggiornamento, mi disconnetto da MongoDB e chiudo il driver.
     coll = connect_to_mongo_collection(client, "last_update")
