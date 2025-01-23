@@ -42,9 +42,15 @@ def export_csv():
     data = ()
 
     for collection in collection_list:
+        if collection == 'targets':
+            continue
         data_coll = connect_to_mongo_collection(client, collection)
-
         data_tmp = list(data_coll.find())
+
+        # Salvo in un file specifico per ogni collezione
+        df_local = pd.DataFrame(data_tmp)
+        df_local.to_csv(f'data_results/{collection}.csv', index=False)
+
         data = data + tuple(data_tmp)
 
     df = pd.DataFrame(data)

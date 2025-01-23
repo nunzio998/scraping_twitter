@@ -43,6 +43,8 @@ def export_csv():
     data = ()
 
     for collection in collection_list:
+        if collection == 'discord_target':
+            continue
         data_coll = connect_to_mongo_collection(client, collection)
 
         data_tmp = list(data_coll.find())

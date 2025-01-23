@@ -43,13 +43,23 @@ def export_csv():
     data = ()
 
     for collection in collection_list:
+        if collection == 'target_groups' or collection == 'last_updates':
+            continue
         data_coll = connect_to_mongo_collection(client, collection)
 
         data_tmp = list(data_coll.find())
+
+        # Salvo in un file specifico per ogni collezione
+        df_local = pd.DataFrame(data_tmp)
+        df_local.to_csv(f'data_results/{collection}.csv', index=False)
+
         data = data + tuple(data_tmp)
 
+    # Salvo in un unico file tutti i dati
     df = pd.DataFrame(data)
     df.to_csv('data_results/data.csv', index=False)
+
+    disconnect_to_mongo(client)
 
 
 if __name__ == "__main__":
