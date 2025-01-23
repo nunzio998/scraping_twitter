@@ -8,15 +8,14 @@ dei canali Discord in modo automatizzato e flessibile.
     - Effettua l'accesso alla versione web di Discord simulando un utente reale.\n
     - Naviga automaticamente attraverso i server e i canali specificati.\n
 
-2. **Recupero dei Messaggi**:\n
-    - Scarica i messaggi visibili in un canale e permette di estendere lo scraping scorrendo verso l'alto per recuperare ulteriori contenuti.\n
+2. **Recupero dei Messaggi**:
+Scarica i messaggi visibili in un canale e permette di estendere lo scraping scorrendo verso l'alto per recuperare ulteriori contenuti.\n
 
 3. **Parsing Avanzato con LLM**:\n
     - Utilizza un modello LLM per analizzare i messaggi scaricati e convertirli in un formato strutturato (JSON).\n
     - Riconosce campi come autore, data, contenuto e nome del canale.\n
 
-4. **Archiviazione su Database**:\n
-    - I dati estratti vengono salvati in un database MongoDB per facilitarne la gestione e l'analisi.\n
+4. **Archiviazione su Database**: Al momento, i risultati elaborati vengono visualizzati nel terminale tramite log, ma non vengono ancora salvati nel database. Questa parte dello script è in fase di sviluppo, poiché il sistema è ancora in fase di ottimizzazione per perfezionare il prompt e migliorare la consistenza dei risultati restituiti dal modello Ollama. Il futuro obiettivo è garantire che il modello fornisca risultati consistenti e formattati in modo stabile, con la possibilità di archiviare i dati in un database.\\
 
 **Limiti attuali**:\n
     - Il parsing dei messaggi tramite LLM è in fase di sviluppo e richiede un modello più performante per risultati ottimali.\n
@@ -29,11 +28,13 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
-from src.Discord_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, scroll_up, login
+from src.Discord_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, \
+    disconnect_to_mongo, scroll_up, login
 import logging
 from langchain_ollama import OllamaLLM
 from langchain.prompts import PromptTemplate
 from bs4 import BeautifulSoup
+
 
 def discord_chatgpt_scraper():
     # TODO: Da sviluppare quando si avrà accesso all'API di Chatgpt.
@@ -77,8 +78,8 @@ def discord_ollama_scraper():
             - `content`: Contenuto testuale del messaggio.\n
             - `channel_name`: Nome del canale di appartenenza.\n
 
-    9. **Salvataggio dei dati**:\n
-        - I messaggi estratti vengono salvati in una collezione del database MongoDB, organizzati per server e canale.\n
+    9. **Stampa dei Risultati**:\n
+        - I risultati elaborati vengono stampati, ma non sono ancora salvati nel database in quanto il sistema è in fase di ottimizzazione.\n
 
     10. **Chiusura delle risorse**:\n
         - Chiude la connessione al database e termina il driver Selenium.\n
@@ -144,8 +145,11 @@ def discord_ollama_scraper():
         soup = BeautifulSoup(html_content, 'html.parser')
         soup = soup.body
 
-        server_name = soup.find('h2', class_='defaultColor_a595eb lineClamp1_a595eb text-md/semibold_dc00ef defaultColor_e42ec6 name_fd6364').text
-        channel_name = soup.find('h1', class_='defaultColor_a595eb heading-md/semibold_dc00ef defaultColor_e42ec6 title_fc4f04').text.split(": ")[1]
+        server_name = soup.find('h2',
+                                class_='defaultColor_a595eb lineClamp1_a595eb text-md/semibold_dc00ef defaultColor_e42ec6 name_fd6364').text
+        channel_name = soup.find('h1',
+                                 class_='defaultColor_a595eb heading-md/semibold_dc00ef defaultColor_e42ec6 title_fc4f04').text.split(
+            ": ")[1]
 
         soup = soup.main
 
@@ -156,7 +160,7 @@ def discord_ollama_scraper():
         # Eseguo il modello sul testo
         output = extracted_data.invoke({"text": ol_messages.text})
 
-        print(f"Risposta Ollama:\n{output}")
+        logging.info(f"Risposta Ollama:\n{output}")
 
         # # Mi connetto alla collezione relativa al server da cui voglio estrarre i dati, se non esiste la creo
         # collection = connect_to_mongo_collection(client, server_name)
