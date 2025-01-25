@@ -84,26 +84,26 @@ def scrape_user_info():
 
     db = get_db(client)
 
+    users_coll = connect_to_mongo_collection(client, 'users_info')
+
     # Creo una lista vuota per i target
     target_list = []
     # Prendo tutti i target dai documenti presenti in tutte le collezioni del db
     for collection_name in db.list_collection_names():
-        if collection_name != 'users_info' and collection_name != 'target_groups':
+        if collection_name != 'users_info' and collection_name != 'target_groups' and collection_name != 'last_update':
             collection = connect_to_mongo_collection(client, collection_name)
             for document in collection.find():
-                username_tag = document.get('username_tag')
-                if username_tag and (username_tag not in target_list):
-                    # Aggiungi alla lista se non è già presente
+                username_tag = document.get('tag_username')
+                if username_tag and (username_tag not in target_list) and not users_coll.find_one({'tag_username': username_tag}):
+                    # Aggiungi alla lista se non è già presente e non è già stato analizzato
                     target_list.append(username_tag)
                 else:  # Prossima iterazione
                     continue
         else:  # Prossima iterazione
             continue
-
+    print(len(target_list))
     # Leggo file con credenziali
     credentials = read_json("utils/conf.json")
-
-    collection = connect_to_mongo_collection(client, 'users_info')
 
     # 1) Eseguo l'accesso a X:
 
@@ -134,8 +134,10 @@ def scrape_user_info():
 
     # 2) Eseguo la ricerca degli utenti:
     for user in target_list:
+        logging.info(f"Utente {user} in corso di analisi...")
+
         # Controllo se l'utente è già presente nel database
-        doc = collection.find_one({'username_tag': user})
+        doc = users_coll.find_one({'tag_username': user})
         if doc:
             logging.info(f"Utente già presente:{user}")
             continue
@@ -157,12 +159,12 @@ def scrape_user_info():
         # Analisi con BeautifulSoup
         res = beautifulsoup_user_analisys(html_content)
 
-        if res['username_tag'] is None:
+        if res['tag_username'] is None:
             logging.info(f"Utente non trovato: {user}")
             continue
 
         # 3) Salvo i risultati nel database
-        save_user_info_to_mongo(res, collection)
+        save_user_info_to_mongo(res, users_coll)
 
         logging.info(res)
 
