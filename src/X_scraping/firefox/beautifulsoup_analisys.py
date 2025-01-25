@@ -210,13 +210,11 @@ def beautifulsoup_user_analisys(html_content):
     # Mi sposto nel tag main dove sono le info che mi interessano
     soup = soup.main
 
-    soup = soup.find('div',
-                     class_='css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj')
+    soup = soup.find('div', class_='css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj')
 
     # Trovo il tag dell'utente
     try:
-        tag = soup.find('div',
-                        class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+        tag = soup.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
         span_username = tag.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3')
         tag_username = span_username.text
     except AttributeError:
@@ -226,15 +224,12 @@ def beautifulsoup_user_analisys(html_content):
     # Controllo se l'utente è verificato
     verified = False
     try:
-        username_div = soup.find('div', class_='css-175oi2r r-xoduu5 r-1awozwy r-18u37iz r-dnmrzs')
-        if username_div.find('span',
-                             class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx'):
-            username_div_span = username_div.find('span',
-                                                  class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx')
+        username_div = soup.find('div', class_='css-175oi2r r-1awozwy r-18u37iz r-dnmrzs')
+        if username_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-adyw6z r-135wba7 r-xoduu5 r-18u37iz r-1q142lx'):
+            username_div_span = username_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-adyw6z r-135wba7 r-xoduu5 r-18u37iz r-1q142lx')
             verified_path_tag = username_div_span.find('path')
             if verified_path_tag:
-                if verified_path_tag['d'] == verified_user1 or verified_path_tag['d'] == verified_user2 or \
-                        verified_path_tag['d'] == verified_user3:
+                if verified_path_tag['d'] == verified_user1 or verified_path_tag['d'] == verified_user2 or  verified_path_tag['d'] == verified_user3:
                     verified = True
     except AttributeError:
         verified = False
@@ -242,9 +237,7 @@ def beautifulsoup_user_analisys(html_content):
 
     # Trovo il numero di post
     try:
-        num_post = soup.find('div',
-                             class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41').text.split(
-            ' ')[0]
+        num_post = soup.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41').text.split(' ')[0]
     except AttributeError:
         num_post = None
         logging.info("Numero di post non trovato...")
@@ -272,14 +265,13 @@ def beautifulsoup_user_analisys(html_content):
         followers = None
         logging.info("Numero di following e followers non trovati...")
 
-    # Mi sposto sul div che contiene le informazioni dell'utente
+    # Mi sposto sul div che contiene le informazioni dell'utente su lavoro, località, data iscrizione, data di nascita e sito web..
     soup = soup.find('div', class_='css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-16dba41 r-56xrmm')
 
     # Cerco elemento lavoro
     job = None
     try:
-        el_span = soup.find('span',
-                            class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21')
+        el_span = soup.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21')
 
         if el_span.find('path')['d'] == job_path:
             job = el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
@@ -301,11 +293,18 @@ def beautifulsoup_user_analisys(html_content):
                 location = el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text
 
             if el_span.find('path')['d'] == subscription_path:
-                subscription = \
-                    el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text.split(': ')[1]
+                if el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text[0:6] == 'Joined':
+                    subscription = el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text.split('Joined ')[1]
+                elif el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text[0:10] == 'Iscrizione':
+                    subscription = el_span.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text.split('Iscrizione: ')[1]
+                else:
+                    raise IndexError("Errore nello split della data di iscrizione...")
 
             if el_span.find('path')['d'] == birth_path:
-                birth = el_span.text.split(': ')[1]
+                if el_span.text[0:5] == 'Born ':
+                    birth = el_span.text.split('Born ')[1]
+                elif el_span.text[0:15] == 'Data di nascita':
+                    birth = el_span.text.split(': ')[1]
 
             # rimuovo lo span dall'html per evitare errori nella ricerca del prossimo elemento
             el_span.decompose()
@@ -363,17 +362,15 @@ def find_related_user(html_content):
         # Mi sposto nel tag main dove sono le info che mi interessano
         soup = soup.main
 
-        soup = soup.find('aside', class_='css-175oi2r')
+        aside = soup.find('aside', class_='css-175oi2r')
 
-        user_ul = soup.find('ul', class_='css-175oi2r')
+        user_ul = aside.find('ul', class_='css-175oi2r')
 
         # Dal tag <ul> trovo tutti i tag <span> che si trovano nei tag <li> che compongono la lista
-        user_list = user_ul.find_all('li',
-                                     class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
+        user_list = user_ul.find_all('li', class_='css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l')
 
         for user in user_list:
-            user_div = user.find('div',
-                                 class_='css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
+            user_div = user.find('div', class_='css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978')
             related_users.append(user_div.find('span', class_='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3').text)
     except AttributeError:
         logging.info("Utenti correlati non presenti...")
