@@ -243,7 +243,7 @@ def save_user_info_to_mongo(data, collection):
     :return: Nessun valore restituito.
     """
     collection.insert_one(data)
-    logging.info(f"Salvato nel database: {data['username_tag']}")
+    logging.info(f"Salvato nel database: {data['tag_username']}")
 
 
 # config_data = read_json('mongo_utils.json')
@@ -425,8 +425,8 @@ def check_limited_user(driver):
     try:
         show_profile_button = driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button')
         show_profile_button.send_keys(Keys.RETURN)
+        logging.info("Account limitato..")
     except NoSuchElementException:
-        logging.info("Account non limitato..")
         pass
 
 
