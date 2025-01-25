@@ -93,10 +93,10 @@ def find_related_users():
     collection = connect_to_mongo_collection(client, 'users_info')
 
     for document in collection.find():
-        username_tag = document.get('username_tag')
-        if username_tag and (username_tag.split('@')[1] not in target_list):
+        tag_username = document.get('tag_username')
+        if tag_username and (tag_username.split('@')[1] not in target_list):
             # Aggiungi alla lista se non è già presente
-            target_list.append(username_tag.split('@')[1])
+            target_list.append(tag_username.split('@')[1])
         else:  # Prossima iterazione
             continue
 
@@ -107,8 +107,7 @@ def find_related_users():
     wait_login = WebDriverWait(driver, 60)
 
     # Aspetto che un campo di ricerca con ID 'search-input' sia visibile
-    search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH,
-                                                                            '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
+    search_input_login = wait_login.until(EC.visibility_of_element_located((By.XPATH, '/html/body/div/div/div/div[1]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[4]/label/div/div[2]/div/input')))
 
     time.sleep(1)
 
@@ -117,6 +116,7 @@ def find_related_users():
 
     # 3) Per ogni utente nella lista target cerco gli utenti correlati
     for user in target_list:
+        logging.info(f"Ricerca utenti correlati per {user}..")
         # Cerco l'utente
         driver.get(f"https://www.X.com/{user}")
 
@@ -133,11 +133,23 @@ def find_related_users():
 
         related_users = find_related_user(html_content)
 
+        if related_users is None:
+            continue
+
         logging.info(f"{user}:{related_users}")
 
         # 4) Ora, per ognuno degli utenti correlati trovati, cerco le informazioni utente e le salvo nel database nella collection 'users_info'
         if related_users is not None:
             for user_related in related_users:
+
+                # Controllo se l'utente è già presente nel database
+                doc = collection.find_one({'tag_username': user_related})
+                if doc:
+                    logging.info(f"Utente già presente:{user_related}")
+                    continue
+
+                logging.info(f"Ricerca informazioni per {user_related}..")
+
                 # Cerco l'utente
                 driver.get(f"https://www.X.com/{user_related}")
 
@@ -155,18 +167,11 @@ def find_related_users():
                 # Analisi con BeautifulSoup
                 res = beautifulsoup_user_analisys(html_content)
 
-                if res['username_tag'] is None:
-                    continue
-
-                # Controllo se l'utente è già presente nel database
-                doc = collection.find_one({'username_tag': res['username_tag']})
-                if doc:
-                    logging.info('Utente già presente:', res['username_tag'])
+                if res['tag_username'] is None:
                     continue
 
                 # Salvo le informazioni nel database
                 save_user_info_to_mongo(res, collection)
-                logging.info(f"info utente {user_related} salvate nel database..")
 
     driver.quit()
     disconnect_to_mongo(client)
