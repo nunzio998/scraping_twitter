@@ -2,6 +2,6 @@
   "email": "",
   "username": "",
   "password": "",
-  "group_search": true,
-  "cve": "CVE-2024"
+  "mongo_target_list": false,
+  "single_target": "APT29"
 }
