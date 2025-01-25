@@ -65,7 +65,11 @@ def scrape_tweets():
 
     3. **Login su X**: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.
 
-    4. **Creazione della Ricerca**: Per ogni gruppo target:\n
+    4. **Raccolta dei target**: Lo script offre la possibilità di fare scraping in due diverse modalità, in base ai valori che vengono impostati nel file di configurazione:\n
+        - Se 'mongo_target_list' è impostato su True, il programma recupera i gruppi target dalla collection 'target_groups' del database MongoDB.\n
+        - Se 'mongo_target_list' è impostato su False, il programma utilizza il valore di 'single_target' come unico gruppo target.\n
+
+    4. **Creazione della Ricerca**: Per ogni target:\n
        - Viene costruito un URL di ricerca personalizzato che include la data odierna e la data dell'ultimo aggiornamento per filtrare i tweet.\n
        - Viene eseguita una ricerca su X per ottenere i tweet relativi a quel gruppo, limitando i risultati a quelli pubblicati tra la data dell'ultimo aggiornamento e quella odierna.\n
 
@@ -94,12 +98,12 @@ def scrape_tweets():
     client = connect_to_mongo()
 
     # Estrapolazione della lista di target su cui far partire la ricerca
-    if credentials['group_search']:
+    if credentials['mongo_target_list']:
         targets_collection = connect_to_mongo_collection(client, "target_groups")
         documents = targets_collection.find()
         target_list = [doc['name'].replace(" ", "_") for doc in documents] # Sostituisco gli spazi con underscore per semplificare la query di ricerca
     else:
-        target_list = [credentials['cve']]
+        target_list = [credentials['single_target']]
 
     # Configura opzioni del browser
     firefox_options = Options()
@@ -139,11 +143,6 @@ def scrape_tweets():
 
         target_collection = connect_to_mongo_collection(client, target)
 
-        # keyword1 = random.choice(primary_keywords)
-        # keyword2 = random.choice(secondary_keywords)
-        #
-        # search_url = f"https://x.com/search?q={group}%20{keyword1}%20{keyword2}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&src=typed_query"
-
         search_url = f"https://x.com/search?q={target}%20until%3A{today}%20since%3A{last_update}%20-filter%3Areplies&src=typed_query"
 
         try:
@@ -178,9 +177,10 @@ def scrape_tweets():
             parse_and_save(res, target_collection)
 
     # Se non sto cercando dati relativi alle CVE, bensi sto ricercando informazioni sui gruppi hacker, aggiorno la data di ultimo aggiornamento
-    if credentials['group_search']:
+    if credentials['mongo_target_list']:
         coll = connect_to_mongo_collection(client, "last_update")
         coll.update_one({"id": "01"}, {"$set": {"last_update": today}})
+        logging.info(f"Data di ultimo aggiornamento aggiornata a: {today}")
 
     disconnect_to_mongo(client)
     driver.quit()
