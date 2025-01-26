@@ -145,6 +145,8 @@ def beautifulsoup_analisys(response, query):
         - Estrae le parole chiave dalla query di ricerca.\n
     3. **Restituzione dei Risultati**: La funzione restituisce una lista di dizionari, in cui ogni dizionario rappresenta un risultato di ricerca con informazioni come titolo, link, snippet e parole chiave.\n
 
+    **Nota**: La funzione sarà in grado, in futuro, di estrarre anche uno screenshot per ognuna delle pagine web trovate.\n
+
     :param response: oggetto HTTP, rappresenta la risposta della richiesta alla pagina web (contenente il codice HTML).\n
     :param query: str, la query di ricerca che ha generato i risultati.
 

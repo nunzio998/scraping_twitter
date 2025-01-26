@@ -18,7 +18,7 @@ anonimo, archiviandole per ulteriori analisi o monitoraggi.
 """
 
 import requests
-from src.DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys
+from src.DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, disconnect_to_mongo, beautifulsoup_analisys, read_json
 import logging
 
 
@@ -73,6 +73,8 @@ def darkweb_scraper():
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
+    conf = read_json("/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/DarkWeb_scraping/utils/conf.json")
+
     proxies = {
         'http': 'socks5h://127.0.0.1:9050',
         'https': 'socks5h://127.0.0.1:9050'
@@ -83,9 +85,7 @@ def darkweb_scraper():
 
     client = connect_to_mongo()
 
-    # Esempio di ricerca
-    query = 'hacker attack energy infrastructure'
-    results = search_ahmia(session, query)
+    results = search_ahmia(session, conf['target_query'])
 
     collection = connect_to_mongo_collection(client, "ahmia_results")
 
