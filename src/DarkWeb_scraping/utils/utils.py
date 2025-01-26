@@ -129,10 +129,23 @@ def save_to_mongo(data, collection):
     :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n
     :return: Nessun valore restituito. La funzione esegue solo l'inserimento dei dati.
     """
+    logging.info
     collection.insert_one(data)
 
 
-def beautifulsoup_analisys(response, query):
+def is_url_in_db(url, collection):
+    """
+    Funzione che verifica se un URL è già presente nel database MongoDB.
+    **Funzionamento**: La funzione cerca un documento nella collezione specificata che abbia un campo `url` uguale all'URL fornito. Se il documento esiste, la funzione restituisce `True`, altrimenti restituisce `False`.
+    :param url: indiritto URL da cercare nel database.
+    :param collection: collezione MongoDB in cui cercare l'URL.
+    :return: bool: valore booleano che indica se l'URL è già presente nel database.
+    """
+    result = collection.find_one({"link": url})  # Sostituisci "tweet_url" con il campo corretto
+    return result is not None
+
+
+def beautifulsoup_analisys(response, client, query):
     """
     Funzione che analizza il contenuto di una pagina web tramite BeautifulSoup e estrae informazioni pertinenti dalla risposta HTML.
 
@@ -148,6 +161,7 @@ def beautifulsoup_analisys(response, query):
     **Nota**: La funzione sarà in grado, in futuro, di estrarre anche uno screenshot per ognuna delle pagine web trovate.\n
 
     :param response: oggetto HTTP, rappresenta la risposta della richiesta alla pagina web (contenente il codice HTML).\n
+    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n
     :param query: str, la query di ricerca che ha generato i risultati.
 
     :return: list, una lista di dizionari dove ogni dizionario contiene:\n
@@ -156,24 +170,35 @@ def beautifulsoup_analisys(response, query):
             - `snippet`: una breve descrizione del risultato.\n
             - `search_keywords`: la lista delle parole chiave della query di ricerca.
     """
+    collection = connect_to_mongo_collection(client, 'ahmia_results')
     soup = BeautifulSoup(response.text, 'html.parser')
 
     soup = soup.body
 
     results = []
     for result in soup.find_all('li', class_='result'):  # scorre la lista degli elementi che risultano dalla ricerca.
-        title = result.find('a').text
         # Con l'uso di una regex si estrae il link dalla stringa
         link = re.search(r'https?://[^\s]+', result.find('a')['href']).group(0)
+
+        if is_url_in_db(link, collection):
+            logging.info(f"URL già presente nel database: {link}")
+            continue
+
+        title = result.find('a').text
+
         snippet = result.find('p').text
+
         # driver = configure_tor_driver()
         # try:
         #     screenshot = take_screenshot(link, driver)
         # except Exception as e:
         #     # logging.exception(e)
         #     screenshot = None
+
         search_keywords = query.split(' ')
+
         # results.append({'title': title, 'link': link, 'snippet': snippet, 'screenshot': screenshot,
         #                 'search_keywords': search_keywords})
+
         results.append({'title': title, 'link': link, 'snippet': snippet, 'search_keywords': search_keywords})
     return results
