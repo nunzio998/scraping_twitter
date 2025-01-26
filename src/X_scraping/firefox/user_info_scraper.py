@@ -56,7 +56,7 @@ def scrape_user_info():
 
     2. **Creazione della Lista di Target**: Lo script attraversa tutte le collezioni del database, estraendo il campo `username_tag` da ciascun documento che contiene informazioni sui tweet. Gli username vengono aggiunti a una lista, evitando duplicati.\n
 
-    3. **Preparazione per l'Automazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità "headless" (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.\n
+    3. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità "headless" (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.\n
 
     4. **Login su X**: Dopo aver configurato il browser, la funzione effettua il login su X utilizzando le credenziali memorizzate in un file JSON.\n
 
@@ -69,9 +69,10 @@ def scrape_user_info():
 
     7. **Salvataggio nel Database**: Le informazioni estratte da ciascun profilo utente vengono salvate nella collection `users_info` del database MongoDB.\n
 
-    8. **Gestione degli Errori**: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l'utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l'esecuzione.\n
+    8. **Chiusura delle Risorse**: Al termine dell'operazione di scraping, il driver di Selenium viene chiuso correttamente e la connessione al database viene terminata.\n
 
-    9. **Chiusura delle Risorse**: Al termine dell'operazione di scraping, il driver di Selenium viene chiuso correttamente e la connessione al database viene terminata.\n
+    9. **Gestione degli Errori**: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l'utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l'esecuzione.\n
+
 
     :return: Nessun valore restituito. Le informazioni sugli utenti vengono salvate direttamente nel database.
     """
@@ -79,13 +80,14 @@ def scrape_user_info():
     logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                         format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
-    # Connessione al database
+    # 1) Connessione al database
     client = connect_to_mongo()
 
     db = get_db(client)
 
     users_coll = connect_to_mongo_collection(client, 'users_info')
 
+    #2) Costruisco la lista di target
     # Creo una lista vuota per i target
     target_list = []
     # Prendo tutti i target dai documenti presenti in tutte le collezioni del db
@@ -101,12 +103,11 @@ def scrape_user_info():
                     continue
         else:  # Prossima iterazione
             continue
-    print(len(target_list))
+
     # Leggo file con credenziali
     credentials = read_json("utils/conf.json")
 
-    # 1) Eseguo l'accesso a X:
-
+    # 3) Configurazione browser Selenium:
     # Configura opzioni del browser
     firefox_options = Options()
     firefox_options.add_argument("--headless")
@@ -129,10 +130,10 @@ def scrape_user_info():
 
     time.sleep(1)
 
-    # Effettuo il login a X
+    # 4) Effettuo il login a X
     x_login(credentials, driver)
 
-    # 2) Eseguo la ricerca degli utenti:
+    # 5) Per ogni utente nella lista target cerco le informazioni
     for user in target_list:
         logging.info(f"Utente {user} in corso di analisi...")
 
@@ -156,18 +157,19 @@ def scrape_user_info():
 
         html_content = driver.page_source
 
-        # Analisi con BeautifulSoup
+        # 6) Analisi con BeautifulSoup
         res = beautifulsoup_user_analisys(html_content)
 
         if res['tag_username'] is None:
             logging.info(f"Utente non trovato: {user}")
             continue
 
-        # 3) Salvo i risultati nel database
+        # 7) Salvo i risultati nel database
         save_user_info_to_mongo(res, users_coll)
 
         logging.info(res)
 
+    # 8) Chiudo il driver e la connessione al database
     driver.quit()
     disconnect_to_mongo(client)
 

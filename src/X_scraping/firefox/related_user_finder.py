@@ -46,19 +46,21 @@ def find_related_users():
 
     2. **Automazione del Browser**: Viene configurato un browser Firefox in modalità "headless" (senza interfaccia grafica) tramite Selenium WebDriver. Questo browser viene utilizzato per interagire automaticamente con il sito X.
 
-    3. **Login su X**: Dopo aver configurato il browser, lo script esegue il login su X (Twitter) utilizzando le credenziali preconfigurate.
+    3. **Recupero lista target**: La funzione recupera la lista degli utenti target dalla collection 'users_info' del database MongoDB.\n
 
-    4. **Ricerca degli Utenti Correlati**: Per ciascun utente nella lista di target:\n
+    4. **Login su X**: Dopo aver configurato il browser, lo script esegue il login su X (Twitter) utilizzando le credenziali preconfigurate.
+
+    5. **Ricerca degli Utenti Correlati**: Per ciascun utente nella lista di target:\n
         - Lo script visita il profilo dell'utente su X.\n
         - Verifica che l'utente esista e non sia temporaneamente limitato dalla piattaforma.\n
         - Estrae e salva gli utenti correlati (ad esempio, follower o utenti suggeriti) utilizzando una funzione dedicata.\n
 
-    5. **Estrazione e Salvataggio delle Informazioni**: Per ogni utente correlato trovato:\n
+    6. **Estrazione e Salvataggio delle Informazioni**: Per ogni utente correlato trovato:\n
         - Lo script esamina il profilo dell'utente correlato.\n
         - Estrae i dettagli rilevanti del profilo utilizzando BeautifulSoup.\n
         - Verifica se l'utente è già presente nel database e, in caso contrario, salva le informazioni nel database MongoDB.\n
 
-    6. **Gestione degli Errori e Continuazione**: La funzione è progettata per saltare gli utenti che non possono essere trovati o che sono limitati. Inoltre, gestisce gli utenti già presenti nel database, evitando duplicazioni.
+    7. **Gestione degli Errori e Continuazione**: La funzione è progettata per saltare gli utenti che non possono essere trovati o che sono limitati. Inoltre, gestisce gli utenti già presenti nel database, evitando duplicazioni.
 
     Al termine del processo, il driver di Selenium viene chiuso e la connessione al database viene terminata.
 

@@ -61,27 +61,27 @@ def scrape_tweets():
     **Funzionamento**:\n
     1. **Connessione al Database**: La funzione inizia con la connessione al database MongoDB, dove vengono recuperati i gruppi target dalla collection "target_groups". Ogni gruppo target corrisponde a una ricerca di tweet specifica su X.
 
-    2. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità "headless" (senza interfaccia grafica), viene configurato il browser per interagire automaticamente con il sito X.
-
-    3. **Login su X**: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.
-
-    4. **Raccolta dei target**: Lo script offre la possibilità di fare scraping in due diverse modalità, in base ai valori che vengono impostati nel file di configurazione:\n
+    2. **Raccolta dei target**: Lo script offre la possibilità di fare scraping in due diverse modalità, in base ai valori che vengono impostati nel file di configurazione:\n
         - Se 'mongo_target_list' è impostato su True, il programma recupera i gruppi target dalla collection 'target_groups' del database MongoDB.\n
         - Se 'mongo_target_list' è impostato su False, il programma utilizza il valore di 'single_target' come unico gruppo target.\n
 
-    4. **Creazione della Ricerca**: Per ogni target:\n
+    3. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità "headless" (senza interfaccia grafica), viene configurato il browser per interagire automaticamente con il sito X.
+
+    4. **Login su X**: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.
+
+    5. **Creazione della Ricerca**: Per ogni target:\n
        - Viene costruito un URL di ricerca personalizzato che include la data odierna e la data dell'ultimo aggiornamento per filtrare i tweet.\n
        - Viene eseguita una ricerca su X per ottenere i tweet relativi a quel gruppo, limitando i risultati a quelli pubblicati tra la data dell'ultimo aggiornamento e quella odierna.\n
 
-    5. **Raccolta dei Tweet**: Una volta caricata la pagina con i risultati della ricerca:\n
+    6. **Raccolta dei Tweet**: Una volta caricata la pagina con i risultati della ricerca:\n
        - Viene eseguita una scrollata della pagina per caricare i tweet aggiuntivi.\n
        - L'HTML della pagina viene estratto e analizzato con BeautifulSoup, che filtra e organizza i tweet trovati.\n
 
-    6. **Estrazione e Salvataggio delle Informazioni**: I tweet estratti vengono parsati in una struttura utile, quindi vengono salvati nel database MongoDB.
+    7. **Estrazione e Salvataggio delle Informazioni**: I tweet estratti vengono parsati in una struttura utile, quindi vengono salvati nel database MongoDB.
 
-    7. **Aggiornamento della Data di Riferimento**: Una volta completata l'operazione di scraping, la data dell'ultimo aggiornamento viene registrata nel database per essere utilizzata nelle future esecuzioni dello script.
+    8. **Aggiornamento della Data di Riferimento**: Una volta completata l'operazione di scraping, la data dell'ultimo aggiornamento viene registrata nel database per essere utilizzata nelle future esecuzioni dello script.
 
-    8. **Gestione degli Errori**: Se non vengono trovati risultati per un gruppo target o se si verificano errori durante il caricamento della pagina, lo script continua con il gruppo successivo senza interrompere l'esecuzione.
+    9. **Gestione degli Errori**: Se non vengono trovati risultati per un gruppo target o se si verificano errori durante il caricamento della pagina, lo script continua con il gruppo successivo senza interrompere l'esecuzione.
 
     Alla fine, il driver di Selenium viene chiuso e la connessione al database viene terminata.
 
@@ -94,10 +94,10 @@ def scrape_tweets():
     # Leggo file con credenziali
     credentials = read_json("utils/conf.json")
 
-    # Connessione al DB
+    # 1) Connessione al DB
     client = connect_to_mongo()
 
-    # Estrapolazione della lista di target su cui far partire la ricerca
+    # 2) Estrapolazione della lista di target su cui far partire la ricerca
     if credentials['mongo_target_list']:
         targets_collection = connect_to_mongo_collection(client, "target_groups")
         documents = targets_collection.find()
@@ -105,7 +105,7 @@ def scrape_tweets():
     else:
         target_list = [credentials['single_target']]
 
-    # Configura opzioni del browser
+    # 3) Configura opzioni del browser
     firefox_options = Options()
     firefox_options.add_argument("--headless")
 
@@ -127,7 +127,7 @@ def scrape_tweets():
 
     time.sleep(1)
 
-    # Effettuo il login a X
+    # 4) Effettuo il login a X
     x_login(credentials, driver)
 
     # Imposto la data odierna e ottengo l'ultima data di aggiornamento
@@ -137,6 +137,7 @@ def scrape_tweets():
 
     last_update = coll.find_one({"id": "01"}).get("last_update")
 
+    # 5) Per ogni target nella lista, costruisco l'url, eseguo la ricerca e salvo i tweet
     for target in target_list:
 
         logging.info(f"{target} in lavorazione..")
@@ -144,6 +145,7 @@ def scrape_tweets():
         target_collection = connect_to_mongo_collection(client, target)
 
         search_url = f"https://x.com/search?q={target}%20until%3A{today}%20since%3A{last_update}%20-filter%3Areplies&src=typed_query"
+
 
         try:
             driver.get(search_url)
@@ -157,6 +159,7 @@ def scrape_tweets():
             logging.exception(f"Nessun risultato per {target}..")
             continue
 
+        # 6) Raccolta dei tweet
         # Scorri la pagina verso il basso per caricare più tweet
         last_height = driver.execute_script("return document.body.scrollHeight")
         while True:
@@ -167,6 +170,7 @@ def scrape_tweets():
                 break
             last_height = new_height
 
+            # 7) Estrazione, parsing e salvataggio dei tweet
             # Estraggo HTML pagina con BeautifulSoup e lo stampo
             html_content = driver.page_source
             soup = BeautifulSoup(html_content, 'html.parser')
@@ -176,6 +180,7 @@ def scrape_tweets():
             # Divido le info in post e le salvo nel database
             parse_and_save(res, target_collection)
 
+    #  8) Aggiorno la data di ultimo aggiornamento
     # Se non sto cercando dati relativi alle CVE, bensi sto ricercando informazioni sui gruppi hacker, aggiorno la data di ultimo aggiornamento
     if credentials['mongo_target_list']:
         coll = connect_to_mongo_collection(client, "last_update")

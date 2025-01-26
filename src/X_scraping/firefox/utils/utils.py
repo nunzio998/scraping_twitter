@@ -248,7 +248,7 @@ def save_user_info_to_mongo(data, collection):
 
 # config_data = read_json('mongo_utils.json')
 
-def parse_tweet(tweet):
+def parse_tweet(tweet) -> dict or None:
     """
     Funzione per il parsing di un tweet in formato JSON.
 
@@ -374,7 +374,7 @@ def parse_and_save(tweets_to_save, collection):
             logging.info(f"Tweet non valido o già presente nel database: {parsed_tweet['url']}")
 
 
-def check_user(driver, user):
+def check_user(driver, user) -> bool:
     """
     Funzione che verifica l'esistenza di uno specifico utente su una piattaforma tramite Selenium.
 
@@ -430,6 +430,13 @@ def check_limited_user(driver):
         pass
 
 
-def is_url_in_db(url, collection):
+def is_url_in_db(url, collection) -> bool:
+    """
+    Funzione che verifica se un URL è già presente nel database MongoDB.
+    **Funzionamento**: La funzione cerca un documento nella collezione specificata che abbia un campo `url` uguale all'URL fornito. Se il documento esiste, la funzione restituisce `True`, altrimenti restituisce `False`.
+    :param url: indiritto URL da cercare nel database.
+    :param collection: collezione MongoDB in cui cercare l'URL.
+    :return: bool: valore booleano che indica se l'URL è già presente nel database.
+    """
     result = collection.find_one({"url": url})  # Sostituisci "tweet_url" con il campo corretto
     return result is not None
