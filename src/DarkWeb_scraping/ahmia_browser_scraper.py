@@ -23,7 +23,7 @@ import logging
 
 
 # Funzione per cercare in Ahmia
-def search_ahmia(session, query):
+def search_ahmia(session, client, query):
     """
     Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia
     e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.\n
@@ -34,6 +34,8 @@ def search_ahmia(session, query):
     3. **Gestione degli Errori**: Verifica eventuali errori di connessione o nella richiesta e, in caso di problemi, restituisce una lista vuota.\n
     4. **Analisi dei Risultati**: Utilizza la funzione `beautifulsoup_analisys()` per analizzare la risposta HTML e estrarre i dati rilevanti.\n
 
+    :param session: .\n
+    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n
     :param query: stringa, query di ricerca\n
     :return: list, lista di dizionari, dove ogni dizionario rappresenta un risultato
     """
@@ -47,7 +49,7 @@ def search_ahmia(session, query):
         print(f"Errore di connessione: {e}")
         return []
 
-    res = beautifulsoup_analisys(response, query)
+    res = beautifulsoup_analisys(response, client, query)
 
     return res
 
@@ -85,7 +87,7 @@ def darkweb_scraper():
 
     client = connect_to_mongo()
 
-    results = search_ahmia(session, conf['target_query'])
+    results = search_ahmia(session, client, conf['target_query'])
 
     collection = connect_to_mongo_collection(client, "ahmia_results")
 
