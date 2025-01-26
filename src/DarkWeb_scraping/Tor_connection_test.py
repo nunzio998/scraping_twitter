@@ -7,7 +7,7 @@ import requests
 import logging
 
 
-def test_connection():
+def test_connection() -> None:
     """
     Funzione per effettuare un test di connessione al servizio Tor.\n
     :return: Nessun valore restituito.

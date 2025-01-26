@@ -23,7 +23,7 @@ import logging
 
 
 # Funzione per cercare in Ahmia
-def search_ahmia(session, client, query):
+def search_ahmia(session, client, query) -> list:
     """
     Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia
     e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.\n
@@ -54,7 +54,7 @@ def search_ahmia(session, client, query):
     return res
 
 
-def darkweb_scraper():
+def darkweb_scraper() -> None:
     """
     Questa funzione rappresenta il punto di partenza per eseguire uno scraping sul dark web. Utilizza il proxy Tor
     per garantire l'anonimato e la navigazione sicura. La funzione include i seguenti passaggi principali:
@@ -93,7 +93,6 @@ def darkweb_scraper():
 
     # Stampa dei risultati
     for result in results:
-        logging.info(f"Link: {result['link']}")
 
         json_result = {
             'title': result['title'],

@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 
-def read_json(path):
+def read_json(path) -> dict:
     """
     Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.
 
@@ -45,7 +45,7 @@ config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II S
 
 
 # Funzioni MongoDB:
-def connect_to_mongo():
+def connect_to_mongo() -> pymongo.MongoClient:
     """
     Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.
 
@@ -70,7 +70,7 @@ def connect_to_mongo():
     return client
 
 
-def disconnect_to_mongo(client):
+def disconnect_to_mongo(client) -> None:
     """
     Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.
 
@@ -87,7 +87,7 @@ def disconnect_to_mongo(client):
     client.close()
 
 
-def connect_to_mongo_collection(client, collection_name):
+def connect_to_mongo_collection(client, collection_name) -> pymongo.collection.Collection:
     """
     Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.
 
@@ -115,7 +115,7 @@ def connect_to_mongo_collection(client, collection_name):
     return db.get_collection(collection_name)
 
 
-def save_to_mongo(data, collection):
+def save_to_mongo(data, collection) -> None:
     """
     Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.
 
@@ -129,11 +129,11 @@ def save_to_mongo(data, collection):
     :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n
     :return: Nessun valore restituito. La funzione esegue solo l'inserimento dei dati.
     """
-    logging.info
+    logging.info(f"Salvato nel db: {data['link']}")
     collection.insert_one(data)
 
 
-def is_url_in_db(url, collection):
+def is_url_in_db(url, collection) -> bool:
     """
     Funzione che verifica se un URL è già presente nel database MongoDB.
     **Funzionamento**: La funzione cerca un documento nella collezione specificata che abbia un campo `url` uguale all'URL fornito. Se il documento esiste, la funzione restituisce `True`, altrimenti restituisce `False`.
@@ -145,7 +145,7 @@ def is_url_in_db(url, collection):
     return result is not None
 
 
-def beautifulsoup_analisys(response, client, query):
+def beautifulsoup_analisys(response, client, query) -> list:
     """
     Funzione che analizza il contenuto di una pagina web tramite BeautifulSoup e estrae informazioni pertinenti dalla risposta HTML.
 

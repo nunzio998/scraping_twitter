@@ -13,7 +13,7 @@ import argparse
 import logging
 
 
-def configure_tor_driver():
+def configure_tor_driver() -> webdriver.Firefox:
     """
     Configura il driver di Firefox per utilizzare Tor.
     """
@@ -27,7 +27,7 @@ def configure_tor_driver():
     return driver
 
 
-def take_screenshot(url, driver):
+def take_screenshot(url, driver) -> str:
     """
     Funzione per l'estrazione di uno screenshot da un sito .onion.
     :param url: URL del sito .onion
@@ -46,7 +46,7 @@ def take_screenshot(url, driver):
     return screenshot_data
 
 
-def save_screenshot(url):
+def save_screenshot(url) -> None:
     """
     Funzione per l'estrazione di uno screenshot da un sito .onion.\n
     :param url:

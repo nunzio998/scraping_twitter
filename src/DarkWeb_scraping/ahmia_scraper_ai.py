@@ -31,7 +31,7 @@ from langchain.prompts import PromptTemplate
 
 
 # Funzione per cercare in Ahmia
-def search_ahmia(session, query):
+def search_ahmia(session, query) -> str or None:
     """
     Funzione per eseguire una ricerca nel motore di ricerca Ahmia (dark web) utilizzando una query specificata.
     La funzione invia la query ad Ahmia e, una volta ricevuta la risposta, estrae e restituisce il testo dei risultati
@@ -57,7 +57,7 @@ def search_ahmia(session, query):
         response.raise_for_status()  # Verifica se la richiesta è andata a buon fine
     except requests.exceptions.RequestException as e:
         print(f"Errore di connessione: {e}")
-        return []
+        return None
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -68,7 +68,7 @@ def search_ahmia(session, query):
     return res
 
 
-def darkweb_ollama_scraper():
+def darkweb_ollama_scraper() -> None:
     """
     Funzione di scraping per il dark web, che integra la ricerca sul motore Ahmia con l'elaborazione dei risultati tramite il modello Ollama.
     Inizialmente, la funzione effettua la configurazione del proxy Tor, esegue la ricerca sul dark web, e successivamente invia i risultati
