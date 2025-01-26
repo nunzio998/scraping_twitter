@@ -120,12 +120,13 @@
 <p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.related_user_finder.find_related_users">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.related_user_finder.</span></span><span class="sig-name descname"><span class="pre">find_related_users</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/related_user_finder.html#find_related_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.related_user_finder.find_related_users" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.related_user_finder.</span></span><span class="sig-name descname"><span class="pre">find_related_users</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/X_scraping/firefox/related_user_finder.html#find_related_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.related_user_finder.find_related_users" title="Link to this definition"></a></dt>
 <dd><p>Questa funzione automatizza il processo di ricerca degli utenti correlati su X (precedentemente noto come Twitter) utilizzando Selenium e MongoDB.</p>
 <p>L’operazione viene eseguita in più fasi:</p>
 <ol class="arabic">
 <li><p><strong>Connessione al Database</strong>: La funzione si connette a un database MongoDB per estrarre la lista di utenti target dalla collection ‘users_info’. Gli utenti target sono identificati dai loro username.</p></li>
 <li><p><strong>Automazione del Browser</strong>: Viene configurato un browser Firefox in modalità “headless” (senza interfaccia grafica) tramite Selenium WebDriver. Questo browser viene utilizzato per interagire automaticamente con il sito X.</p></li>
+<li><p><strong>Recupero lista target</strong>: La funzione recupera la lista degli utenti target dalla collection ‘users_info’ del database MongoDB.</p></li>
 <li><p><strong>Login su X</strong>: Dopo aver configurato il browser, lo script esegue il login su X (Twitter) utilizzando le credenziali preconfigurate.</p></li>
 <li><p><strong>Ricerca degli Utenti Correlati</strong>: Per ciascun utente nella lista di target:</p>
 <blockquote>

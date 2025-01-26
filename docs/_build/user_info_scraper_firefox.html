@@ -124,7 +124,7 @@ per una successiva analisi.</p>
 <p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.user_info_scraper.scrape_user_info">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.user_info_scraper.</span></span><span class="sig-name descname"><span class="pre">scrape_user_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/user_info_scraper.html#scrape_user_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.user_info_scraper.scrape_user_info" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.user_info_scraper.</span></span><span class="sig-name descname"><span class="pre">scrape_user_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/X_scraping/firefox/user_info_scraper.html#scrape_user_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.user_info_scraper.scrape_user_info" title="Link to this definition"></a></dt>
 <dd><p>Funzione che automatizza la raccolta delle informazioni sui profili utente da X (precedentemente noto come Twitter).
 Lo script esegue il login su X, esegue la ricerca di utenti target estratti da tutte le collezioni di tweet nel database
 e raccoglie le informazioni associate a ciascun utente. Le informazioni estratte vengono poi salvate nel database MongoDB,
@@ -134,7 +134,7 @@ nome utente, bio, numero di follower, post recenti, e altre informazioni pertine
 <ol class="arabic simple">
 <li><p><strong>Connessione al Database</strong>: La funzione si connette al database MongoDB per estrarre una lista di utenti target da tutte le collezioni che contengono dati relativi ai tweet salvati (eccetto le collection <cite>users_info</cite> e <cite>target_groups</cite>). Gli utenti vengono identificati tramite il campo <cite>username_tag</cite>.</p></li>
 <li><p><strong>Creazione della Lista di Target</strong>: Lo script attraversa tutte le collezioni del database, estraendo il campo <cite>username_tag</cite> da ciascun documento che contiene informazioni sui tweet. Gli username vengono aggiunti a una lista, evitando duplicati.</p></li>
-<li><p><strong>Preparazione per l’Automazione del Browser</strong>: Utilizzando Selenium e il driver Firefox in modalità “headless” (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.</p></li>
+<li><p><strong>Configurazione del Browser</strong>: Utilizzando Selenium e il driver Firefox in modalità “headless” (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.</p></li>
 <li><p><strong>Login su X</strong>: Dopo aver configurato il browser, la funzione effettua il login su X utilizzando le credenziali memorizzate in un file JSON.</p></li>
 <li><p><strong>Raccolta delle Informazioni sugli Utenti</strong>:</p>
 <ul class="simple">
@@ -145,8 +145,8 @@ nome utente, bio, numero di follower, post recenti, e altre informazioni pertine
 </li>
 <li><p><strong>Analisi con BeautifulSoup</strong>: Una volta che il contenuto HTML del profilo dell’utente è stato caricato, viene passato a BeautifulSoup per l’analisi e l’estrazione delle informazioni rilevanti. Questo permette di strutturare i dati in un formato utile per il salvataggio nel database.</p></li>
 <li><p><strong>Salvataggio nel Database</strong>: Le informazioni estratte da ciascun profilo utente vengono salvate nella collection <cite>users_info</cite> del database MongoDB.</p></li>
-<li><p><strong>Gestione degli Errori</strong>: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l’utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l’esecuzione.</p></li>
 <li><p><strong>Chiusura delle Risorse</strong>: Al termine dell’operazione di scraping, il driver di Selenium viene chiuso correttamente e la connessione al database viene terminata.</p></li>
+<li><p><strong>Gestione degli Errori</strong>: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l’utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l’esecuzione.</p></li>
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>

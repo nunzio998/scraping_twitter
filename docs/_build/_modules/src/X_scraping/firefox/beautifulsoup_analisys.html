@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.firefox.beautifulsoup_analisys &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.X_scraping.firefox.beautifulsoup_analisys &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -118,7 +118,7 @@
 
 <div class="viewcode-block" id="analisys_with_beautifulsoup">
 <a class="viewcode-back" href="../../../../beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.analisys_with_beautifulsoup">[docs]</a>
-<span class="k">def</span> <span class="nf">analisys_with_beautifulsoup</span><span class="p">(</span><span class="n">response_html</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">analisys_with_beautifulsoup</span><span class="p">(</span><span class="n">response_html</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione `analisys_with_beautifulsoup` analizza il contenuto HTML della pagina web dell&#39;utente su X (Twitter)</span>
 <span class="sd">    per estrarre informazioni sui tweet. La funzione esamina i tweet, estraendo i dati principali come l&#39;autore, la data,</span>
@@ -241,7 +241,7 @@
 
 <div class="viewcode-block" id="beautifulsoup_user_analisys">
 <a class="viewcode-back" href="../../../../beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.beautifulsoup_user_analisys">[docs]</a>
-<span class="k">def</span> <span class="nf">beautifulsoup_user_analisys</span><span class="p">(</span><span class="n">html_content</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">beautifulsoup_user_analisys</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione `beautifulsoup_user_analisys` analizza il contenuto HTML della pagina di un utente su X (Twitter) per estrarre informazioni relative al profilo dell&#39;utente. Queste informazioni vengono restituite sotto forma di dizionario.</span>
 
@@ -289,13 +289,11 @@
     <span class="c1"># Mi sposto nel tag main dove sono le info che mi interessano</span>
     <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">main</span>
 
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span>
-                     <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj&#39;</span><span class="p">)</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-kemksi r-1kqtdi0 r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj&#39;</span><span class="p">)</span>
 
     <span class="c1"># Trovo il tag dell&#39;utente</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span>
-                        <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&#39;</span><span class="p">)</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&#39;</span><span class="p">)</span>
         <span class="n">span_username</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span>
         <span class="n">tag_username</span> <span class="o">=</span> <span class="n">span_username</span><span class="o">.</span><span class="n">text</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -305,15 +303,12 @@
     <span class="c1"># Controllo se l&#39;utente è verificato</span>
     <span class="n">verified</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">username_div</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-xoduu5 r-1awozwy r-18u37iz r-dnmrzs&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">username_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span>
-                             <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx&#39;</span><span class="p">):</span>
-            <span class="n">username_div_span</span> <span class="o">=</span> <span class="n">username_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span>
-                                                  <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-xoduu5 r-18u37iz r-1q142lx&#39;</span><span class="p">)</span>
+        <span class="n">username_div</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-1awozwy r-18u37iz r-dnmrzs&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">username_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-adyw6z r-135wba7 r-xoduu5 r-18u37iz r-1q142lx&#39;</span><span class="p">):</span>
+            <span class="n">username_div_span</span> <span class="o">=</span> <span class="n">username_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-adyw6z r-135wba7 r-xoduu5 r-18u37iz r-1q142lx&#39;</span><span class="p">)</span>
             <span class="n">verified_path_tag</span> <span class="o">=</span> <span class="n">username_div_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">verified_path_tag</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user1</span> <span class="ow">or</span> <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user2</span> <span class="ow">or</span> \
-                        <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user1</span> <span class="ow">or</span> <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user2</span> <span class="ow">or</span>  <span class="n">verified_path_tag</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">verified_user3</span><span class="p">:</span>
                     <span class="n">verified</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="n">verified</span> <span class="o">=</span> <span class="kc">False</span>
@@ -321,9 +316,7 @@
 
     <span class="c1"># Trovo il numero di post</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">num_post</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span>
-                             <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-            <span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">num_post</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-n6v787 r-1cwl3u0 r-16dba41&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="n">num_post</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Numero di post non trovato...&quot;</span><span class="p">)</span>
@@ -351,14 +344,13 @@
         <span class="n">followers</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Numero di following e followers non trovati...&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Mi sposto sul div che contiene le informazioni dell&#39;utente</span>
+    <span class="c1"># Mi sposto sul div che contiene le informazioni dell&#39;utente su lavoro, località, data iscrizione, data di nascita e sito web..</span>
     <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-16dba41 r-56xrmm&#39;</span><span class="p">)</span>
 
     <span class="c1"># Cerco elemento lavoro</span>
     <span class="n">job</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">el_span</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span>
-                            <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21&#39;</span><span class="p">)</span>
+        <span class="n">el_span</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3 r-4qtqp9 r-1a11zyx r-1loqt21&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">job_path</span><span class="p">:</span>
             <span class="n">job</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
@@ -380,11 +372,18 @@
                 <span class="n">location</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
 
             <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">subscription_path</span><span class="p">:</span>
-                <span class="n">subscription</span> <span class="o">=</span> \
-                    <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Joined&#39;</span><span class="p">:</span>
+                    <span class="n">subscription</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;Joined &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Iscrizione&#39;</span><span class="p">:</span>
+                    <span class="n">subscription</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;Iscrizione: &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Errore nello split della data di iscrizione...&quot;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">birth_path</span><span class="p">:</span>
-                <span class="n">birth</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">el_span</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Born &#39;</span><span class="p">:</span>
+                    <span class="n">birth</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;Born &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">el_span</span><span class="o">.</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">15</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Data di nascita&#39;</span><span class="p">:</span>
+                    <span class="n">birth</span> <span class="o">=</span> <span class="n">el_span</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># rimuovo lo span dall&#39;html per evitare errori nella ricerca del prossimo elemento</span>
             <span class="n">el_span</span><span class="o">.</span><span class="n">decompose</span><span class="p">()</span>
@@ -420,7 +419,7 @@
 
 <div class="viewcode-block" id="find_related_user">
 <a class="viewcode-back" href="../../../../beautifulsoup_analisys_firefox.html#src.X_scraping.firefox.beautifulsoup_analisys.find_related_user">[docs]</a>
-<span class="k">def</span> <span class="nf">find_related_user</span><span class="p">(</span><span class="n">html_content</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">find_related_user</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione `find_related_user` analizza l&#39;HTML della pagina di un utente di X (Twitter) per estrarre e restituire una lista di utenti correlati suggeriti. Questi utenti sono visualizzati nella sezione aside presente nel menu laterale della pagina.</span>
 
@@ -445,17 +444,15 @@
         <span class="c1"># Mi sposto nel tag main dove sono le info che mi interessano</span>
         <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">main</span>
 
-        <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;aside&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
+        <span class="n">aside</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;aside&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
 
-        <span class="n">user_ul</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
+        <span class="n">user_ul</span> <span class="o">=</span> <span class="n">aside</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;ul&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r&#39;</span><span class="p">)</span>
 
         <span class="c1"># Dal tag &lt;ul&gt; trovo tutti i tag &lt;span&gt; che si trovano nei tag &lt;li&gt; che compongono la lista</span>
-        <span class="n">user_list</span> <span class="o">=</span> <span class="n">user_ul</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span>
-                                     <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l&#39;</span><span class="p">)</span>
+        <span class="n">user_list</span> <span class="o">=</span> <span class="n">user_ul</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-175oi2r r-1mmae3n r-3pj75a r-1loqt21 r-o7ynqc r-6416eg r-1ny4l3l&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">user_list</span><span class="p">:</span>
-            <span class="n">user_div</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span>
-                                 <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&#39;</span><span class="p">)</span>
+            <span class="n">user_div</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-146c3p1 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-18u37iz r-1wvb978&#39;</span><span class="p">)</span>
             <span class="n">related_users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_div</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;span&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Utenti correlati non presenti...&quot;</span><span class="p">)</span>

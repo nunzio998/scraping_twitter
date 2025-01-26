@@ -122,16 +122,24 @@ eventuale utilizzo futuro.</p>
 <p><strong>Autore</strong>: Francesco Pinsone.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.X_scraping.firefox.tweet_scraper.scrape_tweets">
-<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.tweet_scraper.</span></span><span class="sig-name descname"><span class="pre">scrape_tweets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/X_scraping/firefox/tweet_scraper.html#scrape_tweets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.tweet_scraper.scrape_tweets" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.X_scraping.firefox.tweet_scraper.</span></span><span class="sig-name descname"><span class="pre">scrape_tweets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/X_scraping/firefox/tweet_scraper.html#scrape_tweets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.X_scraping.firefox.tweet_scraper.scrape_tweets" title="Link to this definition"></a></dt>
 <dd><p>Funzione che automatizza la raccolta dei tweet da X (precedentemente noto come Twitter) per gruppi target predefiniti.
 Il processo comprende il login su X, la ricerca di tweet relativi a ciascun gruppo, e l’estrazione delle informazioni
 pertinenti da ciascun tweet. Le informazioni estratte vengono quindi salvate nel database MongoDB.</p>
 <p><strong>Funzionamento</strong>:</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p><strong>Connessione al Database</strong>: La funzione inizia con la connessione al database MongoDB, dove vengono recuperati i gruppi target dalla collection “target_groups”. Ogni gruppo target corrisponde a una ricerca di tweet specifica su X.</p></li>
+<li><p><strong>Raccolta dei target</strong>: Lo script offre la possibilità di fare scraping in due diverse modalità, in base ai valori che vengono impostati nel file di configurazione:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Se ‘mongo_target_list’ è impostato su True, il programma recupera i gruppi target dalla collection ‘target_groups’ del database MongoDB.</p></li>
+<li><p>Se ‘mongo_target_list’ è impostato su False, il programma utilizza il valore di ‘single_target’ come unico gruppo target.</p></li>
+</ul>
+</div></blockquote>
+</li>
 <li><p><strong>Configurazione del Browser</strong>: Utilizzando Selenium e il driver Firefox in modalità “headless” (senza interfaccia grafica), viene configurato il browser per interagire automaticamente con il sito X.</p></li>
 <li><p><strong>Login su X</strong>: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.</p></li>
-<li><p><strong>Creazione della Ricerca</strong>: Per ogni gruppo target:</p>
+<li><p><strong>Creazione della Ricerca</strong>: Per ogni target:</p>
 <ul class="simple">
 <li><p>Viene costruito un URL di ricerca personalizzato che include la data odierna e la data dell’ultimo aggiornamento per filtrare i tweet.</p></li>
 <li><p>Viene eseguita una ricerca su X per ottenere i tweet relativi a quel gruppo, limitando i risultati a quelli pubblicati tra la data dell’ultimo aggiornamento e quella odierna.</p></li>

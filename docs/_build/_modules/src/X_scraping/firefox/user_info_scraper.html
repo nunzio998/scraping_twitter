@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.X_scraping.firefox.user_info_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.X_scraping.firefox.user_info_scraper &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -119,7 +119,7 @@
 
 <div class="viewcode-block" id="scrape_user_info">
 <a class="viewcode-back" href="../../../../user_info_scraper_firefox.html#src.X_scraping.firefox.user_info_scraper.scrape_user_info">[docs]</a>
-<span class="k">def</span> <span class="nf">scrape_user_info</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">scrape_user_info</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che automatizza la raccolta delle informazioni sui profili utente da X (precedentemente noto come Twitter).</span>
 <span class="sd">    Lo script esegue il login su X, esegue la ricerca di utenti target estratti da tutte le collezioni di tweet nel database</span>
@@ -132,7 +132,7 @@
 
 <span class="sd">    2. **Creazione della Lista di Target**: Lo script attraversa tutte le collezioni del database, estraendo il campo `username_tag` da ciascun documento che contiene informazioni sui tweet. Gli username vengono aggiunti a una lista, evitando duplicati.\n</span>
 
-<span class="sd">    3. **Preparazione per l&#39;Automazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.\n</span>
+<span class="sd">    3. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per simulare la navigazione su X e raccogliere informazioni sui profili utente.\n</span>
 
 <span class="sd">    4. **Login su X**: Dopo aver configurato il browser, la funzione effettua il login su X utilizzando le credenziali memorizzate in un file JSON.\n</span>
 
@@ -145,9 +145,10 @@
 
 <span class="sd">    7. **Salvataggio nel Database**: Le informazioni estratte da ciascun profilo utente vengono salvate nella collection `users_info` del database MongoDB.\n</span>
 
-<span class="sd">    8. **Gestione degli Errori**: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l&#39;utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l&#39;esecuzione.\n</span>
+<span class="sd">    8. **Chiusura delle Risorse**: Al termine dell&#39;operazione di scraping, il driver di Selenium viene chiuso correttamente e la connessione al database viene terminata.\n</span>
 
-<span class="sd">    9. **Chiusura delle Risorse**: Al termine dell&#39;operazione di scraping, il driver di Selenium viene chiuso correttamente e la connessione al database viene terminata.\n</span>
+<span class="sd">    9. **Gestione degli Errori**: Se un utente non viene trovato o se si verificano errori durante la raccolta dei dati (ad esempio, l&#39;utente ha un profilo limitato o non è accessibile), lo script continua automaticamente con il prossimo utente, senza interrompere l&#39;esecuzione.\n</span>
+
 
 <span class="sd">    :return: Nessun valore restituito. Le informazioni sugli utenti vengono salvate direttamente nel database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -155,21 +156,24 @@
     <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>  <span class="c1"># Imposto il livello minimo di log</span>
                         <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># Formato del log</span>
 
-    <span class="c1"># Connessione al database</span>
+    <span class="c1"># 1) Connessione al database</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
 
     <span class="n">db</span> <span class="o">=</span> <span class="n">get_db</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
 
+    <span class="n">users_coll</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;users_info&#39;</span><span class="p">)</span>
+
+    <span class="c1">#2) Costruisco la lista di target</span>
     <span class="c1"># Creo una lista vuota per i target</span>
     <span class="n">target_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># Prendo tutti i target dai documenti presenti in tutte le collezioni del db</span>
     <span class="k">for</span> <span class="n">collection_name</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">collection_name</span> <span class="o">!=</span> <span class="s1">&#39;users_info&#39;</span> <span class="ow">and</span> <span class="n">collection_name</span> <span class="o">!=</span> <span class="s1">&#39;target_groups&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">collection_name</span> <span class="o">!=</span> <span class="s1">&#39;users_info&#39;</span> <span class="ow">and</span> <span class="n">collection_name</span> <span class="o">!=</span> <span class="s1">&#39;target_groups&#39;</span> <span class="ow">and</span> <span class="n">collection_name</span> <span class="o">!=</span> <span class="s1">&#39;last_update&#39;</span><span class="p">:</span>
             <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">():</span>
-                <span class="n">username_tag</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username_tag&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">username_tag</span> <span class="ow">and</span> <span class="p">(</span><span class="n">username_tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">):</span>
-                    <span class="c1"># Aggiungi alla lista se non è già presente</span>
+                <span class="n">username_tag</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tag_username&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">username_tag</span> <span class="ow">and</span> <span class="p">(</span><span class="n">username_tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">users_coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;tag_username&#39;</span><span class="p">:</span> <span class="n">username_tag</span><span class="p">}):</span>
+                    <span class="c1"># Aggiungi alla lista se non è già presente e non è già stato analizzato</span>
                     <span class="n">target_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">username_tag</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>  <span class="c1"># Prossima iterazione</span>
                     <span class="k">continue</span>
@@ -179,10 +183,7 @@
     <span class="c1"># Leggo file con credenziali</span>
     <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/conf.json&quot;</span><span class="p">)</span>
 
-    <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;users_info&#39;</span><span class="p">)</span>
-
-    <span class="c1"># 1) Eseguo l&#39;accesso a X:</span>
-
+    <span class="c1"># 3) Configurazione browser Selenium:</span>
     <span class="c1"># Configura opzioni del browser</span>
     <span class="n">firefox_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
     <span class="n">firefox_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--headless&quot;</span><span class="p">)</span>
@@ -205,13 +206,15 @@
 
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="c1"># Effettuo il login a X</span>
+    <span class="c1"># 4) Effettuo il login a X</span>
     <span class="n">x_login</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
 
-    <span class="c1"># 2) Eseguo la ricerca degli utenti:</span>
+    <span class="c1"># 5) Per ogni utente nella lista target cerco le informazioni</span>
     <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Utente </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> in corso di analisi...&quot;</span><span class="p">)</span>
+
         <span class="c1"># Controllo se l&#39;utente è già presente nel database</span>
-        <span class="n">doc</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;username_tag&#39;</span><span class="p">:</span> <span class="n">user</span><span class="p">})</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">users_coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;tag_username&#39;</span><span class="p">:</span> <span class="n">user</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">doc</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Utente già presente:</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
@@ -230,18 +233,19 @@
 
         <span class="n">html_content</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
 
-        <span class="c1"># Analisi con BeautifulSoup</span>
+        <span class="c1"># 6) Analisi con BeautifulSoup</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">beautifulsoup_user_analisys</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;tag_username&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Utente non trovato: </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
 
-        <span class="c1"># 3) Salvo i risultati nel database</span>
-        <span class="n">save_user_info_to_mongo</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
+        <span class="c1"># 7) Salvo i risultati nel database</span>
+        <span class="n">save_user_info_to_mongo</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">users_coll</span><span class="p">)</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
+    <span class="c1"># 8) Chiudo il driver e la connessione al database</span>
     <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
     <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span></div>
 

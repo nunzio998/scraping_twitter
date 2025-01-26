@@ -128,7 +128,7 @@
 
 <div class="viewcode-block" id="scrape_tweets">
 <a class="viewcode-back" href="../../../../tweet_scraper_firefox.html#src.X_scraping.firefox.tweet_scraper.scrape_tweets">[docs]</a>
-<span class="k">def</span> <span class="nf">scrape_tweets</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">scrape_tweets</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che automatizza la raccolta dei tweet da X (precedentemente noto come Twitter) per gruppi target predefiniti.</span>
 <span class="sd">    Il processo comprende il login su X, la ricerca di tweet relativi a ciascun gruppo, e l&#39;estrazione delle informazioni</span>
@@ -137,23 +137,27 @@
 <span class="sd">    **Funzionamento**:\n</span>
 <span class="sd">    1. **Connessione al Database**: La funzione inizia con la connessione al database MongoDB, dove vengono recuperati i gruppi target dalla collection &quot;target_groups&quot;. Ogni gruppo target corrisponde a una ricerca di tweet specifica su X.</span>
 
-<span class="sd">    2. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per interagire automaticamente con il sito X.</span>
+<span class="sd">    2. **Raccolta dei target**: Lo script offre la possibilità di fare scraping in due diverse modalità, in base ai valori che vengono impostati nel file di configurazione:\n</span>
+<span class="sd">        - Se &#39;mongo_target_list&#39; è impostato su True, il programma recupera i gruppi target dalla collection &#39;target_groups&#39; del database MongoDB.\n</span>
+<span class="sd">        - Se &#39;mongo_target_list&#39; è impostato su False, il programma utilizza il valore di &#39;single_target&#39; come unico gruppo target.\n</span>
 
-<span class="sd">    3. **Login su X**: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.</span>
+<span class="sd">    3. **Configurazione del Browser**: Utilizzando Selenium e il driver Firefox in modalità &quot;headless&quot; (senza interfaccia grafica), viene configurato il browser per interagire automaticamente con il sito X.</span>
 
-<span class="sd">    4. **Creazione della Ricerca**: Per ogni gruppo target:\n</span>
+<span class="sd">    4. **Login su X**: Dopo aver configurato il browser, la funzione esegue il login su X utilizzando le credenziali fornite tramite un file JSON.</span>
+
+<span class="sd">    5. **Creazione della Ricerca**: Per ogni target:\n</span>
 <span class="sd">       - Viene costruito un URL di ricerca personalizzato che include la data odierna e la data dell&#39;ultimo aggiornamento per filtrare i tweet.\n</span>
 <span class="sd">       - Viene eseguita una ricerca su X per ottenere i tweet relativi a quel gruppo, limitando i risultati a quelli pubblicati tra la data dell&#39;ultimo aggiornamento e quella odierna.\n</span>
 
-<span class="sd">    5. **Raccolta dei Tweet**: Una volta caricata la pagina con i risultati della ricerca:\n</span>
+<span class="sd">    6. **Raccolta dei Tweet**: Una volta caricata la pagina con i risultati della ricerca:\n</span>
 <span class="sd">       - Viene eseguita una scrollata della pagina per caricare i tweet aggiuntivi.\n</span>
 <span class="sd">       - L&#39;HTML della pagina viene estratto e analizzato con BeautifulSoup, che filtra e organizza i tweet trovati.\n</span>
 
-<span class="sd">    6. **Estrazione e Salvataggio delle Informazioni**: I tweet estratti vengono parsati in una struttura utile, quindi vengono salvati nel database MongoDB.</span>
+<span class="sd">    7. **Estrazione e Salvataggio delle Informazioni**: I tweet estratti vengono parsati in una struttura utile, quindi vengono salvati nel database MongoDB.</span>
 
-<span class="sd">    7. **Aggiornamento della Data di Riferimento**: Una volta completata l&#39;operazione di scraping, la data dell&#39;ultimo aggiornamento viene registrata nel database per essere utilizzata nelle future esecuzioni dello script.</span>
+<span class="sd">    8. **Aggiornamento della Data di Riferimento**: Una volta completata l&#39;operazione di scraping, la data dell&#39;ultimo aggiornamento viene registrata nel database per essere utilizzata nelle future esecuzioni dello script.</span>
 
-<span class="sd">    8. **Gestione degli Errori**: Se non vengono trovati risultati per un gruppo target o se si verificano errori durante il caricamento della pagina, lo script continua con il gruppo successivo senza interrompere l&#39;esecuzione.</span>
+<span class="sd">    9. **Gestione degli Errori**: Se non vengono trovati risultati per un gruppo target o se si verificano errori durante il caricamento della pagina, lo script continua con il gruppo successivo senza interrompere l&#39;esecuzione.</span>
 
 <span class="sd">    Alla fine, il driver di Selenium viene chiuso e la connessione al database viene terminata.</span>
 
@@ -166,18 +170,18 @@
     <span class="c1"># Leggo file con credenziali</span>
     <span class="n">credentials</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;utils/conf.json&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Connessione al DB</span>
+    <span class="c1"># 1) Connessione al DB</span>
     <span class="n">client</span> <span class="o">=</span> <span class="n">connect_to_mongo</span><span class="p">()</span>
 
-    <span class="c1"># Estrapolazione della lista di target su cui far partire la ricerca</span>
-    <span class="k">if</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;group_search&#39;</span><span class="p">]:</span>
+    <span class="c1"># 2) Estrapolazione della lista di target su cui far partire la ricerca</span>
+    <span class="k">if</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;mongo_target_list&#39;</span><span class="p">]:</span>
         <span class="n">targets_collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;target_groups&quot;</span><span class="p">)</span>
         <span class="n">documents</span> <span class="o">=</span> <span class="n">targets_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
         <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span> <span class="c1"># Sostituisco gli spazi con underscore per semplificare la query di ricerca</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;cve&#39;</span><span class="p">]]</span>
+        <span class="n">target_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;single_target&#39;</span><span class="p">]]</span>
 
-    <span class="c1"># Configura opzioni del browser</span>
+    <span class="c1"># 3) Configura opzioni del browser</span>
     <span class="n">firefox_options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
     <span class="n">firefox_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--headless&quot;</span><span class="p">)</span>
 
@@ -199,7 +203,7 @@
 
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="c1"># Effettuo il login a X</span>
+    <span class="c1"># 4) Effettuo il login a X</span>
     <span class="n">x_login</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="n">driver</span><span class="p">)</span>
 
     <span class="c1"># Imposto la data odierna e ottengo l&#39;ultima data di aggiornamento</span>
@@ -209,18 +213,15 @@
 
     <span class="n">last_update</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;01&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_update&quot;</span><span class="p">)</span>
 
+    <span class="c1"># 5) Per ogni target nella lista, costruisco l&#39;url, eseguo la ricerca e salvo i tweet</span>
     <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">target_list</span><span class="p">:</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> in lavorazione..&quot;</span><span class="p">)</span>
 
         <span class="n">target_collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
-        <span class="c1"># keyword1 = random.choice(primary_keywords)</span>
-        <span class="c1"># keyword2 = random.choice(secondary_keywords)</span>
-        <span class="c1">#</span>
-        <span class="c1"># search_url = f&quot;https://x.com/search?q={group}%20{keyword1}%20{keyword2}%20lang%3Aen%20-filter%3Alinks%20-filter%3Areplies&amp;src=typed_query&quot;</span>
-
         <span class="n">search_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://x.com/search?q=</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">%20until%3A</span><span class="si">{</span><span class="n">today</span><span class="si">}</span><span class="s2">%20since%3A</span><span class="si">{</span><span class="n">last_update</span><span class="si">}</span><span class="s2">%20-filter%3Areplies&amp;src=typed_query&quot;</span>
+
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">search_url</span><span class="p">)</span>
@@ -234,6 +235,7 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nessun risultato per </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">..&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
 
+        <span class="c1"># 6) Raccolta dei tweet</span>
         <span class="c1"># Scorri la pagina verso il basso per caricare più tweet</span>
         <span class="n">last_height</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return document.body.scrollHeight&quot;</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -244,6 +246,7 @@
                 <span class="k">break</span>
             <span class="n">last_height</span> <span class="o">=</span> <span class="n">new_height</span>
 
+            <span class="c1"># 7) Estrazione, parsing e salvataggio dei tweet</span>
             <span class="c1"># Estraggo HTML pagina con BeautifulSoup e lo stampo</span>
             <span class="n">html_content</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
             <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
@@ -253,10 +256,12 @@
             <span class="c1"># Divido le info in post e le salvo nel database</span>
             <span class="n">parse_and_save</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">target_collection</span><span class="p">)</span>
 
+    <span class="c1">#  8) Aggiorno la data di ultimo aggiornamento</span>
     <span class="c1"># Se non sto cercando dati relativi alle CVE, bensi sto ricercando informazioni sui gruppi hacker, aggiorno la data di ultimo aggiornamento</span>
-    <span class="k">if</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;group_search&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;mongo_target_list&#39;</span><span class="p">]:</span>
         <span class="n">coll</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;last_update&quot;</span><span class="p">)</span>
         <span class="n">coll</span><span class="o">.</span><span class="n">update_one</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;01&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;$set&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;last_update&quot;</span><span class="p">:</span> <span class="n">today</span><span class="p">}})</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data di ultimo aggiornamento aggiornata a: </span><span class="si">{</span><span class="n">today</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
     <span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span></div>

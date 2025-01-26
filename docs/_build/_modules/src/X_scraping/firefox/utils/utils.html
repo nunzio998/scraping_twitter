@@ -128,7 +128,7 @@
 
 <div class="viewcode-block" id="read_json">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.read_json">[docs]</a>
-<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</span>
 
@@ -150,7 +150,7 @@
 
 <div class="viewcode-block" id="x_login">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.x_login">[docs]</a>
-<span class="k">def</span> <span class="nf">x_login</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">,</span> <span class="n">driver_access</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">x_login</span><span class="p">(</span><span class="n">credentials_access</span><span class="p">,</span> <span class="n">driver_access</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione `x_login` automatizza la procedura di accesso a X (Twitter) utilizzando il driver Selenium per il controllo del browser.</span>
 <span class="sd">    Prende in input un dizionario contenente le credenziali di accesso (email, username e password) e il driver del browser.</span>
@@ -210,7 +210,7 @@
 <span class="c1"># Funzioni MongoDB:</span>
 <div class="viewcode-block" id="connect_to_mongo">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</span>
 
@@ -238,7 +238,7 @@
 
 <div class="viewcode-block" id="disconnect_to_mongo">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.disconnect_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</span>
 
@@ -258,7 +258,7 @@
 
 <div class="viewcode-block" id="get_db">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.get_db">[docs]</a>
-<span class="k">def</span> <span class="nf">get_db</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_db</span><span class="p">(</span><span class="n">client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">Database</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che restituisce un riferimento al database MongoDB specificato.</span>
 
@@ -274,7 +274,7 @@
 
 <div class="viewcode-block" id="connect_to_mongo_collection">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.connect_to_mongo_collection">[docs]</a>
-<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Collection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</span>
 
@@ -305,7 +305,7 @@
 
 <div class="viewcode-block" id="save_to_mongo">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</span>
 
@@ -326,7 +326,7 @@
 
 <div class="viewcode-block" id="save_user_info_to_mongo">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.save_user_info_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">save_user_info_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">save_user_info_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per salvare informazioni utente nel database MongoDB.</span>
 
@@ -340,7 +340,7 @@
 <span class="sd">    :return: Nessun valore restituito.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel database: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;username_tag&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel database: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tag_username&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 
@@ -348,7 +348,7 @@
 
 <div class="viewcode-block" id="parse_tweet">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_tweet">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_tweet</span><span class="p">(</span><span class="n">tweet</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">parse_tweet</span><span class="p">(</span><span class="n">tweet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per il parsing di un tweet in formato JSON.</span>
 
@@ -449,7 +449,7 @@
 
 <div class="viewcode-block" id="parse_and_save">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.parse_and_save">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_and_save</span><span class="p">(</span><span class="n">tweets_to_save</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">parse_and_save</span><span class="p">(</span><span class="n">tweets_to_save</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per il parsing e il salvataggio di tweet nel database MongoDB.</span>
 
@@ -480,7 +480,7 @@
 
 <div class="viewcode-block" id="check_user">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.check_user">[docs]</a>
-<span class="k">def</span> <span class="nf">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">check_user</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che verifica l&#39;esistenza di uno specifico utente su una piattaforma tramite Selenium.</span>
 
@@ -514,7 +514,7 @@
 
 <div class="viewcode-block" id="check_limited_user">
 <a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.check_limited_user">[docs]</a>
-<span class="k">def</span> <span class="nf">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">check_limited_user</span><span class="p">(</span><span class="n">driver</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che verifica se un utente è temporaneamente limitato su una piattaforma.</span>
 
@@ -534,15 +534,25 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">show_profile_button</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s1">&#39;/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[2]/div/button&#39;</span><span class="p">)</span>
         <span class="n">show_profile_button</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Account limitato..&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Account non limitato..&quot;</span><span class="p">)</span>
         <span class="k">pass</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">is_url_in_db</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<div class="viewcode-block" id="is_url_in_db">
+<a class="viewcode-back" href="../../../../../utils_x_firefox.html#src.X_scraping.firefox.utils.utils.is_url_in_db">[docs]</a>
+<span class="k">def</span> <span class="nf">is_url_in_db</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che verifica se un URL è già presente nel database MongoDB.</span>
+<span class="sd">    **Funzionamento**: La funzione cerca un documento nella collezione specificata che abbia un campo `url` uguale all&#39;URL fornito. Se il documento esiste, la funzione restituisce `True`, altrimenti restituisce `False`.</span>
+<span class="sd">    :param url: indiritto URL da cercare nel database.</span>
+<span class="sd">    :param collection: collezione MongoDB in cui cercare l&#39;URL.</span>
+<span class="sd">    :return: bool: valore booleano che indica se l&#39;URL è già presente nel database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">})</span>  <span class="c1"># Sostituisci &quot;tweet_url&quot; con il campo corretto</span>
-    <span class="k">return</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
 </pre></div>
 
            </div>
