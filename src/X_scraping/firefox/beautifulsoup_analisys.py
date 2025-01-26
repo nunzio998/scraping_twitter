@@ -42,7 +42,7 @@ logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 
-def analisys_with_beautifulsoup(response_html):
+def analisys_with_beautifulsoup(response_html) -> list:
     """
     La funzione `analisys_with_beautifulsoup` analizza il contenuto HTML della pagina web dell'utente su X (Twitter)
     per estrarre informazioni sui tweet. La funzione esamina i tweet, estraendo i dati principali come l'autore, la data,
@@ -162,7 +162,7 @@ def analisys_with_beautifulsoup(response_html):
     return tweets
 
 
-def beautifulsoup_user_analisys(html_content):
+def beautifulsoup_user_analisys(html_content) -> dict:
     """
     La funzione `beautifulsoup_user_analisys` analizza il contenuto HTML della pagina di un utente su X (Twitter) per estrarre informazioni relative al profilo dell'utente. Queste informazioni vengono restituite sotto forma di dizionario.
 
@@ -337,7 +337,7 @@ def beautifulsoup_user_analisys(html_content):
     }
 
 
-def find_related_user(html_content):
+def find_related_user(html_content) -> list or None:
     """
     La funzione `find_related_user` analizza l'HTML della pagina di un utente di X (Twitter) per estrarre e restituire una lista di utenti correlati suggeriti. Questi utenti sono visualizzati nella sezione aside presente nel menu laterale della pagina.
 

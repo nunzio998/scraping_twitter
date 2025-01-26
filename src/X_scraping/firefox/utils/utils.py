@@ -52,7 +52,7 @@ primary_keywords = ["hacker", "cyberwar", "cyber", "energy"]
 secondary_keywords = ["italy", "europe", "group", "attack", "threat"]
 
 
-def read_json(path):
+def read_json(path) -> dict:
     """
     Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.
 
@@ -71,7 +71,7 @@ def read_json(path):
 config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II Semestre/Tesi/python_workspace/src/X_scraping/firefox/utils/mongo_utils.json')
 
 
-def x_login(credentials_access, driver_access):
+def x_login(credentials_access, driver_access) -> None:
     """
     La funzione `x_login` automatizza la procedura di accesso a X (Twitter) utilizzando il driver Selenium per il controllo del browser.
     Prende in input un dizionario contenente le credenziali di accesso (email, username e password) e il driver del browser.
@@ -128,7 +128,7 @@ def x_login(credentials_access, driver_access):
 
 
 # Funzioni MongoDB:
-def connect_to_mongo():
+def connect_to_mongo() -> pymongo.MongoClient:
     """
     Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.
 
@@ -153,7 +153,7 @@ def connect_to_mongo():
     return client
 
 
-def disconnect_to_mongo(client):
+def disconnect_to_mongo(client) -> None:
     """
     Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.
 
@@ -170,7 +170,7 @@ def disconnect_to_mongo(client):
     client.close()
 
 
-def get_db(client):
+def get_db(client) -> pymongo.database.Database:
     """
     Funzione che restituisce un riferimento al database MongoDB specificato.
 
@@ -183,7 +183,7 @@ def get_db(client):
     return client.get_database(config_data['database'])
 
 
-def connect_to_mongo_collection(client, collection_name):
+def connect_to_mongo_collection(client, collection_name) -> pymongo.collection.Collection:
     """
     Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.
 
@@ -211,7 +211,7 @@ def connect_to_mongo_collection(client, collection_name):
     return db.get_collection(collection_name)
 
 
-def save_to_mongo(data, collection):
+def save_to_mongo(data, collection) -> None:
     """
     Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.
 
@@ -229,7 +229,7 @@ def save_to_mongo(data, collection):
     logging.info(f"Salvato nel database: {data['url']}")
 
 
-def save_user_info_to_mongo(data, collection):
+def save_user_info_to_mongo(data, collection) -> None:
     """
     Funzione per salvare informazioni utente nel database MongoDB.
 
@@ -346,7 +346,7 @@ def parse_tweet(tweet) -> dict or None:
     }
 
 
-def parse_and_save(tweets_to_save, collection):
+def parse_and_save(tweets_to_save, collection) -> None:
     """
     Funzione per il parsing e il salvataggio di tweet nel database MongoDB.
 
@@ -405,7 +405,7 @@ def check_user(driver, user) -> bool:
         return False
 
 
-def check_limited_user(driver):
+def check_limited_user(driver) -> None:
     """
     Funzione che verifica se un utente è temporaneamente limitato su una piattaforma.
 

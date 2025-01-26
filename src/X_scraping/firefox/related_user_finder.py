@@ -36,7 +36,7 @@ from src.X_scraping.firefox.utils.utils import read_json, connect_to_mongo, disc
     connect_to_mongo_collection, x_login, check_limited_user, check_user
 
 
-def find_related_users():
+def find_related_users() -> None:
     """
     Questa funzione automatizza il processo di ricerca degli utenti correlati su X (precedentemente noto come Twitter) utilizzando Selenium e MongoDB.
 

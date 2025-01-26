@@ -43,7 +43,7 @@ from src.X_scraping.firefox.utils.utils import read_json, connect_to_mongo, disc
     connect_to_mongo_collection, get_db, x_login, check_user, check_limited_user
 
 
-def scrape_user_info():
+def scrape_user_info() -> None:
     """
     Funzione che automatizza la raccolta delle informazioni sui profili utente da X (precedentemente noto come Twitter).
     Lo script esegue il login su X, esegue la ricerca di utenti target estratti da tutte le collezioni di tweet nel database

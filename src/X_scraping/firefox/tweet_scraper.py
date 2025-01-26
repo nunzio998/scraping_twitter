@@ -52,7 +52,7 @@ from src.X_scraping.firefox.utils.utils import primary_keywords, secondary_keywo
 from src.X_scraping.firefox.beautifulsoup_analisys import analisys_with_beautifulsoup
 
 
-def scrape_tweets():
+def scrape_tweets() -> None:
     """
     Funzione che automatizza la raccolta dei tweet da X (precedentemente noto come Twitter) per gruppi target predefiniti.
     Il processo comprende il login su X, la ricerca di tweet relativi a ciascun gruppo, e l'estrazione delle informazioni
