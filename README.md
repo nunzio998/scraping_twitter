@@ -7,7 +7,7 @@ Per accedere alla documentazione dettagliata del codice sorgente è possibile se
 ## Descrizione del Progetto
 
 Questo progetto si propone di effettuare scraping su diverse piattaforme (Dark Web, Discord, Telegram e X) per raccogliere e analizzare dati. Ogni gruppo di script si occupa di una piattaforma specifica, ed è supportato da funzioni di utilità che facilitano l'interazione con un database MongoDB dedicato.
-L'obiettivo finale del progetto è che i dati vengano analizzati per l'identificazione di potenziali future minacce per TERNA.
+L'obiettivo finale del progetto è che i dati vengano analizzati per l'identificazione di potenziali future minacce per le aziende.
 Lo scraping su **X** supporta sia il browser **Chrome** che **Firefox**, mentre le altre piattaforme vengono trattate in modo univoco. Tutti i dati raccolti vengono salvati in un database MongoDB diviso per piattaforma e ulteriormente suddiviso in collection a seconda delle necessità.
 
 ## Struttura del Progetto
