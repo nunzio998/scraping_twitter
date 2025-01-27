@@ -128,6 +128,21 @@ def save_to_mongo(data, collection):
     logging.info(f"Salvato nel database:{data['id']}")
 
 
+def is_id_in_db(collection, id):
+    """
+    Funzione che verifica la presenza di un documento con un determinato ID in una collezione di MongoDB.
+
+    **Passaggi principali**:\n
+    1. **Ricerca del Documento**: La funzione esegue una query sulla collezione per cercare un documento con un campo `id` uguale al valore fornito.\n
+    2. **Verifica della Presenza**: Se viene trovato un documento con lo stesso ID, la funzione restituisce `True`. Altrimenti, restituisce `False`.\n
+
+    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui cercare l'ID.\n
+    :param id: str, l'ID del documento da cercare nella collezione.\n
+    :return: bool, `True` se il documento con l'ID specificato è presente nella collezione, altrimenti `False`.
+    """
+    return collection.find_one({"id": id}) is not None
+
+
 async def check_username_existence(client, username):
     """
     La funzione check_username_existence verifica se uno username specificato esiste su Telegram. Si occupa di gestire
