@@ -265,8 +265,6 @@ def telegram_scraper():
     # Avvio del client Telegram e scraping
     with client:
         for target in target_list:
-            if not (target == 'bbbreaking'):
-                continue
             # Verifica se l'username esiste, se non esiste, passa al prossimo target
             if not check_username_existence(client, target):
                 logging.error(f"Il target '{target}' non esiste su Telegram.")
