@@ -47,10 +47,11 @@ Prerequisiti:\n
 import argparse
 import asyncio
 
+from telethon.errors import UsernameInvalidError
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetHistoryRequest
 import logging
-from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo, check_date, check_username_existence
+from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo, check_date, check_username_existence, is_id_in_db
 
 
 # De-commentare per avviare lo script da riga di comando
@@ -97,19 +98,23 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
 
     while retries < max_retries:
         try:
-            # TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l'utilizzo del campo date all'interno di ogni messaggio che viene scaricato.
             # Avviare il client
             await t_client.start()
             logging.info("Client avviato")
 
             collection = connect_to_mongo_collection(m_client, channel_group)
 
-            # Ottenere l'entità del canale
-            channel = await t_client.get_entity(channel_group)
+            try:
+                # Ottenere l'entità del canale
+                channel = await t_client.get_entity(channel_group)
+            except UsernameInvalidError:
+                logging.error(f"Errore: Utente '{channel_group}' non esistente.")
+                break
+
 
             # Richiedere la cronologia dei messaggi
             offset_id = 0
-            limit = 5  # Numero di messaggi da scaricare per ogni richiesta
+            limit = 800  # Numero di messaggi da scaricare per ogni richiesta
             all_messages = []
 
             while True:
@@ -139,6 +144,10 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
                 # Controllo se il messaggio è più vecchio di una certa data specificata
                 if check_date(message.date, limit_date):
                     break
+
+                if is_id_in_db(collection, message.id):
+                    logging.info(f"ID messaggio {message.id} già presente nel database. Salto il messaggio.")
+                    continue
 
                 logging.info(message.to_dict())
                 message_data = message.to_dict()
