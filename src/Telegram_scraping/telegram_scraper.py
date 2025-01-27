@@ -114,7 +114,7 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
 
             # Richiedere la cronologia dei messaggi
             offset_id = 0
-            limit = 800  # Numero di messaggi da scaricare per ogni richiesta
+            limit = 1000  # Numero di messaggi da scaricare per ogni richiesta
             all_messages = []
 
             while True:
@@ -149,7 +149,7 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
                     logging.info(f"ID messaggio {message.id} già presente nel database. Salto il messaggio.")
                     continue
 
-                logging.info(message.to_dict())
+                # logging.info(message.to_dict())
                 message_data = message.to_dict()
 
                 # Ottieni informazioni sul mittente
@@ -176,8 +176,6 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
                 # TODO: Studio di significatività dei campi da rimuovere più approfondito
                 for field in fields_to_remove:
                     message_data.pop(field, None)  # Usa pop per rimuovere il campo, se esiste
-
-                logging.info(message_data)
 
                 save_to_mongo(message_data, collection)
             break
@@ -267,6 +265,8 @@ def telegram_scraper():
     # Avvio del client Telegram e scraping
     with client:
         for target in target_list:
+            if not (target == 'bbbreaking'):
+                continue
             # Verifica se l'username esiste, se non esiste, passa al prossimo target
             if not check_username_existence(client, target):
                 logging.error(f"Il target '{target}' non esiste su Telegram.")
