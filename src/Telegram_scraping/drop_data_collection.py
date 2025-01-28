@@ -14,7 +14,7 @@ L'operazione è irreversibile e rimuove permanentemente tutti i dati dalle colle
 from src.Telegram_scraping.utils.utils import *
 
 
-def drop_data():
+def drop_data() -> None:
     """
     Funzione che elimina tutti i documenti presenti nelle collezioni del database MongoDB.
 

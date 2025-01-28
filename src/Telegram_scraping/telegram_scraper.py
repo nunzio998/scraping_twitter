@@ -58,7 +58,7 @@ from src.Telegram_scraping.utils.utils import read_json, connect_to_mongo, conne
 # from utils.utils import read_json, connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo, save_to_mongo
 
 
-async def channel_scraper(t_client, m_client, channel_group, limit_date, max_retries=5):
+async def channel_scraper(t_client, m_client, channel_group, limit_date, max_retries=5) -> None:
     """
     La funzione `channel_scraper` estrae, elabora e memorizza i messaggi provenienti da un canale o gruppo Telegram
     nel database MongoDB. È progettata per gestire una vasta gamma di scenari, come l'estrazione basata su una data limite,
@@ -188,7 +188,7 @@ async def channel_scraper(t_client, m_client, channel_group, limit_date, max_ret
                 raise e  # Rilancia l'errore dopo i tentativi
 
 
-def telegram_scraper():
+def telegram_scraper() -> None:
     """
     La funzione `telegram_scraper` è il punto di ingresso principale per il processo di scraping dei messaggi da uno o più
     canali o gruppi Telegram. Combina l'utilizzo di un client Telegram (basato sulla libreria `Telethon`) e di un database

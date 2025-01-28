@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 
-def read_json(path):
+def read_json(path) -> dict:
     """
     Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.
 
@@ -40,7 +40,7 @@ config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II S
 
 
 # Funzioni MongoDB:
-def connect_to_mongo():
+def connect_to_mongo() -> pymongo.MongoClient:
     """
     Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.
 
@@ -65,7 +65,7 @@ def connect_to_mongo():
     return client
 
 
-def disconnect_to_mongo(client):
+def disconnect_to_mongo(client) -> None:
     """
     Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.
 
@@ -82,7 +82,7 @@ def disconnect_to_mongo(client):
     client.close()
 
 
-def connect_to_mongo_collection(client, collection_name):
+def connect_to_mongo_collection(client, collection_name) -> pymongo.collection.Collection:
     """
     Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.
 
@@ -110,7 +110,7 @@ def connect_to_mongo_collection(client, collection_name):
     return db.get_collection(collection_name)
 
 
-def save_to_mongo(data, collection):
+def save_to_mongo(data, collection) -> None:
     """
     Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.
 
@@ -128,7 +128,7 @@ def save_to_mongo(data, collection):
     logging.info(f"Salvato nel database:{data['id']}")
 
 
-def is_id_in_db(collection, id):
+def is_id_in_db(collection, id) -> bool:
     """
     Funzione che verifica la presenza di un documento con un determinato ID in una collezione di MongoDB.
 
@@ -143,7 +143,7 @@ def is_id_in_db(collection, id):
     return collection.find_one({"id": id}) is not None
 
 
-async def check_username_existence(client, username):
+async def check_username_existence(client, username) -> bool:
     """
     La funzione check_username_existence verifica se uno username specificato esiste su Telegram. Si occupa di gestire
     automaticamente la formattazione dello username, aggiungendo il carattere '@' se assente. Utilizzando il metodo
@@ -170,7 +170,7 @@ async def check_username_existence(client, username):
         return False
 
 
-def check_date(date, limit_date):
+def check_date(date, limit_date) -> bool:
     """
     La funzione check_date confronta la data di un messaggio con una data limite per determinare se il messaggio è stato
     inviato prima della data specificata. Gestisce formati di data diversi e converte eventuali date senza fuso orario
