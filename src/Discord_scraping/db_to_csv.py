@@ -18,7 +18,7 @@ import pandas as pd
 from src.Discord_scraping.utils.utils import *
 
 
-def export_csv():
+def export_csv() -> None:
     """
     Funzione per esportare i dati presenti nel database MongoDB in un file CSV.
 

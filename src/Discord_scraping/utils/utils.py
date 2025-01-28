@@ -51,7 +51,7 @@ logging.basicConfig(level=logging.INFO,  # Imposto il livello minimo di log
                     format='%(asctime)s - %(levelname)s - %(message)s')  # Formato del log
 
 
-def read_json(path):
+def read_json(path) -> dict:
     """
     Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.
 
@@ -71,7 +71,7 @@ config_data = read_json('/Users/francesco/Documents/Campus Biomedico/2 anno/II S
 
 
 # Funzioni MongoDB:
-def connect_to_mongo():
+def connect_to_mongo() -> pymongo.MongoClient:
     """
     Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.
 
@@ -96,7 +96,7 @@ def connect_to_mongo():
     return client
 
 
-def disconnect_to_mongo(client):
+def disconnect_to_mongo(client) -> None:
     """
     Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.
 
@@ -113,7 +113,7 @@ def disconnect_to_mongo(client):
     client.close()
 
 
-def connect_to_mongo_collection(client, collection_name):
+def connect_to_mongo_collection(client, collection_name) -> pymongo.collection.Collection:
     """
     Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.
 
@@ -141,7 +141,7 @@ def connect_to_mongo_collection(client, collection_name):
     return db.get_collection(collection_name)
 
 
-def save_to_mongo(data, collection):
+def save_to_mongo(data, collection) -> None:
     """
     Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.
 
@@ -159,7 +159,7 @@ def save_to_mongo(data, collection):
     logging.info(f"Salvato nel db: {data}")
 
 
-def beautifulsoup_analisys(driver, scroll_times):
+def beautifulsoup_analisys(driver, scroll_times) -> tuple:
     """
     Funzione che esegue l'analisi di una pagina web contenente messaggi (ad esempio, una chat) utilizzando il modulo BeautifulSoup.
     La funzione effettua un numero definito di scroll verso l'alto della pagina per caricare più messaggi, quindi estrae informazioni
@@ -219,7 +219,7 @@ def beautifulsoup_analisys(driver, scroll_times):
 
 
 # Funzione per scorrere verso l'alto e caricare più messaggi
-def scroll_up(driver, times):
+def scroll_up(driver, times) -> None:
     """
     Funzione che simula lo scroll verso l'alto della pagina, permettendo di caricare più messaggi o contenuti all'interno di una chat
     o una pagina dinamica. Utilizza il tasto di "Page Up" per spostarsi verso l'alto e consente di caricare progressivamente i messaggi
@@ -242,7 +242,7 @@ def scroll_up(driver, times):
         time.sleep(2)  # Aspetta che i messaggi vengano caricati
 
 
-def load_cookies(driver, cookies_path="utils/cookies.json"):
+def load_cookies(driver, cookies_path="utils/cookies.json") -> None:
     """
     Funzione che carica i cookies salvati da un file JSON e li aggiunge alla sessione del driver Selenium. Questo consente di riutilizzare
     una sessione precedentemente autenticata per evitare di dover ripetere il processo di login o bypassare un captcha.
@@ -264,7 +264,7 @@ def load_cookies(driver, cookies_path="utils/cookies.json"):
         driver.add_cookie(cookie)
 
 
-def login(driver, logging, credentials):
+def login(driver, logging, credentials) -> None:
     """
     Funzione che avvia la procedura di login a Discord e successivamente verifica la presenza di un captcha. Se viene rilevato un captcha,
     la funzione si occupa di gestirlo tramite un controllo e un eventuale bypass. La funzione coordina l'esecuzione delle funzioni
@@ -291,7 +291,7 @@ def login(driver, logging, credentials):
     check_captcha(driver, logging, credentials)
 
 
-def discord_login(driver, logging, credentials):
+def discord_login(driver, logging, credentials) -> None:
     """
     Funzione che automatizza la procedura di login a Discord utilizzando Selenium. La funzione carica la pagina di login di Discord,
     inserisce automaticamente le credenziali fornite e gestisce eventuali schermate o problemi durante il processo di autenticazione.
@@ -363,7 +363,7 @@ def discord_login(driver, logging, credentials):
             exit(-1)
 
 
-def check_captcha(driver, logging, credentials):
+def check_captcha(driver, logging, credentials) -> None:
     """
     Funzione che verifica la presenza di un CAPTCHA durante il processo di login su Discord. La funzione esegue un controllo
     sulla pagina per determinare se un CAPTCHA è presente, e in caso positivo, consente all'utente di risolverlo manualmente

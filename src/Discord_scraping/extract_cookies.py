@@ -23,7 +23,7 @@ from utils.utils import read_json
 from src.Discord_scraping.utils.utils import login
 
 
-def extract_cookies():
+def extract_cookies() -> None:
     """
     Questa funzione permette all'utente di effettuare il login manuale su Discord e di salvare i cookies di sessione
     in un file JSON per un uso futuro, evitando la necessità di effettuare nuovamente il login.

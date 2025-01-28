@@ -36,12 +36,12 @@ from langchain.prompts import PromptTemplate
 from bs4 import BeautifulSoup
 
 
-def discord_chatgpt_scraper():
+def discord_chatgpt_scraper() -> None:
     # TODO: Da sviluppare quando si avrà accesso all'API di Chatgpt.
     pass
 
 
-def discord_ollama_scraper():
+def discord_ollama_scraper() -> None:
     """
     Questa funzione gestisce il flusso principale dello script, eseguendo lo scraping dei messaggi dai canali Discord specificati
     e analizzandoli tramite un modello LLM (ad es. Ollama) per estrarre informazioni strutturate.

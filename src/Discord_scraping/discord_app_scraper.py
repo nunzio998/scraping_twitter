@@ -59,7 +59,7 @@ client = discord.Client(intents=intents)
 
 
 @client.event
-async def on_ready():
+async def on_ready() -> None:
     """
     Evento che viene attivato quando il bot si connette correttamente a Discord.
 

@@ -36,7 +36,7 @@ from src.Discord_scraping.utils.utils import read_json, beautifulsoup_analisys, 
 import logging
 
 
-def discord_scraper():
+def discord_scraper() -> None:
     """
     Questa funzione rappresenta il cuore dello script, gestendo il flusso di lavoro necessario per eseguire lo scraping
     dei messaggi dalla versione web di Discord. Combina l'uso di Selenium per la navigazione automatizzata e BeautifulSoup

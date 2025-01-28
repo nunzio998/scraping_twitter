@@ -15,7 +15,7 @@ from src.Discord_scraping.utils.utils import *
 import logging
 
 
-def drop_data():
+def drop_data() -> None:
     """
     Funzione che elimina tutti i documenti presenti nelle collezioni del database MongoDB.
 
