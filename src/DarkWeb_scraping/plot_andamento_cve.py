@@ -34,10 +34,10 @@ def plot_cve():
 
     # Creazione del grafico
     plt.figure(figsize=(12, 6))
-    plt.plot(cve_df['Year'], cve_df['Count'], marker='o', color='b', label='conteggio CVE')
+    plt.plot(cve_df['Year'], cve_df['Count'], marker='o', color='b', label='Conteggio CVE')
     plt.title('Andamento delle CVE negli anni', fontsize=16)
     plt.xlabel('Anno', fontsize=14)
-    plt.ylabel('Numero di CVE', fontsize=14)
+    plt.ylabel('CVE', fontsize=14)
     plt.grid(True, linestyle='--', alpha=0.6)
     plt.legend(fontsize=12)
 
