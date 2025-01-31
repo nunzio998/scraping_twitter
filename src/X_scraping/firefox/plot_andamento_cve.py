@@ -1,11 +1,35 @@
-from pymongo import MongoClient
+"""
+Questo script si connette a un database MongoDB contenente collezioni di dati sulle CVE (Common Vulnerabilities and
+Exposures) estratti dai tweet. Analizza il numero di tweet che menzionano CVE per ogni anno, genera un grafico
+dell'andamento temporale e salva il risultato come immagine.
+
+Autore: Francesco Pinsone.
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 import re
 from src.X_scraping.firefox.utils.utils import connect_to_mongo, connect_to_mongo_collection, save_to_mongo, get_db
 
 
-def plot_andamento_cve():
+def plot_andamento_cve() -> None:
+    """
+    **Funzionamento**:
+
+    1. **Connessione al database MongoDB**: Si collega al database MongoDB utilizzando `connect_to_mongo()`.
+
+    2. **Identificazione delle collezioni CVE**: Filtra le collezioni il cui nome segue il formato `CVE-YYYY` per identificare
+         gli anni delle CVE presenti.
+
+    3. **Conteggio dei tweet per anno**: Conta il numero di documenti in ogni collezione corrispondente a un anno specifico.
+
+    4. **Elaborazione dei dati**: I dati vengono organizzati in un DataFrame pandas per ordinamento e analisi.
+
+    5. **Generazione del grafico**: Crea un grafico a linee che mostra il numero di tweet con riferimenti a CVE nel tempo.
+
+    6. **Salvataggio e visualizzazione del grafico**: Il grafico viene salvato in formato PNG con alta risoluzione e opzionalmente mostrato a schermo.\n
+
+    :return: Nessun valore ritornato.
+    """
     # Connessione al database MongoDB
     client = connect_to_mongo()
     db = get_db(client)
