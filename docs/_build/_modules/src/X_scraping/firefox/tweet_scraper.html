@@ -88,13 +88,13 @@
 
 <span class="sd">4. **Costruzione della Ricerca**: Per ogni gruppo target, viene costruito un URL di ricerca personalizzato. Questo URL filtra i tweet relativi al gruppo target, utilizzando le parole chiave scelte e limitando i risultati a quelli pubblicati tra la data dell&#39;ultimo aggiornamento e quella odierna.</span>
 
-<span class="sd">5. **Caricamento e Raccolta dei Tweet**:</span>
-<span class="sd">   - Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.</span>
-<span class="sd">   - Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.</span>
+<span class="sd">5. **Caricamento e Raccolta dei Tweet**:\n</span>
+<span class="sd">   - Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.\n</span>
+<span class="sd">   - Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.\n</span>
 
-<span class="sd">6. **Estrazione e Analisi del Contenuto**:</span>
-<span class="sd">   - Una volta caricati i tweet, l&#39;HTML della pagina viene estratto utilizzando Selenium.</span>
-<span class="sd">   - Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.</span>
+<span class="sd">6. **Estrazione e Analisi del Contenuto**:\n</span>
+<span class="sd">   - Una volta caricati i tweet, l&#39;HTML della pagina viene estratto utilizzando Selenium.\n</span>
+<span class="sd">   - Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.\n</span>
 
 <span class="sd">7. **Salvataggio dei Dati nel Database**: Le informazioni estratte dai tweet (come autore, contenuto, URL, immagini, video e gruppo hacker di riferimento) vengono parsate e salvate nel database MongoDB per una successiva consultazione o analisi.</span>
 

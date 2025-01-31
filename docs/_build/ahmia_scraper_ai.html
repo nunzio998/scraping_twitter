@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="drop_data_collection_darkweb.html">drop_data_collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Tor_connection_test.html">Tor_connection_test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils_darkweb.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_andamento_cve_darkweb.html">plot_andamento_cve_darkweb</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Discord_scraper.html">Discord</a></li>
@@ -110,7 +111,7 @@ ricerca. L’integrazione tra il modello LLM e il codice di scraping avviene tra
 <p><strong>Autore</strong>: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">darkweb_ollama_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#darkweb_ollama_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">darkweb_ollama_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#darkweb_ollama_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.darkweb_ollama_scraper" title="Link to this definition"></a></dt>
 <dd><p>Funzione di scraping per il dark web, che integra la ricerca sul motore Ahmia con l’elaborazione dei risultati tramite il modello Ollama.
 Inizialmente, la funzione effettua la configurazione del proxy Tor, esegue la ricerca sul dark web, e successivamente invia i risultati
 a Ollama per l’elaborazione e l’estrazione di informazioni strutturate. I risultati non sono ancora salvati nel database, poiché il sistema
@@ -132,7 +133,7 @@ a Ollama per l’elaborazione e l’estrazione di informazioni strutturate. I ri
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_scraper_ai.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_scraper_ai.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_scraper_ai.search_ahmia" title="Link to this definition"></a></dt>
 <dd><p>Funzione per eseguire una ricerca nel motore di ricerca Ahmia (dark web) utilizzando una query specificata.
 La funzione invia la query ad Ahmia e, una volta ricevuta la risposta, estrae e restituisce il testo dei risultati
 dalla pagina web, focalizzandosi sul contenuto del tag ‘ol’ che contiene l’elenco dei risultati della ricerca.</p>

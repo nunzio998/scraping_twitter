@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Discord" href="Discord_scraper.html" />
+    <link rel="next" title="plot_andamento_cve_darkweb" href="plot_andamento_cve_darkweb.html" />
     <link rel="prev" title="Tor_connection_test" href="Tor_connection_test.html" /> 
 </head>
 
@@ -55,10 +55,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.utils.utils.connect_to_mongo"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.utils.utils.is_url_in_db"><code class="docutils literal notranslate"><span class="pre">is_url_in_db()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.DarkWeb_scraping.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="plot_andamento_cve_darkweb.html">plot_andamento_cve_darkweb</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Discord_scraper.html">Discord</a></li>
@@ -104,7 +106,7 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 <p><strong>Autore</strong>: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.beautifulsoup_analisys">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#beautifulsoup_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.beautifulsoup_analisys" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">beautifulsoup_analisys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#beautifulsoup_analisys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.beautifulsoup_analisys" title="Link to this definition"></a></dt>
 <dd><p>Funzione che analizza il contenuto di una pagina web tramite BeautifulSoup e estrae informazioni pertinenti dalla risposta HTML.</p>
 <p><strong>Funzionamento</strong>:</p>
 <ol class="arabic">
@@ -121,10 +123,12 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 </li>
 <li><p><strong>Restituzione dei Risultati</strong>: La funzione restituisce una lista di dizionari, in cui ogni dizionario rappresenta un risultato di ricerca con informazioni come titolo, link, snippet e parole chiave.</p></li>
 </ol>
+<p><strong>Nota</strong>: La funzione sarà in grado, in futuro, di estrarre anche uno screenshot per ognuna delle pagine web trovate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>response</strong> – oggetto HTTP, rappresenta la risposta della richiesta alla pagina web (contenente il codice HTML).</p></li>
+<li><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p></li>
 <li><p><strong>query</strong> – str, la query di ricerca che ha generato i risultati.</p></li>
 </ul>
 </dd>
@@ -143,7 +147,7 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.connect_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MongoClient</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -161,7 +165,7 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.connect_to_mongo_collection">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Collection</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -185,7 +189,7 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.disconnect_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -204,8 +208,18 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.is_url_in_db">
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">is_url_in_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#is_url_in_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.is_url_in_db" title="Link to this definition"></a></dt>
+<dd><p>Funzione che verifica se un URL è già presente nel database MongoDB.
+<strong>Funzionamento</strong>: La funzione cerca un documento nella collezione specificata che abbia un campo <cite>url</cite> uguale all’URL fornito. Se il documento esiste, la funzione restituisce <cite>True</cite>, altrimenti restituisce <cite>False</cite>.
+:param url: indiritto URL da cercare nel database.
+:param collection: collezione MongoDB in cui cercare l’URL.
+:return: bool: valore booleano che indica se l’URL è già presente nel database.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.read_json">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
 <dd><p>Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</p>
 <p><strong>Funzionamento</strong>:</p>
 <ol class="arabic simple">
@@ -225,7 +239,7 @@ per l’elaborazione e l’archiviazione dei dati.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.utils.utils.save_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -253,7 +267,7 @@ per l’elaborazione e l’archiviazione dei dati.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="Tor_connection_test.html" class="btn btn-neutral float-left" title="Tor_connection_test" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="Discord_scraper.html" class="btn btn-neutral float-right" title="Discord" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plot_andamento_cve_darkweb.html" class="btn btn-neutral float-right" title="plot_andamento_cve_darkweb" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

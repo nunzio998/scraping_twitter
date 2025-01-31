@@ -56,6 +56,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.connect_to_mongo"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.connect_to_mongo_collection"><code class="docutils literal notranslate"><span class="pre">connect_to_mongo_collection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.disconnect_to_mongo"><code class="docutils literal notranslate"><span class="pre">disconnect_to_mongo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.is_id_in_db"><code class="docutils literal notranslate"><span class="pre">is_id_in_db()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.read_json"><code class="docutils literal notranslate"><span class="pre">read_json()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#src.Telegram_scraping.utils.utils.save_to_mongo"><code class="docutils literal notranslate"><span class="pre">save_to_mongo()</span></code></a></li>
 </ul>
@@ -103,7 +104,7 @@ Le funzionalità incluse sono modulari e possono essere richiamate da altri scri
 <p>Autore: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.check_date">
-<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#check_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.check_date" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit_date</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#check_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.check_date" title="Link to this definition"></a></dt>
 <dd><p>La funzione check_date confronta la data di un messaggio con una data limite per determinare se il messaggio è stato
 inviato prima della data specificata. Gestisce formati di data diversi e converte eventuali date senza fuso orario
 (offset-naive) in date con fuso orario (offset-aware) in formato UTC. Se le date non sono già in formato datetime,
@@ -124,7 +125,7 @@ altrimenti restituisce False.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.check_username_existence">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_username_existence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#check_username_existence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.check_username_existence" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">check_username_existence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#check_username_existence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.check_username_existence" title="Link to this definition"></a></dt>
 <dd><p>La funzione check_username_existence verifica se uno username specificato esiste su Telegram. Si occupa di gestire
 automaticamente la formattazione dello username, aggiungendo il carattere ‘&#64;’ se assente. Utilizzando il metodo
 get_entity del client Telethon, tenta di recuperare l’entità associata allo username. In caso di successo, conferma
@@ -146,7 +147,7 @@ operazioni.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.connect_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MongoClient</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -164,7 +165,7 @@ operazioni.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.connect_to_mongo_collection">
-<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">connect_to_mongo_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Collection</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#connect_to_mongo_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.connect_to_mongo_collection" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -188,7 +189,7 @@ operazioni.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.disconnect_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">disconnect_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#disconnect_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.disconnect_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">
@@ -207,8 +208,30 @@ operazioni.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.is_id_in_db">
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">is_id_in_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#is_id_in_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.is_id_in_db" title="Link to this definition"></a></dt>
+<dd><p>Funzione che verifica la presenza di un documento con un determinato ID in una collezione di MongoDB.</p>
+<p><strong>Passaggi principali</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Ricerca del Documento</strong>: La funzione esegue una query sulla collezione per cercare un documento con un campo <cite>id</cite> uguale al valore fornito.</p></li>
+<li><p><strong>Verifica della Presenza</strong>: Se viene trovato un documento con lo stesso ID, la funzione restituisce <cite>True</cite>. Altrimenti, restituisce <cite>False</cite>.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>collection</strong> – Oggetto che rappresenta la collezione di MongoDB in cui cercare l’ID.</p></li>
+<li><p><strong>id</strong> – str, l’ID del documento da cercare nella collezione.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool, <cite>True</cite> se il documento con l’ID specificato è presente nella collezione, altrimenti <cite>False</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.read_json">
-<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.read_json" title="Link to this definition"></a></dt>
 <dd><p>Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</p>
 <p><strong>Funzionamento</strong>:</p>
 <ol class="arabic simple">
@@ -228,7 +251,7 @@ operazioni.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.Telegram_scraping.utils.utils.save_to_mongo">
-<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.Telegram_scraping.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save_to_mongo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/Telegram_scraping/utils/utils.html#save_to_mongo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Telegram_scraping.utils.utils.save_to_mongo" title="Link to this definition"></a></dt>
 <dd><p>Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</p>
 <p><strong>Passaggi principali</strong>:</p>
 <ol class="arabic simple">

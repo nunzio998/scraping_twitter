@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="beautifulsoup_analisys_firefox.html">beautifulsoup_analisys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utils_x_firefox.html">utils</a></li>
 <li class="toctree-l3"><a class="reference internal" href="deepfake_detection_firefox.html">deepfake detection firefox</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plot_andamento_cve_x.html">plot_andamento_cve_x</a></li>
 </ul>
 </li>
 </ul>
@@ -106,12 +107,18 @@ eventuale utilizzo futuro.</p>
 <li><p><strong>Preparazione per l’Automazione del Browser</strong>: Utilizzando Selenium e il driver Firefox in modalità “headless” (senza interfaccia grafica), viene configurato il browser per l’automazione della navigazione su X. Questo approccio consente di simulare l’interazione umana con il sito in modo che lo scraping possa essere effettuato automaticamente.</p></li>
 <li><p><strong>Login su X</strong>: Lo script esegue un login automatizzato a X utilizzando le credenziali memorizzate in un file JSON. La parte di login è manuale attraverso l’uso di un’apposita funzione, per garantire la sicurezza delle credenziali.</p></li>
 <li><p><strong>Costruzione della Ricerca</strong>: Per ogni gruppo target, viene costruito un URL di ricerca personalizzato. Questo URL filtra i tweet relativi al gruppo target, utilizzando le parole chiave scelte e limitando i risultati a quelli pubblicati tra la data dell’ultimo aggiornamento e quella odierna.</p></li>
-<li><p><strong>Caricamento e Raccolta dei Tweet</strong>:
-- Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.
-- Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.</p></li>
-<li><p><strong>Estrazione e Analisi del Contenuto</strong>:
-- Una volta caricati i tweet, l’HTML della pagina viene estratto utilizzando Selenium.
-- Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.</p></li>
+<li><p><strong>Caricamento e Raccolta dei Tweet</strong>:</p>
+<ul class="simple">
+<li><p>Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.</p></li>
+<li><p>Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.</p></li>
+</ul>
+</li>
+<li><p><strong>Estrazione e Analisi del Contenuto</strong>:</p>
+<ul class="simple">
+<li><p>Una volta caricati i tweet, l’HTML della pagina viene estratto utilizzando Selenium.</p></li>
+<li><p>Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.</p></li>
+</ul>
+</li>
 <li><p><strong>Salvataggio dei Dati nel Database</strong>: Le informazioni estratte dai tweet (come autore, contenuto, URL, immagini, video e gruppo hacker di riferimento) vengono parsate e salvate nel database MongoDB per una successiva consultazione o analisi.</p></li>
 <li><p><strong>Gestione degli Aggiornamenti</strong>: Alla fine di ogni esecuzione, lo script aggiorna la data dell’ultimo aggiornamento nel database, in modo che nelle esecuzioni future lo script possa raccogliere solo i tweet nuovi, risparmiando tempo e risorse.</p></li>
 <li><p><strong>Gestione degli Errori</strong>: Se non vengono trovati risultati per un gruppo target o se si verificano problemi nel caricare una pagina (ad esempio, a causa di un errore di rete o di un timeout), lo script continua automaticamente con il gruppo successivo, senza interrompere l’intero processo di scraping.</p></li>

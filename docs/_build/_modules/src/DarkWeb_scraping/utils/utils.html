@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.DarkWeb_scraping.utils.utils &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.DarkWeb_scraping.utils.utils &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -101,7 +101,7 @@
 
 <div class="viewcode-block" id="read_json">
 <a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.read_json">[docs]</a>
-<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</span>
 
@@ -124,7 +124,7 @@
 <span class="c1"># Funzioni MongoDB:</span>
 <div class="viewcode-block" id="connect_to_mongo">
 <a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.connect_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</span>
 
@@ -152,7 +152,7 @@
 
 <div class="viewcode-block" id="disconnect_to_mongo">
 <a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.disconnect_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</span>
 
@@ -172,7 +172,7 @@
 
 <div class="viewcode-block" id="connect_to_mongo_collection">
 <a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.connect_to_mongo_collection">[docs]</a>
-<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Collection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</span>
 
@@ -203,7 +203,7 @@
 
 <div class="viewcode-block" id="save_to_mongo">
 <a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.save_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</span>
 
@@ -217,13 +217,29 @@
 <span class="sd">    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui i dati devono essere salvati.\n</span>
 <span class="sd">    :return: Nessun valore restituito. La funzione esegue solo l&#39;inserimento dei dati.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Salvato nel db: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;link&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_url_in_db">
+<a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.is_url_in_db">[docs]</a>
+<span class="k">def</span> <span class="nf">is_url_in_db</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che verifica se un URL è già presente nel database MongoDB.</span>
+<span class="sd">    **Funzionamento**: La funzione cerca un documento nella collezione specificata che abbia un campo `url` uguale all&#39;URL fornito. Se il documento esiste, la funzione restituisce `True`, altrimenti restituisce `False`.</span>
+<span class="sd">    :param url: indiritto URL da cercare nel database.</span>
+<span class="sd">    :param collection: collezione MongoDB in cui cercare l&#39;URL.</span>
+<span class="sd">    :return: bool: valore booleano che indica se l&#39;URL è già presente nel database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">})</span>  <span class="c1"># Sostituisci &quot;tweet_url&quot; con il campo corretto</span>
+    <span class="k">return</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
 
 <div class="viewcode-block" id="beautifulsoup_analisys">
 <a class="viewcode-back" href="../../../../utils_darkweb.html#src.DarkWeb_scraping.utils.utils.beautifulsoup_analisys">[docs]</a>
-<span class="k">def</span> <span class="nf">beautifulsoup_analisys</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">beautifulsoup_analisys</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che analizza il contenuto di una pagina web tramite BeautifulSoup e estrae informazioni pertinenti dalla risposta HTML.</span>
 
@@ -236,7 +252,10 @@
 <span class="sd">        - Estrae le parole chiave dalla query di ricerca.\n</span>
 <span class="sd">    3. **Restituzione dei Risultati**: La funzione restituisce una lista di dizionari, in cui ogni dizionario rappresenta un risultato di ricerca con informazioni come titolo, link, snippet e parole chiave.\n</span>
 
+<span class="sd">    **Nota**: La funzione sarà in grado, in futuro, di estrarre anche uno screenshot per ognuna delle pagine web trovate.\n</span>
+
 <span class="sd">    :param response: oggetto HTTP, rappresenta la risposta della richiesta alla pagina web (contenente il codice HTML).\n</span>
+<span class="sd">    :param client: Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come `pymongo`.\n</span>
 <span class="sd">    :param query: str, la query di ricerca che ha generato i risultati.</span>
 
 <span class="sd">    :return: list, una lista di dizionari dove ogni dizionario contiene:\n</span>
@@ -245,25 +264,36 @@
 <span class="sd">            - `snippet`: una breve descrizione del risultato.\n</span>
 <span class="sd">            - `search_keywords`: la lista delle parole chiave della query di ricerca.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s1">&#39;ahmia_results&#39;</span><span class="p">)</span>
     <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
 
     <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">body</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="n">class_</span><span class="o">=</span><span class="s1">&#39;result&#39;</span><span class="p">):</span>  <span class="c1"># scorre la lista degli elementi che risultano dalla ricerca.</span>
-        <span class="n">title</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
         <span class="c1"># Con l&#39;uso di una regex si estrae il link dalla stringa</span>
         <span class="n">link</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;https?://[^\s]+&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)[</span><span class="s1">&#39;href&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_url_in_db</span><span class="p">(</span><span class="n">link</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;URL già presente nel database: </span><span class="si">{</span><span class="n">link</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+
         <span class="n">snippet</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+
         <span class="c1"># driver = configure_tor_driver()</span>
         <span class="c1"># try:</span>
         <span class="c1">#     screenshot = take_screenshot(link, driver)</span>
         <span class="c1"># except Exception as e:</span>
         <span class="c1">#     # logging.exception(e)</span>
         <span class="c1">#     screenshot = None</span>
+
         <span class="n">search_keywords</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
         <span class="c1"># results.append({&#39;title&#39;: title, &#39;link&#39;: link, &#39;snippet&#39;: snippet, &#39;screenshot&#39;: screenshot,</span>
         <span class="c1">#                 &#39;search_keywords&#39;: search_keywords})</span>
+
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span> <span class="s1">&#39;snippet&#39;</span><span class="p">:</span> <span class="n">snippet</span><span class="p">,</span> <span class="s1">&#39;search_keywords&#39;</span><span class="p">:</span> <span class="n">search_keywords</span><span class="p">})</span>
     <span class="k">return</span> <span class="n">results</span></div>
 

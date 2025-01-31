@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.Telegram_scraping.utils.utils &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.Telegram_scraping.utils.utils &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -96,7 +96,7 @@
 
 <div class="viewcode-block" id="read_json">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.read_json">[docs]</a>
-<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">read_json</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione per leggere il contenuto di un file JSON e restituirlo come dizionario.</span>
 
@@ -119,7 +119,7 @@
 <span class="c1"># Funzioni MongoDB:</span>
 <div class="viewcode-block" id="connect_to_mongo">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.connect_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">connect_to_mongo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di stabilire una connessione con un database MongoDB utilizzando una stringa di connessione.</span>
 
@@ -147,7 +147,7 @@
 
 <div class="viewcode-block" id="disconnect_to_mongo">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.disconnect_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">disconnect_to_mongo</span><span class="p">(</span><span class="n">client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di disconnettersi dal database MongoDB, chiudendo la connessione attiva.</span>
 
@@ -167,7 +167,7 @@
 
 <div class="viewcode-block" id="connect_to_mongo_collection">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.connect_to_mongo_collection">[docs]</a>
-<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">connect_to_mongo_collection</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Collection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che consente di connettersi a una collezione specifica di MongoDB. Se la collezione non esiste, la funzione la crea automaticamente.</span>
 
@@ -198,7 +198,7 @@
 
 <div class="viewcode-block" id="save_to_mongo">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.save_to_mongo">[docs]</a>
-<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">save_to_mongo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Funzione che salva i dati in una collezione di MongoDB. La funzione inserisce un singolo documento (dati) nella collezione specificata.</span>
 
@@ -217,9 +217,27 @@
 
 
 
+<div class="viewcode-block" id="is_id_in_db">
+<a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.is_id_in_db">[docs]</a>
+<span class="k">def</span> <span class="nf">is_id_in_db</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funzione che verifica la presenza di un documento con un determinato ID in una collezione di MongoDB.</span>
+
+<span class="sd">    **Passaggi principali**:\n</span>
+<span class="sd">    1. **Ricerca del Documento**: La funzione esegue una query sulla collezione per cercare un documento con un campo `id` uguale al valore fornito.\n</span>
+<span class="sd">    2. **Verifica della Presenza**: Se viene trovato un documento con lo stesso ID, la funzione restituisce `True`. Altrimenti, restituisce `False`.\n</span>
+
+<span class="sd">    :param collection: Oggetto che rappresenta la collezione di MongoDB in cui cercare l&#39;ID.\n</span>
+<span class="sd">    :param id: str, l&#39;ID del documento da cercare nella collezione.\n</span>
+<span class="sd">    :return: bool, `True` se il documento con l&#39;ID specificato è presente nella collezione, altrimenti `False`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">})</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+
 <div class="viewcode-block" id="check_username_existence">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.check_username_existence">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">check_username_existence</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check_username_existence</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">username</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione check_username_existence verifica se uno username specificato esiste su Telegram. Si occupa di gestire</span>
 <span class="sd">    automaticamente la formattazione dello username, aggiungendo il carattere &#39;@&#39; se assente. Utilizzando il metodo</span>
@@ -249,7 +267,7 @@
 
 <div class="viewcode-block" id="check_date">
 <a class="viewcode-back" href="../../../../utils_telegram.html#src.Telegram_scraping.utils.utils.check_date">[docs]</a>
-<span class="k">def</span> <span class="nf">check_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">check_date</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione check_date confronta la data di un messaggio con una data limite per determinare se il messaggio è stato</span>
 <span class="sd">    inviato prima della data specificata. Gestisce formati di data diversi e converte eventuali date senza fuso orario</span>

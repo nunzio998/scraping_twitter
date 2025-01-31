@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src.Telegram_scraping.telegram_scraper &mdash; Dcomuentazione Tesi 1.0.0 documentation</title>
+  <title>src.Telegram_scraping.telegram_scraper &mdash; Documentazione Tesi 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
@@ -29,7 +29,7 @@
           
           
           <a href="../../../index.html" class="icon icon-home">
-            Dcomuentazione Tesi
+            Documentazione Tesi
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -53,7 +53,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">Dcomuentazione Tesi</a>
+          <a href="../../../index.html">Documentazione Tesi</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -121,10 +121,11 @@
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 
+<span class="kn">from</span> <span class="nn">telethon.errors</span> <span class="kn">import</span> <span class="n">UsernameInvalidError</span>
 <span class="kn">from</span> <span class="nn">telethon.sync</span> <span class="kn">import</span> <span class="n">TelegramClient</span>
 <span class="kn">from</span> <span class="nn">telethon.tl.functions.messages</span> <span class="kn">import</span> <span class="n">GetHistoryRequest</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">src.Telegram_scraping.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_to_mongo</span><span class="p">,</span> <span class="n">check_date</span><span class="p">,</span> <span class="n">check_username_existence</span>
+<span class="kn">from</span> <span class="nn">src.Telegram_scraping.utils.utils</span> <span class="kn">import</span> <span class="n">read_json</span><span class="p">,</span> <span class="n">connect_to_mongo</span><span class="p">,</span> <span class="n">connect_to_mongo_collection</span><span class="p">,</span> <span class="n">disconnect_to_mongo</span><span class="p">,</span> <span class="n">save_to_mongo</span><span class="p">,</span> <span class="n">check_date</span><span class="p">,</span> <span class="n">check_username_existence</span><span class="p">,</span> <span class="n">is_id_in_db</span>
 
 
 <span class="c1"># De-commentare per avviare lo script da riga di comando</span>
@@ -133,7 +134,7 @@
 
 <div class="viewcode-block" id="channel_scraper">
 <a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.channel_scraper">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">channel_scraper</span><span class="p">(</span><span class="n">t_client</span><span class="p">,</span> <span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">channel_scraper</span><span class="p">(</span><span class="n">t_client</span><span class="p">,</span> <span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione `channel_scraper` estrae, elabora e memorizza i messaggi provenienti da un canale o gruppo Telegram</span>
 <span class="sd">    nel database MongoDB. È progettata per gestire una vasta gamma di scenari, come l&#39;estrazione basata su una data limite,</span>
@@ -173,19 +174,23 @@
 
     <span class="k">while</span> <span class="n">retries</span> <span class="o">&lt;</span> <span class="n">max_retries</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># TODO: Aggiungere limite temporale durante lo scaricamento dei messaggi. Valutare l&#39;utilizzo del campo date all&#39;interno di ogni messaggio che viene scaricato.</span>
             <span class="c1"># Avviare il client</span>
             <span class="k">await</span> <span class="n">t_client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Client avviato&quot;</span><span class="p">)</span>
 
             <span class="n">collection</span> <span class="o">=</span> <span class="n">connect_to_mongo_collection</span><span class="p">(</span><span class="n">m_client</span><span class="p">,</span> <span class="n">channel_group</span><span class="p">)</span>
 
-            <span class="c1"># Ottenere l&#39;entità del canale</span>
-            <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">t_client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">channel_group</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Ottenere l&#39;entità del canale</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">t_client</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">channel_group</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">UsernameInvalidError</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Errore: Utente &#39;</span><span class="si">{</span><span class="n">channel_group</span><span class="si">}</span><span class="s2">&#39; non esistente.&quot;</span><span class="p">)</span>
+                <span class="k">break</span>
+
 
             <span class="c1"># Richiedere la cronologia dei messaggi</span>
             <span class="n">offset_id</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">limit</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># Numero di messaggi da scaricare per ogni richiesta</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Numero di messaggi da scaricare per ogni richiesta</span>
             <span class="n">all_messages</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -216,7 +221,11 @@
                 <span class="k">if</span> <span class="n">check_date</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">limit_date</span><span class="p">):</span>
                     <span class="k">break</span>
 
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">is_id_in_db</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ID messaggio </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> già presente nel database. Salto il messaggio.&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># logging.info(message.to_dict())</span>
                 <span class="n">message_data</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
                 <span class="c1"># Ottieni informazioni sul mittente</span>
@@ -244,8 +253,6 @@
                 <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">:</span>
                     <span class="n">message_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># Usa pop per rimuovere il campo, se esiste</span>
 
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message_data</span><span class="p">)</span>
-
                 <span class="n">save_to_mongo</span><span class="p">(</span><span class="n">message_data</span><span class="p">,</span> <span class="n">collection</span><span class="p">)</span>
             <span class="k">break</span>
         <span class="k">except</span> <span class="ne">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -260,7 +267,7 @@
 
 <div class="viewcode-block" id="telegram_scraper">
 <a class="viewcode-back" href="../../../telegram_scraper_script.html#src.Telegram_scraping.telegram_scraper.telegram_scraper">[docs]</a>
-<span class="k">def</span> <span class="nf">telegram_scraper</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">telegram_scraper</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    La funzione `telegram_scraper` è il punto di ingresso principale per il processo di scraping dei messaggi da uno o più</span>
 <span class="sd">    canali o gruppi Telegram. Combina l&#39;utilizzo di un client Telegram (basato sulla libreria `Telethon`) e di un database</span>

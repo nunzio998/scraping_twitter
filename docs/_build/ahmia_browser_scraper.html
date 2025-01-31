@@ -55,6 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="drop_data_collection_darkweb.html">drop_data_collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Tor_connection_test.html">Tor_connection_test</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils_darkweb.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_andamento_cve_darkweb.html">plot_andamento_cve_darkweb</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Discord_scraper.html">Discord</a></li>
@@ -108,7 +109,7 @@ anonimo, archiviandole per ulteriori analisi o monitoraggi.</p>
 <p><strong>Autore</strong>: Francesco Pinsone</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">darkweb_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#darkweb_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">darkweb_scraper</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#darkweb_scraper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.darkweb_scraper" title="Link to this definition"></a></dt>
 <dd><p>Questa funzione rappresenta il punto di partenza per eseguire uno scraping sul dark web. Utilizza il proxy Tor
 per garantire l’anonimato e la navigazione sicura. La funzione include i seguenti passaggi principali:</p>
 <ol class="arabic simple">
@@ -127,7 +128,7 @@ rendendola ideale per progetti di analisi o monitoraggio.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia">
-<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">src.DarkWeb_scraping.ahmia_browser_scraper.</span></span><span class="sig-name descname"><span class="pre">search_ahmia</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/src/DarkWeb_scraping/ahmia_browser_scraper.html#search_ahmia"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.DarkWeb_scraping.ahmia_browser_scraper.search_ahmia" title="Link to this definition"></a></dt>
 <dd><p>Funzione per effettuare una ricerca su Ahmia, un motore di ricerca del dark web. Questa funzione invia una query a Ahmia
 e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni dizionario rappresenta un risultato.</p>
 <p><strong>Passaggi principali</strong>:</p>
@@ -139,7 +140,12 @@ e restituisce i risultati sotto forma di una lista di dizionari, in cui ogni diz
 </ol>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>query</strong> – stringa, query di ricerca</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>session</strong> – <p>.</p>
+</p></li>
+<li><p><strong>client</strong> – Oggetto di connessione al database MongoDB. Deve essere un client MongoDB valido, creato con una libreria come <cite>pymongo</cite>.</p></li>
+<li><p><strong>query</strong> – stringa, query di ricerca</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list, lista di dizionari, dove ogni dizionario rappresenta un risultato</p>
