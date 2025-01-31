@@ -1,15 +1,14 @@
 # Scraping Multicanale: Dark Web, Discord, Telegram e Twitter (X)
-Questo documento ha lo scopo di introdurre la persona al progetto e fornire un quadro generale di quelli che sono 
+Questo documento ha lo scopo di introdurre al progetto e fornire un quadro generale di quelli che sono 
 gli obiettivi e la struttura. 
 Per accedere alla documentazione dettagliata del codice sorgente è possibile seguire il seguente link: 
 [Documentazione](https://docs-tesi.netlify.app)
 
 ## Descrizione del Progetto
 
-Questo progetto si propone di effettuare scraping su diverse piattaforme (Dark Web, Discord, Telegram e X) per raccogliere e analizzare dati. Ogni gruppo di script si occupa di una piattaforma specifica, ed è supportato da funzioni di utilità che facilitano l'interazione con un database MongoDB dedicato.
-L'obiettivo finale del progetto è che i dati vengano analizzati per l'identificazione di potenziali future minacce per le aziende.
-Lo scraping su **X** supporta sia il browser **Chrome** che **Firefox**, mentre le altre piattaforme vengono trattate in modo univoco. Tutti i dati raccolti vengono salvati in un database MongoDB diviso per piattaforma e ulteriormente suddiviso in collection a seconda delle necessità.
+L’obiettivo primario del lavoro è la progettazione e l’implementazione di un sistema modulare per lo scraping e l’analisi di contenuti provenienti da diverse piattaforme digitali, il tutto da integrare in un processo di threat intelligence (ovvero il processo di raccolta, analisi e interpretazione di dati per identificare potenziali minacce). Il framework è stato progettato per garantire una raccolta efficiente e strutturata dei dati, centralizzandoli in un database MongoDB. Questo approccio consente non solo di gestire grandi volumi di informazioni, ma anche di effettuare analisi avanzate, favorendo un’identificazione proattiva delle minacce e migliorando la capacità decisionale delle organizzazioni coinvolte.
 
+La metodologia adottata si basa su tecniche di scraping avanzato, sfruttando librerie come Selenium per piattaforme web, Telethon per Telegram e strumenti specifici per le altre piattaforme target. Ogni componente del sistema è stato sviluppato con un’architettura modulare, per garantire flessibilità e scalabilità. I dati raccolti sono organizzati in modo da facilitare l’integrazione con ulteriori strumenti di analisi e visualizzazione, migliorando l’efficacia del monitoraggio.
 ## Struttura del Progetto
 
 Il progetto è organizzato come segue:
@@ -142,7 +141,7 @@ Spiega come eseguire gli script per ogni piattaforma. Puoi fornire esempi di ese
 
 ### Dark Web
 Lo scraping sul Dark Web è stato implementato utilizzando il servizio Tor. Per eseguire lo scraping è necessario installare il servizio Tor e configurare il browser per utilizzarlo. Per gestire il servizio Tor è stato implementato 
-lo script 'tor_setup-sh' che consente varie operazioni come l'istallazione, lo start/stop, il check della connessione e il riavvio del servizio.
+lo script 'tor_setup.sh' che consente varie operazioni come l'istallazione, lo start/stop, il check della connessione e il riavvio del servizio.
 Per eseguire lo script è quindi necessario il comando:
 ```bash
 ./tor_setup.sh
@@ -332,7 +331,7 @@ Il database contiene le seguenti collection:
   
 ### twitter_scraping
 Il database contiene le seguenti collection:
-- **Una collection relativa ad ogni gruppo hacker target**: contengono i tweet estratti che hanno il nome di quel gruppo all'interno del loro contenuto e che quindi possono essere potenzialmente significativi. <br>
+- **Una collection per ogni gruppo hacker target o singola keyword di ricerca**<br>
     La struttura dei documenti è la seguente:
     ```json
     {
