@@ -28,6 +28,7 @@ project-root/
 │   │   ├── ahmia_scraper_ai.py               # Script per scraping con LLM per il parsing dei dati
 │   │   ├── db_to_csv.py                      # Script che esporta i dati dal DB in un file csv
 │   │   ├── drop_data_collection.py           # Script che cancella i tutti i dati
+│   │   ├── plot_andamento_cve.py             # Script che produce un grafico sull'andamento delle vulnerabilità negli anni
 │   │   ├── Tor_connection_test.py            # Script che esegue in test sulla connessione al Tor service
 │   │   └── tor_setup.sh                      # Script che consente di eseguire un setup del servizio Tor
 │   │
@@ -96,6 +97,7 @@ project-root/
 │   │   │   ├── beautifulsoup_analisys.py     # Script che contiene le funzioni per l'analisi dei dell'html raccolto
 │   │   │   ├── db_to_csv.py                  # Script che esporta i dati dal DB in un file csv
 │   │   │   ├── drop_data_collection.py       # Script che cancella i tutti i dati
+│   │   │   ├── plot_andamento_cve.py         # Script che produce un grafico sull'andamento delle vulnerabilità negli anni
 │   │   │   ├── related_user_finder.py        # Script per la ricerca degli utenti correlati
 │   │   │   ├── run_script.sh                 # Script per l'esecuzione dei singoli script
 │   │   │   ├── tweet_scraper.py              # Script che esegue lo scraping dei tweet
