@@ -1,10 +1,38 @@
+"""
+Questo script analizza l'andamento delle CVE (Common Vulnerabilities and Exposures) nei risultati della ricerca su
+Ahmia, un motore di ricerca per il Dark Web. Utilizzando MongoDB, lo script estrae e conteggia le CVE trovate nelle
+keyword di ricerca e genera un grafico temporale.
+
+Autore: Francesco Pinsone.
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 import re
 from src.DarkWeb_scraping.utils.utils import connect_to_mongo, connect_to_mongo_collection, disconnect_to_mongo
 
 
-def plot_cve():
+def plot_cve() -> None:
+    """
+    Questa funzione analizza la presenza di CVE nei risultati di ricerca su Ahmia e genera un grafico per visualizzarne
+    l'andamento temporale.
+
+    **Funzionamento**:
+    1. **Connessione a MongoDB**: Si collega al database MongoDB e accede alla collection `ahmia_results`.
+
+    2. **Estrazione dei dati**: Recupera i documenti dalla collection, escludendo il campo `keywords`.
+
+    3. **Identificazione delle CVE**: Analizza il campo `search_keywords` per individuare CVE nel formato `CVE-YYYY` e
+    conta il numero di occorrenze per ciascun anno.
+
+    4. **Elaborazione dei dati**: Organizza i dati in un DataFrame pandas per ordinamento e analisi.
+
+    5. **Generazione del grafico**: Crea un grafico a linee con il numero di CVE menzionate per anno.
+
+    6. **Salvataggio e visualizzazione del grafico**: Il grafico viene salvato in formato PNG con alta risoluzione.
+    Infine la connessione al database viene chiusa per evitare problemi di gestione.
+
+    :return: Nessun valore ritornato.
+    """
     # Connessione al database MongoDB
     client = connect_to_mongo()
     collection = connect_to_mongo_collection(client, 'ahmia_results')
