@@ -14,13 +14,13 @@ eventuale utilizzo futuro.
 
 4. **Costruzione della Ricerca**: Per ogni gruppo target, viene costruito un URL di ricerca personalizzato. Questo URL filtra i tweet relativi al gruppo target, utilizzando le parole chiave scelte e limitando i risultati a quelli pubblicati tra la data dell'ultimo aggiornamento e quella odierna.
 
-5. **Caricamento e Raccolta dei Tweet**:
-   - Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.
-   - Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.
+5. **Caricamento e Raccolta dei Tweet**:\n
+   - Lo script naviga nella pagina di ricerca su X, dove i tweet vengono caricati dinamicamente.\n
+   - Per garantire di raccogliere tutti i tweet disponibili, viene eseguita una scrollata continua della pagina, caricando tweet aggiuntivi ogni volta che la pagina si aggiorna.\n
 
-6. **Estrazione e Analisi del Contenuto**:
-   - Una volta caricati i tweet, l'HTML della pagina viene estratto utilizzando Selenium.
-   - Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.
+6. **Estrazione e Analisi del Contenuto**:\n
+   - Una volta caricati i tweet, l'HTML della pagina viene estratto utilizzando Selenium.\n
+   - Il contenuto viene quindi analizzato tramite BeautifulSoup, che struttura e filtra i tweet in modo che possano essere facilmente utilizzati e salvati nel database.\n
 
 7. **Salvataggio dei Dati nel Database**: Le informazioni estratte dai tweet (come autore, contenuto, URL, immagini, video e gruppo hacker di riferimento) vengono parsate e salvate nel database MongoDB per una successiva consultazione o analisi.
 
