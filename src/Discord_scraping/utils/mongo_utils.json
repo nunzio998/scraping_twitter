@@ -1,4 +1,4 @@
 {
-  "connection_string" : "mongodb+srv://francescopinsone2:spugna2000@cluster0.fzowqrz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-  "database" : "discord_scraping"
+  "connection_string" : "",
+  "database" : ""
 }
